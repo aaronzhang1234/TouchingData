@@ -1,0 +1,25 @@
+{
+  "name": "TouchingData",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronzhang1234/TouchingData.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaronzhang1234/TouchingData/issues"
+  },
+  "homepage": "https://github.com/aaronzhang1234/TouchingData#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "exceljs": "^2.0.1"
+  }
+}
