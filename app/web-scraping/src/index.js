@@ -5,7 +5,7 @@ const fs = require('fs');
 
 let search_url = "https://www.google.com/search?q=";
 let workbook = new Excel.Workbook();
-workbook.xlsx.readFile("ProjectDataBig.xlsx").then(function(){
+workbook.xlsx.readFile("../../../data/ProjectDataBig.xlsx").then(function(){
     let worksheet = workbook.getWorksheet(2);
     worksheet.eachRow(function(row, rownumber){
         /*
