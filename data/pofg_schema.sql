@@ -17,7 +17,7 @@ CREATE TABLE `PG1_MEDIA`(
 	fileType TEXT NOT NULL,
 	description TEXT,
 	medLength real,
-  source TEXT,
+  	source TEXT,
 	compId INTEGER NOT NULL,
 	FOREIGN KEY(compId) REFERENCES PG1_COMPANY(id)
 );
