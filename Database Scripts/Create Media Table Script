@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS Media(
-	medId INTEGER PRIMARY KEY,
-	compId INTEGER,
-	filePath TEXT,
-	fileType TEXT,
-	description TEXT DEFAULT NULL,
-	source TEXT,
+	medId INTEGER PRIMARY KEY NOT NULL,
+	compId INTEGER NOT NULL,
+	filePath TEXT NOT NULL,
+	fileType TEXT NOT NULL,
+	description TEXT,
+	source TEXT NOT NULL,
 	FOREIGN KEY (compId) REFERENCES Company(compId)
 	);
