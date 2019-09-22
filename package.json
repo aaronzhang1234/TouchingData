@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node app/dataMigration/src/main.js",
+    "webscrape": "node app/web-scraping/src/main.js"
+
   },
   "repository": {
     "type": "git",

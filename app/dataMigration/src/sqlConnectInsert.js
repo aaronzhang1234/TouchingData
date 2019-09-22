@@ -14,7 +14,7 @@ class insertIntoDatabase {
     //insert into PG1_Company table
     pg1_CompanyInsert(name, addr1, addr2, city, state, zip, congressionalDistrict) {
         this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
-             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
+            state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
         [name, addr1, addr2, city, state, zip, congressionalDistrict])
     }
 
@@ -40,3 +40,5 @@ class insertIntoDatabase {
     }
 
 }
+
+module.exports = insertIntoDatabase;
