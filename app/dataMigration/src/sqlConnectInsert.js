@@ -20,8 +20,10 @@ class insertIntoDatabase {
         */
         this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
-        [name, addr1, addr2, city, state, zip, congressionalDistrict],function(result,error){
-            console.log(result);
+        [name, addr1, addr2, city, state, zip, congressionalDistrict],function(error){
+            if(!error){
+                console.log(name + " has been added to the table");
+            }
         })
     }
 
