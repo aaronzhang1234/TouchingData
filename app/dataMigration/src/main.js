@@ -1,3 +1,10 @@
+/* ****************** MAIN.JS ******************
+ * 2019 September 22 : Aaron Zhang : Created
+ ********************************************
+ * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
+ *
+*/
+
 var Excel = require("exceljs");
 var sqlConnectInsert = require("./sqlConnectInsert.js");
 
@@ -16,7 +23,11 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
             let state = row.getCell(13).value;
             let zipcode = row.getCell(15).value;
             let congressionalDistrict = row.getCell(16).value;
-            sqlHelper.pg1_CompanyInsert(companyName, addr1, addr2, city, state, zipcode, congressionalDistrict);
+            try{
+                sqlHelper.pg1_CompanyInsert(companyName, addr1, addr2, city, state, zipcode, congressionalDistrict);
+            }catch(e){
+                console.log(e);
+            }
         })
     });
     //Once the eachRow function is complete, then close the DB.
