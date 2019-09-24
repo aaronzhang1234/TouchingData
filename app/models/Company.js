@@ -17,3 +17,4 @@ class Company {
 		this.district = district;
 	}
 }
+module.exports = Company;
