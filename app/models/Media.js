@@ -16,3 +16,5 @@ class Media {
 		this.source = source; 
 	}
 }
+
+module.exports = Media;

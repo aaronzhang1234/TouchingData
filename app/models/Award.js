@@ -18,3 +18,4 @@ class Award {
 		this.fiscalYear = fiscalYear; 
 	}
 }
+modules.exports = Award;
