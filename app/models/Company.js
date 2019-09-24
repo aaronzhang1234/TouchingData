@@ -5,13 +5,8 @@
  *
 */
 
-<<<<<<< HEAD
- class Company {
-	constructor(id, name, addr1, addr2, city, state, zip, district){
-=======
 class Company {
 	constructor(id, name, addr1, addr2, city, state, zip, district, website){
->>>>>>> afc5184759699ac168816420d9be008ce78548c2
 		this.id = id; 
 		this.name = name; 
 		this.addr1 = addr1; 
