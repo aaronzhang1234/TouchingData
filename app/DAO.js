@@ -5,10 +5,10 @@
  *
 */
 
-import Company from './models/Company.js'
+var Company = require('./models/Company.js');
 const sqlite3 = require('sqlite3').verbose();
 
-class DAO {
+class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
 			 this.db = new sqlite3.Database(dbFilePath, (err)=> { // initialize an sqlite3 object named db
@@ -29,7 +29,7 @@ class DAO {
 			}
 
 			const company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			return  company
+			return company
     }
 
 	  // returns a company object selected from the id index on PG1_COMPANY
@@ -49,3 +49,5 @@ class DAO {
     }
 
 }
+
+module.exports = Dao;

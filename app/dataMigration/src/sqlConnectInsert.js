@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+var Company = require("../../models/Company.js")
 
 class insertIntoDatabase {
     //constructor connects to database with file path given
@@ -12,7 +13,7 @@ class insertIntoDatabase {
     }
 
     //insert into PG1_Company table
-    pg1_CompanyInsert(name, addr1, addr2, city, state, zip, congressionalDistrict) {
+    pg1_CompanyInsert(company) {
         /*
             function(result,error){} 
             can be easily replaced by 
@@ -20,10 +21,10 @@ class insertIntoDatabase {
         */
         this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
-        [name, addr1, addr2, city, state, zip, congressionalDistrict],function(error){
-            if(!error){
-                console.log(name + " has been added to the table");
-            }
+        [company.name, company.addr1, company.addr2, company.city, company.state, company.zip, company.district],function(error){
+					if(error){
+						//throw new Error(name + " has not been added to the table");
+					}
         })
     }
 

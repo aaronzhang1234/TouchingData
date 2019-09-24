@@ -5,7 +5,7 @@
  *
 */
 
-class Media {
+ class Media {
 	constructor(id, compId, filePath, fileType, description, medLength, source){
 		this.id = id; 
 		this.compId = compId; 
@@ -16,3 +16,6 @@ class Media {
 		this.source = source; 
 	}
 }
+
+
+module.exports = Media;

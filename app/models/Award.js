@@ -5,7 +5,7 @@
  *
 */
 
-class Award {
+ class Award {
 	constructor(piid, compId, currentTotal, potentialTotal, parentAwardAgency, awardingAgency, awardingOffice, fundingOffice, fiscalYear){
 		this.piid = piid; 
 		this.compId = compId; 
@@ -18,3 +18,5 @@ class Award {
 		this.fiscalYear = fiscalYear; 
 	}
 }
+
+module.exports = Award;

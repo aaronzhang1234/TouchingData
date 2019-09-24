@@ -5,7 +5,7 @@
  *
 */
 
-class Company {
+ class Company {
 	constructor(id, name, addr1, addr2, city, state, zip, district){
 		this.id = id; 
 		this.name = name; 
@@ -17,3 +17,5 @@ class Company {
 		this.district = district;
 	}
 }
+
+module.exports = Company;
