@@ -1,5 +1,5 @@
 /* ****************** DAO ******************
- * 2019 September 22 : Justine Delisi : add insert methods
+ * 2019 September 22 : Justin Delisi : add insert methods
  * 2019 September 22 : Nathan Reiber  : Created
  ********************************************
  * Purpose : defines a set of data access methods to select from PofG database 
