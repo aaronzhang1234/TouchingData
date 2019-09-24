@@ -19,4 +19,4 @@
 	}
 }
 
-modules.exports = Award;
+module.exports = Award;
