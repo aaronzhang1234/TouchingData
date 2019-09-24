@@ -14,7 +14,8 @@ CREATE TABLE `PG1_COMPANY`(
 	city TEXT,
 	state TEXT,
 	zip TEXT,
-	congressionalDistrict INTEGER
+	congressionalDistrict INTEGER,
+	website TEXT
 );
 
 
