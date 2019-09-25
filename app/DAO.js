@@ -11,7 +11,6 @@ const sqlite3 = require('sqlite3').verbose();
 var Company = require("./models/Company.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
-
 class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
@@ -87,4 +86,4 @@ class Dao {
 
 }
 
-module.exports=DAO;
+module.exports=Dao;
