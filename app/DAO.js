@@ -6,10 +6,7 @@
  *
 */
 
-<<<<<<< HEAD
 //import Company from './models/Company.js'
-=======
->>>>>>> 4da0fd519862c15b29e46f8428dae7b08f9714c8
 const sqlite3 = require('sqlite3').verbose();
 var Company = require("./models/Company.js");
 var Award = require("./models/Award.js");
@@ -90,8 +87,4 @@ class Dao {
 
 }
 
-<<<<<<< HEAD
 module.exports=DAO;
-=======
-module.exports = Dao;
->>>>>>> 4da0fd519862c15b29e46f8428dae7b08f9714c8

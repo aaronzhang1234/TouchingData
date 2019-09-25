@@ -18,6 +18,4 @@ class Company {
 		this.website  = website;
 	}
 }
-
->>>>>>> 4da0fd519862c15b29e46f8428dae7b08f9714c8
 module.exports = Company;
