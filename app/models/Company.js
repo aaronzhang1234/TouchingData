@@ -18,3 +18,4 @@ class Company {
 		this.website  = website;
 	}
 }
+module.exports = Company;

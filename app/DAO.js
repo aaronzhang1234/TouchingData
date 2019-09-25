@@ -5,10 +5,9 @@
  *
 */
 
-import Company from './models/Company.js'
 const sqlite3 = require('sqlite3').verbose();
 
-class DAO {
+class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
 			 this.db = new sqlite3.Database(dbFilePath, (err)=> { // initialize an sqlite3 object named db
@@ -49,3 +48,5 @@ class DAO {
     }
 
 }
+
+module.exports = Dao;
