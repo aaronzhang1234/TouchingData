@@ -13,9 +13,18 @@ class insertIntoDatabase {
 
     //insert into PG1_Company table
     pg1_CompanyInsert(name, addr1, addr2, city, state, zip, congressionalDistrict) {
+        /*
+            function(result,error){} 
+            can be easily replaced by 
+            (result,error)=>{}
+        */
         this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
-        [name, addr1, addr2, city, state, zip, congressionalDistrict])
+        [name, addr1, addr2, city, state, zip, congressionalDistrict],function(error){
+            if(!error){
+                console.log(name + " has been added to the table");
+            }
+        })
     }
 
     //insert into PG1_Media table

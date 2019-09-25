@@ -1,9 +1,19 @@
+/* ****************** MAIN.JS ******************
+ * 2019 September 22 : Aaron Zhang : Created
+ ********************************************
+ * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
+ *
+*/
+
 var Excel = require("exceljs");
 var sqlConnectInsert = require("./sqlConnectInsert.js");
+var Dao = require("../../DAO.js");
 
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID_1.db";
 var sqlHelper = new sqlConnectInsert(sqlDatabaseName);
+var dao = new Dao(sqlDatabaseName);
 
+/*
 let workbook = new Excel.Workbook();
 workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
     let worksheet = workbook.getWorksheet("All_FY_Combined");
@@ -24,3 +34,4 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
         sqlHelper.closeDb();
     });
 });
+*/
