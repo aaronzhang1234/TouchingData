@@ -6,7 +6,7 @@
  *
 */
 
-import Company from './models/Company.js'
+//import Company from './models/Company.js'
 const sqlite3 = require('sqlite3').verbose();
 var Company = require("./models/Company.js");
 var Award = require("./models/Award.js");
@@ -69,9 +69,22 @@ class DAO {
             fundingOffice, fiscalYear) VALUES(?,?,?,?,?,?,?,?,?)`,
         [	award.piid, award.compid, award.currentTotal, award.potentialTotal, award.parentAwardAgency, award.awardingOffice, award.fundingOffice, award.fiscalYear  ])
     }
+    //gets all companies
+    pg1_SelectsAllCompanies(){
+      this.db.run("SELECT * FROM pg1_company;",[], (err, rows) =>{
+        if(err){
+          throw err;
+        }
+        rows.foreach((row)=>{
+          console.log(row.name);
+        });
+      });
+    }
 
     closeDb(){
         this.db.close();
     }
 
 }
+
+module.exports=DAO;
