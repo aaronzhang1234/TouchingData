@@ -26,47 +26,56 @@ class Dao {
 	  // returns a company object selected from the name index on PG1_COMPANY
     selectCompanyByName(name) {
       this.db.get(`SELECT * FROM PG1_COMPANY where name = ? `,
-        [name], (err, row))
+					[name], (err, row)=>{
+					if(err){
+						throw err;
+					}
 
-			if(err){
-				throw err;
-			}
-
-			const company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			return company
-    }
+					if(row){
+							company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
+					}
+					else return 0;
+					return company
+				});
+		}
 
 	  // returns a company object selected from the id index on PG1_COMPANY
     selectCompanyById(id) {
       this.db.get(`SELECT * FROM PG1_COMPANY where id = ? `,
-        [id], (err, row))
-
-			if(err){
-				throw err;
-			}
-			const company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			return  company
-    }
+					[id], (err, row)=>{
+					if(err){
+						throw err;
+					}
+					const company = new Company();
+					company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
+					return  company
+				});
+		}
 	
-    //insert into PG1_Company table
-    pg1_CompanyInsert(company) {
+    pg1_CompanyInsert(name, addr1, addr2, city, state, zip, district, website) {
+        /*
+            function(result,error){} 
+            can be easily replaced by 
+            (result,error)=>{}
+        */
         this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
-             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
-        [company.name, company.addr1, company.addr2, company.city, company.state, company.zip, company.district])
+            state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
+        [name, addr1, addr2, city, state, zip, district, website],function(error){
+					if(error){
+						//throw new Error(name + " has not been added to the table");
+					}
+        })
     }
 
     //insert into PG1_Media table
     pg1_MediaInsert(media) {
-        this.db.run(`INSERT INTO pg1_media (filePath, fileType, description, 
-            medLength, source, compId) VALUES(?,?,?,?,?,?)`,
+        this.db.run(`INSERT INTO pg1_media (filePath, fileType, description, medLength, source, compId) VALUES(?,?,?,?,?,?)`,
         [media.filePath, media.fileType, media.description, media.medLength, media.source, media.compId])
     }
 
     //insert into PG1_Award table
     pg1_AwardInsert(award ) {
-        this.db.run(`INSERT INTO pg1_award (piid, compId, currentTotal, potentialTotal, 
-            parentAwardAgency, awardingAgency, awardingOffice, 
-            fundingOffice, fiscalYear) VALUES(?,?,?,?,?,?,?,?,?)`,
+        this.db.run(`INSERT INTO pg1_award (piid, compId, currentTotal, potentialTotal, parentAwardAgency, awardingAgency, awardingOffice, fundingOffice, fiscalYear) VALUES(?,?,?,?,?,?,?,?,?)`,
         [	award.piid, award.compid, award.currentTotal, award.potentialTotal, award.parentAwardAgency, award.awardingOffice, award.fundingOffice, award.fiscalYear  ])
     }
 
