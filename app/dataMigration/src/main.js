@@ -26,7 +26,8 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
 
 						if(!company){
             		try{
-               		 	dao.pg1_CompanyInsert( row.getCell(6).value, row.getCell(10).value, row.getCell(11).value, row.getCell(12).value, row.getCell(13).value, row.getCell(15).value, row.getCell(16).value);
+										company = new company(row.getCell(6).value, row.getCell(10).value, row.getCell(11).value, row.getCell(12).value, row.getCell(13).value, row.getCell(15).value, row.getCell(16).value);
+										dao.pg1_CompanyInsert(company);
 										company = dao.selectCompanyByName(row.getCell(6));
 								}
 								catch(e){
