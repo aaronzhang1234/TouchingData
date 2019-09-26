@@ -74,12 +74,14 @@ class webscraper{
             links = links.filter(function(item, idk){
                 return item != null;
             });
+            /*
             for(let i =0 ;i< links.length-1; i++){
                 if(!links[i].includes(".com") && !links[i].includes(".org") && !links[i].includes(".net")){
                     links[i] = current_site+links[i];
                     console.log(links[i]);
                 }
             }
+            */
             links = links.filter(function(item, idk){
                 return item.startsWith(orig);
             });
