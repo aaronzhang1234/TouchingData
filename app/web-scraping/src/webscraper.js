@@ -24,16 +24,18 @@ class webscraper{
     }
     //Getting webscraped data from a site
     getSite(orig, website_name, links_visited){
-        console.log(links_visited.length);
+        //console.log(links_visited.length);
         axios.get(website_name).then(response=>{
+            //console.log(links_visited.length);
             const $ = cheerio.load(response.data);
             let thisthat = this;
             thisthat.findAudio($, website_name).then(function(){
-                let links = thisthat.findLinks($, orig, links_visited).then(function(links){
-                    links_visited.push(links);
+                thisthat.findLinks($, orig, website_name, links_visited).then(function(links){
+                    links_visited = links_visited.concat(links);
                     for(let i = 0; i< links.length-1; i++){
                         setTimeout(function(){
-                            thisthat.getSite(orig, links[i], links_visited);
+                            links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
+                            return links_visited;
                         },5000);
                     }
                 });
@@ -53,11 +55,14 @@ class webscraper{
             });
             $("audio").each((i, elem)=>{
                 console.log("Website Audio is: " + website + " | Link is: " + $(elem).attr("src"));
-            })
+            });
+            $("a[href*='/youtu.be/']").each((i, elem)=>{
+                console.log("Website href is " + website + " | Link is: " + $(elem).attr("href"));
+            });
             resolve("");
         });
     }
-    findLinks($, orig, links_visited){
+    findLinks($, orig, current_site, links_visited){
         let links = [];
         return new Promise(function(resolve, reject){
             $("a").each((i, elem)=>{        
@@ -69,6 +74,12 @@ class webscraper{
             links = links.filter(function(item, idk){
                 return item != null;
             });
+            for(let i =0 ;i< links.length-1; i++){
+                if(!links[i].includes(".com") && !links[i].includes(".org") && !links[i].includes(".net")){
+                    links[i] = current_site+links[i];
+                    console.log(links[i]);
+                }
+            }
             links = links.filter(function(item, idk){
                 return item.startsWith(orig);
             });

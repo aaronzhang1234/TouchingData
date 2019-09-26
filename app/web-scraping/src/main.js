@@ -14,4 +14,4 @@ const db = require('better-sqlite3')('data/POLITICS_OF_THE_GRID_1.db');
 
 var webscraper = new webscraperjs();
 //webscraper.getSiteFromName("Federal Express Corporation");
-webscraper.getSite("https://adsinc.com/", "https://adsinc.com/",[]);
+webscraper.getSite("https://www.lrp.com/", "https://www.lrp.com/",[]);
