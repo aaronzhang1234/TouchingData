@@ -1,12 +1,13 @@
 /* ****************** Company ******************
+ * 2019 September 23 : Nathan Reiber : Set default values
  * 2019 September 22 : Nathan Reiber : Created
  * *********************************************
  * Purpose : defines a class named Media to contain a Media record
  *
 */
 
-class Media {
-	constructor(id, compId, filePath, fileType, description, medLength, source){
+ class Media {
+	constructor(id = "", compId = "" , filePath = "", fileType = "", description = "", medLength = "", source = ""){
 		this.id = id; 
 		this.compId = compId; 
 		this.filePath = filePath; 
@@ -16,5 +17,6 @@ class Media {
 		this.source = source; 
 	}
 }
+
 
 module.exports = Media;

@@ -21,8 +21,10 @@
   "homepage": "https://github.com/aaronzhang1234/TouchingData#readme",
   "dependencies": {
     "axios": "^0.19.0",
+    "better-sqlite3": "^5.4.3",
     "cheerio": "^1.0.0-rc.3",
     "exceljs": "^2.0.1",
+    "fs": "0.0.1-security",
     "sqlite3": "^4.1.0"
   }
 }

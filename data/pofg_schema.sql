@@ -1,3 +1,6 @@
+----------------------------pofg_schema.sql------------------------------------
+-- 2019 September 26 : Nathan Reiber : added autoincrementing key to Award table
+--																	 : removed NOT NULL constraint on various fields in Award table
 -- 2019 September 22 : Justin Delisi : added PG1_MEDIA table definition
 -- 2019 September 20 : Nathan Reiber : created
 -------------------------------------------------------------------------------
@@ -35,10 +38,11 @@ CREATE TABLE `PG1_MEDIA`(
 -- AWARD table contains data about financial awards given by ICE to various company in the company table 
 DROP TABLE IF EXISTS `PG1_AWARD`;
 CREATE TABLE `PG1_AWARD`(
-	piid INTEGER NOT NULL PRIMARY KEY, -- pull from spreadsheet
-	compId INTEGER NOT NULL,
-	currentTotal REAL NOT NULL,
-	potentialTotal REAL NOT NULL,
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	piid TEXT,
+	compId INTEGER,
+	currentTotal REAL,
+	potentialTotal REAL,
 	parentAwardAgency TEXT,
 	awardingAgency TEXT,
 	awardingOffice TEXT,
