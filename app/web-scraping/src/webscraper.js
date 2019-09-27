@@ -24,7 +24,6 @@ class webscraper{
     }
     //Getting webscraped data from a site
     getSite(orig, website_name, links_visited){
-        //console.log(links_visited.length);
         axios.get(website_name).then(response=>{
             //console.log(links_visited.length);
             const $ = cheerio.load(response.data);
@@ -32,7 +31,7 @@ class webscraper{
             thisthat.findAudio($, website_name).then(function(){
                 thisthat.findLinks($, orig, website_name, links_visited).then(function(links){
                     links_visited = links_visited.concat(links);
-                    for(let i = 0; i< links.length-1; i++){
+                    for(let i = 0; i < links.length-1; i++){
                         setTimeout(function(){
                             links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
                             return links_visited;
@@ -47,6 +46,7 @@ class webscraper{
     }
     findAudio($, website){
         return new Promise(function(resolve, reject){
+            console.log("Scraping : " + website);
             $("source").each((i, elem)=>{
                 console.log("Website Source is: " + website + " | Link is: " + $(elem).attr("src"));
             });
