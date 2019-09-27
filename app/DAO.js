@@ -1,72 +1,119 @@
 /* ****************** DAO ******************
- * 2019 September 22 : Justin Delisi : add insert methods
+ * 2019 September 25 : Nathan Reiber  : import better-sqlite3
+ * 																		: rewrite select and insert methods to use synchronous sqlite3 api
+ * 2019 September 22 : Justin Delisi  : add insert methods
  * 2019 September 22 : Nathan Reiber  : Created
  ********************************************
  * Purpose : defines a set of data access methods to select from PofG database 
  *
 */
 
+<<<<<<< HEAD
 //import Company from './models/Company.js'
 const sqlite3 = require('sqlite3').verbose();
 var Company = require("./models/Company.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
+=======
+var Company = require('./models/Company.js');
+const sqlite3 = require('better-sqlite3');
+var Company = require("./models/Company.js");
+var Award = require("./models/Award.js");
+var Media = require("./models/Media.js");
+
+>>>>>>> master
 class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
-			 this.db = new sqlite3.Database(dbFilePath, (err)=> { // initialize an sqlite3 object named db
-            if (err){
-                return console.error(err.message);
-            }
-            console.log('Connected to database');
-        })
+			 this.db = new sqlite3(dbFilePath,  { verbose: console.log });
     }
 
 	  // returns a company object selected from the name index on PG1_COMPANY
     selectCompanyByName(name) {
-      this.db.get(`SELECT * FROM PG1_COMPANY where name = ? `,
-        [name], (err, row))
+      const stmt = this.db.prepare(`SELECT * FROM PG1_COMPANY where name = ? `);
 
-			if(err){
-				throw err;
+			const select = this.db.transaction((name)=>{
+				return  stmt.get(name);
+			});
+			
+			const row = select(name);
+
+			let comp = new Company();
+			
+			if (row){
+				comp = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.congressionalDistrict)
 			}
-
-			const company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			return  company
-    }
+			return comp
+		}
+	
 
 	  // returns a company object selected from the id index on PG1_COMPANY
     selectCompanyById(id) {
-      this.db.get(`SELECT * FROM PG1_COMPANY where id = ? `,
-        [id], (err, row))
+      this.db.prepare(`SELECT * FROM PG1_COMPANY where id = ? `);
 
-			if(err){
-				throw err;
+			const select = this.db.transaction((id)=>{
+				return stmt.get(id)
+			});
+
+			const row = select(id);
+
+			let comp = new Company();
+		
+			if (row){
+				comp = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
 			}
-			const company = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			return  company
-    }
+
+			return  comp;
+		}
 	
-    //insert into PG1_Company table
-    pg1_CompanyInsert(company) {
-        this.db.run(`INSERT INTO pg1_company (name, addr1, addr2, city,
-             state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)`,
-        [company.name, company.addr1, company.addr2, company.city, company.state, company.zip, company.district])
+		//insert into PG1_COMPANY table
+    pg1_CompanyInsert(comp) {
+      const stmt = this.db.prepare(`INSERT INTO PG1_COMPANY (name, addr1, addr2, city, state, zip, congressionalDistrict) VALUES(?, ?, ?, ?, ?, ?, ?)`);
+			
+
+			const insert =  this.db.transaction((comp)=> {
+				try{
+						stmt.run(comp.name, comp.addr1, comp.addr2, comp.city, comp.state, comp.zip, comp.congressionalDistrict)
+				}catch(err){
+					if(!this.db.inTransaction) throw err;
+				}
+			});
+
+			insert(comp);
+
     }
 
     //insert into PG1_Media table
     pg1_MediaInsert(media) {
-        this.db.run(`INSERT INTO pg1_media (filePath, fileType, description, 
-            medLength, source, compId) VALUES(?,?,?,?,?,?)`,
-        [media.filePath, media.fileType, media.description, media.medLength, media.source, media.compId])
+		 const stmt = this.db.prepare(`INSERT INTO PG1_MEDIA (filePath, fileType, description, medLength, source, compId) VALUES(?, ?, ?, ?, ?, ?)`);
+
+			const insert = this.db.transaction((media)=> {
+				try{
+					stmt.run(media.filePath, media.fileType, media.description, media.medLength, media.source, media.compId)
+				}catch(err){
+					if(!this.db.inTransaction) throw err;
+				}
+
+			});
+
+			insert(media);
     }
 
     //insert into PG1_Award table
     pg1_AwardInsert(award ) {
-        this.db.run(`INSERT INTO pg1_award (piid, compId, currentTotal, potentialTotal, 
-            parentAwardAgency, awardingAgency, awardingOffice, 
-            fundingOffice, fiscalYear) VALUES(?,?,?,?,?,?,?,?,?)`,
-        [	award.piid, award.compid, award.currentTotal, award.potentialTotal, award.parentAwardAgency, award.awardingOffice, award.fundingOffice, award.fiscalYear  ])
+			const stmt = this.db.prepare(`INSERT INTO PG1_AWARD (piid, compId, currentTotal, potentialTotal, parentAwardAgency, awardingAgency, awardingOffice, fundingOffice, fiscalYear) 
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+
+			const insert = this.db.transaction((award)=>{
+			try{
+				stmt.run(award.piid, award.compId, award.currentTotal, award.potentialTotal, award.parentAwardAgency, award.awardingAgency, award.awardingOffice, award.fundingOffice, award.fiscalYear);
+				
+				}catch(err){
+					if(!this.db.inTransaction) throw err;
+				}
+			});
+
+			insert(award);
     }
     //gets all companies
     pg1_SelectsAllCompanies(){
@@ -86,4 +133,8 @@ class Dao {
 
 }
 
+<<<<<<< HEAD
 module.exports=Dao;
+=======
+module.exports = Dao;
+>>>>>>> master

@@ -1,12 +1,15 @@
 /* ****************** Company ******************
+ * 2019 September 26 : Nathan Reiber : add id field for autoincrementing key
+ * 2019 September 24 : Nathan Reiber : default values
  * 2019 September 22 : Nathan Reiber : Created
  * *********************************************
  * Purpose : defines a class named Award to contain an Awarad record
  *
 */
 
-class Award {
-	constructor(piid, compId, currentTotal, potentialTotal, parentAwardAgency, awardingAgency, awardingOffice, fundingOffice, fiscalYear){
+ class Award {
+	constructor(id = "", piid = "", compId = "", currentTotal = "", potentialTotal = "", parentAwardAgency = "", awardingAgency = "", awardingOffice = "", fundingOffice = "", fiscalYear = ""){
+		this.id = id;
 		this.piid = piid; 
 		this.compId = compId; 
 		this.currentTotal = currentTotal; 
@@ -18,4 +21,8 @@ class Award {
 		this.fiscalYear = fiscalYear; 
 	}
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 module.exports = Award;
