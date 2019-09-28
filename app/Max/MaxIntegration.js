@@ -25,7 +25,7 @@ function resetCounter()
 function getData()
 {
     //execute sql statement in sqlite max msp integration
-    sqlite.exec("SELECT name FROM pg1_Company WHERE name = 'ATLANTIC DIVING SUPPLY INCORPORATED'", result);
+    sqlite.exec("SELECT name FROM pg1_Company WHERE name = 'ATLANTIC DIVING SUPPLY, INC.'", result);
     //output to max
     outlet(0, result.value(0,0));
 
@@ -36,7 +36,7 @@ function getData()
 
     //get award sql statement
     //execute sql statement in sqlite max msp integration
-    sqlite.exec("SELECT currentTotal FROM pg1_award a JOIN Pg1_company c WHERE a.compId = c.id AND c.name = 'ATLANTIC DIVING SUPPLY INCORPORATED' ORDER BY currentTotal ASC", result);
+    sqlite.exec("SELECT currentTotal FROM pg1_award a JOIN Pg1_company c WHERE a.compId = c.id AND c.name = 'ATLANTIC DIVING SUPPLY, INC.' ORDER BY currentTotal ASC", result);
     //output to max
     outlet(2, parseInt(result.value(0,i),10));
     if(i == result.numrecords())
