@@ -24,6 +24,7 @@
     "better-sqlite3": "^5.4.3",
     "cheerio": "^1.0.0-rc.3",
     "exceljs": "^2.0.1",
+    "fs": "0.0.1-security",
     "sqlite3": "^4.1.0"
   }
 }
