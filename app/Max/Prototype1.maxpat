@@ -50,18 +50,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-6",
-					"maxclass" : "button",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "bang" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 1039.0, 253.0, 24.0, 24.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"fontsize" : 38.0,
 					"id" : "obj-54",
 					"linecount" : 2,
@@ -535,7 +523,7 @@
 					"patching_rect" : [ 1318.87883198261261, 743.363659620285034, 504.0, 100.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 625.0, 367.5, 565.0, 100.0 ],
-					"text" : "$ 10881"
+					"text" : "$ 0"
 				}
 
 			}
@@ -598,7 +586,7 @@
 					"patching_rect" : [ 1318.87883198261261, 604.696995258331299, 504.0, 100.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 625.0, 150.0, 565.0, 100.0 ],
-					"text" : "$ 4098"
+					"text" : "$ 0"
 				}
 
 			}
@@ -856,16 +844,13 @@
 				"box" : 				{
 					"fontsize" : 36.0,
 					"id" : "obj-7",
-					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1380.37883198261261, 474.030303239822388, 381.0, 91.0 ],
+					"patching_rect" : [ 1380.37883198261261, 474.030303239822388, 381.0, 50.0 ],
 					"presentation" : 1,
-					"presentation_linecount" : 2,
-					"presentation_rect" : [ 686.0, 20.0, 427.0, 91.0 ],
-					"text" : "ATLANTIC DIVING SUPPLY, INC."
+					"presentation_rect" : [ 686.0, 20.0, 427.0, 50.0 ]
 				}
 
 			}
@@ -1216,7 +1201,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-10", 0 ],
-					"order" : 2,
+					"order" : 3,
 					"source" : [ "obj-57", 0 ]
 				}
 
@@ -1232,7 +1217,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-19", 1 ],
-					"order" : 4,
+					"order" : 5,
 					"source" : [ "obj-57", 0 ]
 				}
 
@@ -1248,7 +1233,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-93", 0 ],
-					"order" : 3,
+					"order" : 4,
 					"source" : [ "obj-57", 0 ]
 				}
 
@@ -1256,7 +1241,8 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-94", 0 ],
-					"source" : [ "obj-6", 0 ]
+					"order" : 2,
+					"source" : [ "obj-57", 0 ]
 				}
 
 			}
