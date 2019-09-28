@@ -21,8 +21,4 @@
 		this.fiscalYear = fiscalYear; 
 	}
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 module.exports = Award;

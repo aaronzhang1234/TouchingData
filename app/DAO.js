@@ -8,20 +8,12 @@
  *
 */
 
-<<<<<<< HEAD
-//import Company from './models/Company.js'
-const sqlite3 = require('sqlite3').verbose();
-var Company = require("./models/Company.js");
-var Award = require("./models/Award.js");
-var Media = require("./models/Media.js");
-=======
 var Company = require('./models/Company.js');
 const sqlite3 = require('better-sqlite3');
 var Company = require("./models/Company.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
 
->>>>>>> master
 class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
@@ -133,8 +125,4 @@ class Dao {
 
 }
 
-<<<<<<< HEAD
-module.exports=Dao;
-=======
 module.exports = Dao;
->>>>>>> master
