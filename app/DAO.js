@@ -1,6 +1,7 @@
 /* ****************** DAO ******************
+ * 2019 September 25 : Nathan Reiber  : DATABASE v2
  * 2019 September 25 : Nathan Reiber  : import better-sqlite3
- * 																		: rewrite select and insert methods to use synchronous sqlite3 api
+ *	    							  : rewrite select and insert methods to use synchronous sqlite3 api
  * 2019 September 22 : Justin Delisi  : add insert methods
  * 2019 September 22 : Nathan Reiber  : Created
  ********************************************
@@ -20,20 +21,31 @@ class Dao {
 			 this.db = new sqlite3(dbFilePath,  { verbose: console.log });
     }
 
-	  // returns a company object selected from the name index on PG1_COMPANY
-    selectCompanyByName(name) {
-      const stmt = this.db.prepare(`SELECT * FROM PG1_COMPANY where name = ? `);
 
+	 // returns a company object selected from the name index on PG1_COMPANY
+    selectCompanyByName(name) {
+      const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where recipient_name = ? `);
 			const select = this.db.transaction((name)=>{
 				return  stmt.get(name);
 			});
 			
 			const row = select(name);
-
 			let comp = new Company();
 			
 			if (row){
-				comp = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.congressionalDistrict)
+				comp = new Company(
+					row.recipient_id, 
+					row.recipient_name, 
+					row.recipient_address_line_1, 
+					row.recipient_address_line_2, 
+					row.recipient_city, 
+					row.recipient_state_code, 
+					row.recipient_zip_4_code, 
+					row.recipient_parent_id,
+					row.place_of_performance_id,
+					row.recipient_district_id, 
+					row.recipient_webiste_id
+				)
 			}
 			return comp
 		}
