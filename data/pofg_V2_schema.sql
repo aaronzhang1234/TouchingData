@@ -33,6 +33,7 @@ CREATE TABLE `PG1_MEDIA`(
 	FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),
 	FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id)
 );
+
 CREATE TABLE `PG1_AWARD`(
 	award_id_piid INTEGER NOT NULL,
 	recipient_id INTEGER,

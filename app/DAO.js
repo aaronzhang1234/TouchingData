@@ -9,11 +9,11 @@
  *
 */
 
-var Company = require('./models/Company.js');
 const sqlite3 = require('better-sqlite3');
-var Company = require("./models/Company.js");
+var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
+var Place = require(".models/PlaceOfPerformance.js");
 
 class Dao {
     //constructor connects to database with file path given
@@ -22,18 +22,18 @@ class Dao {
     }
 
 
-	 // returns a company object selected from the name index on PG1_COMPANY
-    selectCompanyByName(name) {
+	// returns a company object selected from the name index on PG1_RECPIPIENT
+    selectRecipientByName(name) {
       const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where recipient_name = ? `);
 			const select = this.db.transaction((name)=>{
 				return  stmt.get(name);
 			});
 			
 			const row = select(name);
-			let comp = new Company();
+			let comp = new Recipient();
 			
 			if (row){
-				comp = new Company(
+				recipient = new Recipient(
 					row.recipient_id, 
 					row.recipient_name, 
 					row.recipient_address_line_1, 
@@ -42,84 +42,192 @@ class Dao {
 					row.recipient_state_code, 
 					row.recipient_zip_4_code, 
 					row.recipient_parent_id,
-					row.place_of_performance_id,
 					row.recipient_district_id, 
-					row.recipient_webiste_id
+					row.recipient_website_id
+					row.place_of_performance_id,
 				)
 			}
-			return comp
+			return recipient;
 		}
 	
 
-	  // returns a company object selected from the id index on PG1_COMPANY
-    selectCompanyById(id) {
-      this.db.prepare(`SELECT * FROM PG1_COMPANY where id = ? `);
+	//returns a recipient object selected from the id index on PG1_RECIPIENT
+	selectRecipientById(id) {
+		this.db.prepare(`SELECT * FROM PG1_RECIPIENT where id = ? `);
 
-			const select = this.db.transaction((id)=>{
-				return stmt.get(id)
-			});
+		const select = this.db.transaction((id)=>{
+			return stmt.get(id)
+		});
 
-			const row = select(id);
+		const row = select(id);
 
-			let comp = new Company();
+		let comp = new Recipient();
 		
-			if (row){
-				comp = new Company(row.id, row.name, row.addr1, row.addr2, row.city, row.state, row.zip, row.district)
-			}
-
-			return  comp;
+		if (row){
+			recipient = new Recipient(
+				row.recipient_id, 
+				row.recipient_name, 
+				row.recipient_address_line_1, 
+				row.recipient_address_line_2, 
+				row.recipient_city, 
+				row.recipient_state_code, 
+				row.recipient_zip_4_code, 
+				row.recipient_parent_id,
+				row.recipient_district_id, 
+				row.recipient_website_id
+				row.place_of_performance_id,
+			)
 		}
+
+		return  recipient;
+	}
 	
-		//insert into PG1_COMPANY table
-    pg1_CompanyInsert(comp) {
-      const stmt = this.db.prepare(`INSERT INTO PG1_COMPANY (name, addr1, addr2, city, state, zip, congressionalDistrict) VALUES(?, ?, ?, ?, ?, ?, ?)`);
+	
+	//insert a record into PG1_RECIPIENT table, returns nothing, will throw any exception
+    insertRecipient(recipient) {
+		const stmt = this.db.prepare(
+			`INSERT INTO PG1_RECIPIENT (
+				recipient_name, 
+				recipient_address_line_1, 
+				recipient_address_line_2, 
+				recpient_city, 
+				recipient_state_code, 
+				recipient_zip_4_code, 
+				recipient_parent_id,
+				recipient_district_id,
+				recipient_website_id,
+				recipient_place_of_performance_id,
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		);
 			
 
-			const insert =  this.db.transaction((comp)=> {
-				try{
-						stmt.run(comp.name, comp.addr1, comp.addr2, comp.city, comp.state, comp.zip, comp.congressionalDistrict)
-				}catch(err){
-					if(!this.db.inTransaction) throw err;
-				}
-			});
+		const insert =  this.db.transaction((recipient)=> {
+			try{
+				stmt.run(
+					recipient.name, 
+					recipient.addr1, 
+					recipient.addr2, 
+					recipient.city, 
+					recipient.state, 
+					recipient.zip, 
+					recipient.parent, 
+					recipient.congressionalDistrict
+					recipient.website, 
+					recipient.placeOfPerformance, 
+				)
+			}catch(err){
+				if(!this.db.inTransaction) throw err;
+			}
+		});
 
-			insert(comp);
-
+		insert(recipient);
     }
+	
 
     //insert into PG1_Media table
-    pg1_MediaInsert(media) {
-		 const stmt = this.db.prepare(`INSERT INTO PG1_MEDIA (filePath, fileType, description, medLength, source, compId) VALUES(?, ?, ?, ?, ?, ?)`);
+    insertMedia(media) {
+		const stmt = this.db.prepare(
+			`INSERT INTO PG1_MEDIA (
+				filePath, 
+				fileType, 
+				description, 
+				source, 
+				url,
+				website_id
+				recipient_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?)`
+		);
 
-			const insert = this.db.transaction((media)=> {
-				try{
-					stmt.run(media.filePath, media.fileType, media.description, media.medLength, media.source, media.compId)
-				}catch(err){
-					if(!this.db.inTransaction) throw err;
-				}
+		const insert = this.db.transaction((media)=> {
 
-			});
+			try{
+				stmt.run(
+					media.filePath, 
+					media.fileType, 
+					media.description, 
+					media.medLength, 
+					media.source, 
+					media.website,
+					media.recpient
+				)
+			}catch(err){
+				if(!this.db.inTransaction) throw err;
+			}
 
-			insert(media);
+		});
+
+		insert(media);
     }
 
     //insert into PG1_Award table
-    pg1_AwardInsert(award ) {
-			const stmt = this.db.prepare(`INSERT INTO PG1_AWARD (piid, compId, currentTotal, potentialTotal, parentAwardAgency, awardingAgency, awardingOffice, fundingOffice, fiscalYear) 
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    insertAward(award ) {
+		const stmt = this.db.prepare(
+			`INSERT INTO PG1_AWARD (
+				award_id_piid, 
+				fiscal_year,
+				recipient_id, 
+				current_total_value_of_award, 
+				potential_total_value_of_award, 
+				awarding_agency_id, 
+				awarding_office_id, 
+				funding_office_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
+		);
 
-			const insert = this.db.transaction((award)=>{
+		const insert = this.db.transaction((award)=>{
 			try{
-				stmt.run(award.piid, award.compId, award.currentTotal, award.potentialTotal, award.parentAwardAgency, award.awardingAgency, award.awardingOffice, award.fundingOffice, award.fiscalYear);
-				
-				}catch(err){
-					if(!this.db.inTransaction) throw err;
-				}
-			});
+				stmt.run(
+					award.piid, 
+					award.fiscalYear,
+					award.recipient, 
+					award.currentTotal, 
+					award.potentialTotal, 
+					award.awardingAgency, 
+					award.awardingOffice, 
+					award.fundingOffice 
+				);
+			}catch(err){
+				if(!this.db.inTransaction) throw err;
+			}
+		});
 
-			insert(award);
+		insert(award);
     }
 
+    //insert into PG1_PLACE_OF_PERFORMANCE table
+    insertAward(place) {
+		const stmt = this.db.prepare(
+			`INSERT INTO PG1_AWARD (
+				place_of_perforamcne_id, 
+				fiscal_year,
+				recipient_id, 
+				current_total_value_of_award, 
+				potential_total_value_of_award, 
+				awarding_agency_id, 
+				awarding_office_id, 
+				funding_office_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
+		);
+
+		const insert = this.db.transaction((award)=>{
+			try{
+				stmt.run(
+					award.piid, 
+					award.fiscalYear,
+					award.recipient, 
+					award.currentTotal, 
+					award.potentialTotal, 
+					award.awardingAgency, 
+					award.awardingOffice, 
+					award.fundingOffice 
+				);
+			}catch(err){
+				if(!this.db.inTransaction) throw err;
+			}
+		});
+
+		insert(award);
+    }
     closeDb(){
         this.db.close();
     }
