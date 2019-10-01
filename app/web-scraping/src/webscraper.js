@@ -24,6 +24,9 @@ class webscraper{
     }
     //Getting webscraped data from a site
     getSite(orig, website_name, links_visited){
+        if(orig == website_name){
+            this.findAbout(orig);
+        }
         axios.get(website_name).then(response=>{
             //console.log(links_visited.length);
             const $ = cheerio.load(response.data);
@@ -43,6 +46,9 @@ class webscraper{
         .catch(error=>{
             //console.log(error);
         })
+    }
+    findAbout(website){
+
     }
     findAudio($, website){
         return new Promise(function(resolve, reject){
@@ -74,19 +80,28 @@ class webscraper{
             links = links.filter(function(item, idk){
                 return item != null;
             });
-            /*
             for(let i =0 ;i< links.length-1; i++){
-                if(!links[i].includes(".com") && !links[i].includes(".org") && !links[i].includes(".net")){
-                    links[i] = current_site+links[i];
-                    console.log(links[i]);
+                if(!links[i].includes(".com") && 
+                   !links[i].includes(".org") && 
+                   !links[i].includes(".net") && 
+                   !links[i].includes(".gov") && 
+                   !links[i].includes(".jpg") &&
+                   !links[i].includes(".pdf") &&
+                   !links[i].includes("://") &&
+                   !links[i].includes(":") &&
+                   !links[i].includes("#")){
+                    if(current_site.substr(-1) == "/" && links[i].substr(0)=="/"){
+                        let current_site_no_leading = current_site.substr(0,current_site.length-1);                        
+                        links[i] = current_site_no_leading+links[i];
+                    }else if(current_site.substr(-1) != "/" && links[i].substr(0)!="/"){
+                        links[i] = current_site+"/"+links[i];
+                    }else{
+                        links[i] = current_site+links[i];
+                    }
                 }
             }
-            */
             links = links.filter(function(item, idk){
-                return item.startsWith(orig);
-            });
-            links = links.filter(function(item, idk){
-                return !links_visited.includes(item);
+                return item.startsWith(orig) && !links_visited.includes(item);
             });
             resolve(links);
         })
