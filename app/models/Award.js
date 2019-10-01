@@ -21,4 +21,5 @@
 		this.fiscalYear = fiscalYear; 
 	}
 }
+
 module.exports = Award;

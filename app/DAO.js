@@ -107,17 +107,6 @@ class Dao {
 
 			insert(award);
     }
-    //gets all companies
-    pg1_SelectsAllCompanies(){
-      this.db.run("SELECT * FROM pg1_company;",[], (err, rows) =>{
-        if(err){
-          throw err;
-        }
-        rows.foreach((row)=>{
-          console.log(row.name);
-        });
-      });
-    }
 
     closeDb(){
         this.db.close();
