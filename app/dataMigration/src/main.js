@@ -17,6 +17,7 @@ var dao = new Dao(sqlDatabaseName);
 var Excel   = require("exceljs");
 
 
+
 let workbook = new Excel.Workbook();
 workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
     let worksheet = workbook.getWorksheet("All_FY_Combined");
@@ -57,3 +58,4 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
       dao.closeDb();
     });
 });
+
