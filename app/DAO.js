@@ -1,4 +1,5 @@
 /* ****************** DAO ******************
+ * 2019 September 29: Hadi Haidar   : add insert methods
  * 2019 September 25 : Nathan Reiber  : DATABASE v2
  * 2019 September 25 : Nathan Reiber  : import better-sqlite3
  *	    							  : rewrite select and insert methods to use synchronous sqlite3 api
@@ -14,6 +15,16 @@ var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
 var Place = require(".models/PlaceOfPerformance.js");
+var state = require("./models/State.js");
+var RecParent = require("./models/RecipientParent.js");
+var district = require("./models/District.js");
+var ParentAward = require("./models/ParentAwardAgency.js");
+var AwardingAgency = require("./models/AwardingAgency.js");
+var website = require("./models/Website.js");
+var AwardOffice = require("./models/AwardingOffice.js");
+var FundingOffice  = require("./models/FundingOffice.js");
+var OwnershipType = require("./models/OwnershipType.js");
+var RecOwnership = require("./models/RecipientOwnershipType.js");
 
 class Dao {
     //constructor connects to database with file path given
@@ -43,8 +54,8 @@ class Dao {
 					row.recipient_zip_4_code, 
 					row.recipient_parent_id,
 					row.recipient_district_id, 
-					row.recipient_website_id
-					row.place_of_performance_id,
+					row.recipient_website_id,
+					row.place_of_performance_id
 				)
 			}
 			return recipient;
@@ -74,8 +85,8 @@ class Dao {
 				row.recipient_zip_4_code, 
 				row.recipient_parent_id,
 				row.recipient_district_id, 
-				row.recipient_website_id
-				row.place_of_performance_id,
+				row.recipient_website_id,
+				row.place_of_performance_id
 			)
 		}
 
@@ -111,9 +122,9 @@ class Dao {
 					recipient.state, 
 					recipient.zip, 
 					recipient.parent, 
-					recipient.congressionalDistrict
+					recipient.congressionalDistrict,
 					recipient.website, 
-					recipient.placeOfPerformance, 
+					recipient.placeOfPerformance
 				)
 			}catch(err){
 				if(!this.db.inTransaction) throw err;
@@ -184,7 +195,7 @@ class Dao {
 					award.potentialTotal, 
 					award.awardingAgency, 
 					award.awardingOffice, 
-					award.fundingOffice 
+					award.fundingOffice
 				);
 			}catch(err){
 				if(!this.db.inTransaction) throw err;
@@ -195,39 +206,272 @@ class Dao {
     }
 
     //insert into PG1_PLACE_OF_PERFORMANCE table
-    insertAward(place) {
+    insertPlace(place) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_AWARD (
-				place_of_perforamcne_id, 
-				fiscal_year,
-				recipient_id, 
-				current_total_value_of_award, 
-				potential_total_value_of_award, 
-				awarding_agency_id, 
-				awarding_office_id, 
-				funding_office_id
-			) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
+        place_of_performance_id,
+        place_of_performance_city,
+        place_of_performance_county,
+        place_of_performance_zip,
+        place_of_performance_state_code,
+        place_of_performance_district_id
+			) VALUES(?, ?, ?, ?, ?, ?)`
 		);
 
-		const insert = this.db.transaction((award)=>{
+		const insert = this.db.transaction((place)=>{
 			try{
 				stmt.run(
-					award.piid, 
-					award.fiscalYear,
-					award.recipient, 
-					award.currentTotal, 
-					award.potentialTotal, 
-					award.awardingAgency, 
-					award.awardingOffice, 
-					award.fundingOffice 
+          place.id,
+          place.city,
+          place.couty,
+          place.zip,
+          place.state,
+          place.congressionalDistrict
 				);
 			}catch(err){
 				if(!this.db.inTransaction) throw err;
 			}
 		});
 
-		insert(award);
+		insert(place);
     }
+
+    //insert into PG1_STATE table
+    insertState(state) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_State (
+          state_code,
+          state_name
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((state)=>{
+        try{
+          stmt.run(
+            state.id,
+            state.name
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(state);
+      }
+
+
+    //insert into PG1_RECIPIENT_PARENT table
+    insertRecParent(RecParent) {
+		const stmt = this.db.prepare(
+			`INSERT INTO PG1_RECIPIENT_PARENT (
+        recipient_parent_id,
+        recipient_parent_name
+			) VALUES(?, ?)`
+		);
+
+		const insert = this.db.transaction((place)=>{
+			try{
+				stmt.run(
+          RecParent.id,
+          RecParent.name
+				);
+			}catch(err){
+				if(!this.db.inTransaction) throw err;
+			}
+		});
+
+		insert(RecParent);
+    }
+
+    //insert into PG1_CONGRESSIONAL_DISTRICT table
+    insertDistrict(district) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_CONGRESSIONAL_DISTRICT (
+          district_id,
+          state_code
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((district)=>{
+        try{
+          stmt.run(
+            district.id,
+            district.state
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(district);
+      }
+
+    //insert into PG1_AWARDING_AGENCY table
+    insertAwardingAgency(AwardingAgency) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_AWARDING_AGENCY (
+          awarding_agency_id,
+          awarding_agency_name,
+          parent_award_agency_id
+        ) VALUES(?, ?, ?)`
+      );
+  
+      const insert = this.db.transaction((AwardingAgency)=>{
+        try{
+          stmt.run(
+            AwardingAgency.id,
+            AwardingAgency.name,
+            AwardingAgency.parent
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(AwardingAgency);
+      }
+
+    //insert into PG1_PARENT_AWARD_AGENCY table
+    insertParentAward(ParentAward) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_PARENT_AWARD_AGENCY (
+          parent_award_agency_id,
+          parent_award_agency_name
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((ParentAward)=>{
+        try{
+          stmt.run(
+            ParentAward.id,
+            ParentAward.name
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(ParentAward);
+      }
+
+    //insert into PG1_WEBSITE table
+    insertWebsite(website) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_WEBSITE (
+          website_id,
+          website_domain
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((website)=>{
+        try{
+          stmt.run(
+            website.id,
+            website.domain
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(website);
+      }
+
+
+    //insert into PG1_AWARDING_OFFICE table
+    insertAwardOffice(AwardOffice) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_AWARDING_OFFICE (
+          awarding_office_id,
+          awarding_office_name
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((AwardOffice)=>{
+        try{
+          stmt.run(
+            awarding_office.id,
+            awarding_office.name
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(AwardOffice);
+      }
+
+    //insert into PG1_FUNDING_OFFICE table
+    insertParentAward(FundingOffice) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_FUNDING_OFFICE (
+          funding_office_id,
+          funding_office_name
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((FundingOffice)=>{
+        try{
+          stmt.run(
+            FundingOffice.id,
+            FundingOffice.name
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(FundingOffice);
+      }
+
+    //insert into PG1_OWNERSHIP_TYPE table
+    insertOwnershipType(OwnershipType) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_OWNERSHIP_TYPE (
+          ownership_type_id,
+          ownership_type_description
+        ) VALUES(?, ?)`
+      );
+  
+      const insert = this.db.transaction((OwnershipType)=>{
+        try{
+          stmt.run(
+            OwnershipType.id,
+            OwnershipType.description
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(OwnershipType);
+      }
+
+    //insert into PG1_RECIPIENCT_OWNERSHIP_TYPE table
+    insertRecOwnership(RecOwnership) {
+      const stmt = this.db.prepare(
+        `INSERT INTO PG1_RECIPIENT_OWNERSHIP_TYPE (
+          ownership_type_id,
+          recipient_id,
+          recipient_ownership_notes
+        ) VALUES(?, ?, ?)`
+      );
+  
+      const insert = this.db.transaction((RecOwnership)=>{
+        try{
+          stmt.run(
+            RecOwnership.ownershipType,
+            RecOwnership.recipient,
+            RecOwnership.notes
+          );
+        }catch(err){
+          if(!this.db.inTransaction) throw err;
+        }
+      });
+  
+      insert(RecOwnership);
+      }
+
     closeDb(){
         this.db.close();
     }
