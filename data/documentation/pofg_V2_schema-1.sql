@@ -44,8 +44,8 @@ CREATE TABLE `PG1_AWARD`(
 	funding_office_id TEXT,
 	fiscal_year TEXT,
 	FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),
-	FOREIGN KEY(awarding_office_id) REFERENCES PG1_AWARDING_OFFICE(awarding_office_id),
-	FOREIGN KEY(funding_office_id) REFERENCES PG1_FUNDING_OFFICE(funding_office_id),
+	FOREIGN KEY(awarding_office_id) REFERENCES PG1_OFFICE(office_id),
+	FOREIGN KEY(funding_office_id) REFERENCES PG1_OFFICE(office_id),
 	FOREIGN KEY(awarding_agency_id) REFERENCES PG1_AWARDING_AGENCY(awarding_agency_id),
 	PRIMARY KEY(award_id_piid,fiscal_year)
 );
@@ -72,14 +72,9 @@ CREATE TABLE `PG1_PARENT_AWARD_AGENCY`(
 	parent_awarding_agency_name integer
 );
 
-CREATE TABLE `PG1_AWARDING_OFFICE`(
+CREATE TABLE `PG1_OFFICE`(
 	awarding_office_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	awarding_office_name TEXT
-);
-
-CREATE TABLE `PG1_FUNDING_OFFICE`(
-	funding_office_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	funding_office_name TEXT
 );
 
 CREATE TABLE `PG1_STATE`(

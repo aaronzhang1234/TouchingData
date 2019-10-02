@@ -5,7 +5,7 @@
  *
 */
 
-class State { // id of this class is official two letter state code
+class District {  // id represents the district number)
 	constructor(id = "", state=""){
 		this.id = id
 		this.state = state

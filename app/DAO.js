@@ -21,8 +21,7 @@ var district = require("./models/District.js");
 var ParentAward = require("./models/ParentAwardAgency.js");
 var AwardingAgency = require("./models/AwardingAgency.js");
 var website = require("./models/Website.js");
-var AwardOffice = require("./models/AwardingOffice.js");
-var FundingOffice  = require("./models/FundingOffice.js");
+var Office = require("./models/Office.js");
 var OwnershipType = require("./models/OwnershipType.js");
 var RecOwnership = require("./models/RecipientOwnershipType.js");
 
@@ -378,50 +377,27 @@ class Dao {
       }
 
 
-    //insert into PG1_AWARDING_OFFICE table
-    insertAwardOffice(AwardOffice) {
+    //insert into PG1_OFFICE table
+	insertOffice(Office) {
       const stmt = this.db.prepare(
-        `INSERT INTO PG1_AWARDING_OFFICE (
-          awarding_office_id,
-          awarding_office_name
+        `INSERT INTO PG1_OFFICE (
+          office_id,
+          office_name
         ) VALUES(?, ?)`
       );
   
-      const insert = this.db.transaction((AwardOffice)=>{
+      const insert = this.db.transaction((Office)=>{
         try{
           stmt.run(
-            awarding_office.id,
-            awarding_office.name
+            office.id,
+            office.name
           );
         }catch(err){
           if(!this.db.inTransaction) throw err;
         }
       });
   
-      insert(AwardOffice);
-      }
-
-    //insert into PG1_FUNDING_OFFICE table
-    insertParentAward(FundingOffice) {
-      const stmt = this.db.prepare(
-        `INSERT INTO PG1_FUNDING_OFFICE (
-          funding_office_id,
-          funding_office_name
-        ) VALUES(?, ?)`
-      );
-  
-      const insert = this.db.transaction((FundingOffice)=>{
-        try{
-          stmt.run(
-            FundingOffice.id,
-            FundingOffice.name
-          );
-        }catch(err){
-          if(!this.db.inTransaction) throw err;
-        }
-      });
-  
-      insert(FundingOffice);
+      insert(Office);
       }
 
     //insert into PG1_OWNERSHIP_TYPE table
