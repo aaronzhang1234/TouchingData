@@ -19,13 +19,8 @@ const sqlite3 = require('better-sqlite3');
 var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
-<<<<<<< HEAD
 var Place = require("./models/PlaceOfPerformance.js");
 var state = require("./models/State.js");
-=======
-var Place = require(".models/PlaceOfPerformance.js");
-var State = require("./models/State.js");
->>>>>>> master
 var RecParent = require("./models/RecipientParent.js");
 var District = require("./models/District.js");
 var ParentAward = require("./models/ParentAwardAgency.js");

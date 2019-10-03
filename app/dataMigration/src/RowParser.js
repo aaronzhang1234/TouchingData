@@ -50,7 +50,7 @@ class RowParser{
         this.insertState(false);
         this.insertDistrict(false);
         
-        let placeofperformance = new PlaceOfPerformance(pop_city, pop_county, pop_statecode, pop_zip, pop_district);
+        let placeofperformance = new PlaceOfPerformance("", pop_city, pop_county, pop_statecode, pop_zip, pop_district);
         dao.insertPlace(placeofperformance);
     }
     insertParentAwardAgency(){
