@@ -1,5 +1,7 @@
 /* ****************** DAO ******************
- * 2019 September 29: Hadi Haidar   : add insert methods
+ * 2019 October   02 : Nathan Reiber  : revise naming conventions for consistency
+ * 									  : removed methods for deprecated tables
+ * 2019 September 29 : Hadi Haidar    : add insert methods
  * 2019 September 25 : Nathan Reiber  : DATABASE v2
  * 2019 September 25 : Nathan Reiber  : import better-sqlite3
  *	    							  : rewrite select and insert methods to use synchronous sqlite3 api
@@ -11,16 +13,24 @@
 */
 
 const sqlite3 = require('better-sqlite3');
+
+
+//include all models
 var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
+<<<<<<< HEAD
 var Place = require("./models/PlaceOfPerformance.js");
 var state = require("./models/State.js");
+=======
+var Place = require(".models/PlaceOfPerformance.js");
+var State = require("./models/State.js");
+>>>>>>> master
 var RecParent = require("./models/RecipientParent.js");
-var district = require("./models/District.js");
+var District = require("./models/District.js");
 var ParentAward = require("./models/ParentAwardAgency.js");
 var AwardingAgency = require("./models/AwardingAgency.js");
-var website = require("./models/Website.js");
+var Website = require("./models/Website.js");
 var Office = require("./models/Office.js");
 var OwnershipType = require("./models/OwnershipType.js");
 var RecOwnership = require("./models/RecipientOwnershipType.js");
@@ -173,7 +183,7 @@ class Dao {
     }
 
     //insert into PG1_Award table
-    insertAward(award ) {
+    insertAward(award) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_AWARD (
 				award_id_piid, 
@@ -263,26 +273,24 @@ class Dao {
 
 
     //insert into PG1_RECIPIENT_PARENT table
-    insertRecParent(RecParent) {
+    insertRecParent(parent) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_RECIPIENT_PARENT (
-        recipient_parent_id,
         recipient_parent_name
-			) VALUES(?, ?)`
+			) VALUES(?)`
 		);
 
-		const insert = this.db.transaction((place)=>{
+		const insert = this.db.transaction((parent)=>{
 			try{
 				stmt.run(
-          RecParent.id,
-          RecParent.name
+          			parent.name
 				);
 			}catch(err){
 				if(!this.db.inTransaction) throw err;
 			}
 		});
 
-		insert(RecParent);
+		insert(parent);
     }
 
     //insert into PG1_CONGRESSIONAL_DISTRICT table
@@ -309,7 +317,7 @@ class Dao {
       }
 
     //insert into PG1_AWARDING_AGENCY table
-    insertAwardingAgency(AwardingAgency) {
+    insertAwardingAgency(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_AWARDING_AGENCY (
           awarding_agency_id,
@@ -318,23 +326,23 @@ class Dao {
         ) VALUES(?, ?, ?)`
       );
   
-      const insert = this.db.transaction((AwardingAgency)=>{
+      const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            AwardingAgency.id,
-            AwardingAgency.name,
-            AwardingAgency.parent
+            agency.id,
+            agency.name,
+            agency.parent
           );
         }catch(err){
           if(!this.db.inTransaction) throw err;
         }
       });
   
-      insert(AwardingAgency);
+      insert(agency);
       }
 
     //insert into PG1_PARENT_AWARD_AGENCY table
-    insertParentAward(ParentAward) {
+    insertParentAward(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_PARENT_AWARD_AGENCY (
           parent_award_agency_id,
@@ -342,11 +350,11 @@ class Dao {
         ) VALUES(?, ?)`
       );
   
-      const insert = this.db.transaction((ParentAward)=>{
+      const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            ParentAward.id,
-            ParentAward.name
+            agency.id,
+            agency.name
           );
         }catch(err){
 			console.log(err);
@@ -354,7 +362,7 @@ class Dao {
         }
       });
   
-      insert(ParentAward);
+      insert(agency);
       }
 
     //insert into PG1_WEBSITE table
@@ -382,7 +390,7 @@ class Dao {
 
 
     //insert into PG1_OFFICE table
-	insertOffice(Office) {
+	insertOffice(office) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_OFFICE (
           office_id,
@@ -390,7 +398,7 @@ class Dao {
         ) VALUES(?, ?)`
       );
   
-      const insert = this.db.transaction((Office)=>{
+      const insert = this.db.transaction((office)=>{
         try{
           stmt.run(
             office.id,
@@ -401,11 +409,11 @@ class Dao {
         }
       });
   
-      insert(Office);
+      insert(office);
       }
 
     //insert into PG1_OWNERSHIP_TYPE table
-    insertOwnershipType(OwnershipType) {
+    insertOwnershipType(ownershipType) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_OWNERSHIP_TYPE (
           ownership_type_id,
@@ -413,22 +421,22 @@ class Dao {
         ) VALUES(?, ?)`
       );
   
-      const insert = this.db.transaction((OwnershipType)=>{
+      const insert = this.db.transaction((ownershipType)=>{
         try{
           stmt.run(
-            OwnershipType.id,
-            OwnershipType.description
+            ownershipType.id,
+            ownershipType.description
           );
         }catch(err){
           if(!this.db.inTransaction) throw err;
         }
       });
   
-      insert(OwnershipType);
+      insert(ownershipType);
       }
 
     //insert into PG1_RECIPIENCT_OWNERSHIP_TYPE table
-    insertRecOwnership(RecOwnership) {
+    insertRecOwnership(recOwnership) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_RECIPIENT_OWNERSHIP_TYPE (
           ownership_type_id,
@@ -437,19 +445,19 @@ class Dao {
         ) VALUES(?, ?, ?)`
       );
   
-      const insert = this.db.transaction((RecOwnership)=>{
+      const insert = this.db.transaction((recOwnership)=>{
         try{
           stmt.run(
-            RecOwnership.ownershipType,
-            RecOwnership.recipient,
-            RecOwnership.notes
+            recOwnership.ownershipType,
+            recOwnership.recipient,
+            recOwnership.notes
           );
         }catch(err){
           if(!this.db.inTransaction) throw err;
         }
       });
   
-      insert(RecOwnership);
+      insert(recOwnership);
       }
 
     closeDb(){

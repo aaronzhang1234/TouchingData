@@ -88,4 +88,5 @@ typings/
 .dynamodb/
 
 .vscode 
+data/POLITICS_OF_THE_GRID_1.db
 .DS_Store
