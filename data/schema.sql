@@ -45,6 +45,7 @@ CREATE TABLE `PG1_PLACE_OF_PERFORMANCE`(
 	place_of_performance_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	place_of_performance_city TEXT,
 	place_of_performance_zip TEXT,
+	place_of_performance_county TEXT,
 	place_of_performance_state_code TEXT,
 	place_of_performance_district_id TEXT,
 	FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)

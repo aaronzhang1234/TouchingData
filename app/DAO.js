@@ -216,24 +216,22 @@ class Dao {
     insertPlace(place) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_PLACE_OF_PERFORMANCE (
-        place_of_performance_id,
-        place_of_performance_city,
-        place_of_performance_county,
-        place_of_performance_zip,
-        place_of_performance_state_code,
-        place_of_performance_district_id
-			) VALUES(?, ?, ?, ?, ?, ?)`
+        		place_of_performance_city,
+        		place_of_performance_county,
+        		place_of_performance_zip,
+        		place_of_performance_state_code,
+        		place_of_performance_district_id
+			) VALUES(?, ?, ?, ?, ?)`
 		);
 
 		const insert = this.db.transaction((place)=>{
 			try{
 				stmt.run(
-          place.id,
-          place.city,
-          place.couty,
-          place.zip,
-          place.state,
-          place.congressionalDistrict
+          			place.city,
+        	  		place.county,
+          	  		place.zip,
+          			place.state,
+          			place.congressionalDistrict
 				);
 			}catch(err){
 				if(!this.db.inTransaction) throw err;
@@ -271,7 +269,7 @@ class Dao {
     insertRecParent(parent) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_RECIPIENT_PARENT (
-        recipient_parent_name
+        		recipient_parent_name
 			) VALUES(?)`
 		);
 
@@ -315,16 +313,14 @@ class Dao {
     insertAwardingAgency(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_AWARDING_AGENCY (
-          awarding_agency_id,
           awarding_agency_name,
           parent_award_agency_id
-        ) VALUES(?, ?, ?)`
+        ) VALUES(?, ?)`
       );
   
       const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            agency.id,
             agency.name,
             agency.parent
           );
@@ -340,15 +336,13 @@ class Dao {
     insertParentAward(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_PARENT_AWARD_AGENCY (
-          parent_award_agency_id,
           parent_awarding_agency_name
-        ) VALUES(?, ?)`
+        ) VALUES(?)`
       );
   
       const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            agency.id,
             agency.name
           );
         }catch(err){
@@ -364,15 +358,13 @@ class Dao {
     insertWebsite(website) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_WEBSITE (
-          website_id,
           website_domain
-        ) VALUES(?, ?)`
+        ) VALUES(?)`
       );
   
       const insert = this.db.transaction((website)=>{
         try{
           stmt.run(
-            website.id,
             website.domain
           );
         }catch(err){
@@ -388,15 +380,13 @@ class Dao {
 	insertOffice(office) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_OFFICE (
-          office_id,
           office_name
-        ) VALUES(?, ?)`
+        ) VALUES(?)`
       );
   
       const insert = this.db.transaction((office)=>{
         try{
           stmt.run(
-            office.id,
             office.name
           );
         }catch(err){
