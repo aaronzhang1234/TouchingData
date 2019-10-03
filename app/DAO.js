@@ -134,7 +134,7 @@ class Dao {
 
 			}catch(err){
 				console.log(err);
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -169,7 +169,7 @@ class Dao {
 					media.recpient
 				)
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				 throw err;
 			}
 
 		});
@@ -205,7 +205,7 @@ class Dao {
 					award.fundingOffice
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				 throw err;
 			}
 		});
 
@@ -234,7 +234,7 @@ class Dao {
           			place.congressionalDistrict
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				 throw err;
 			}
 		});
 
@@ -257,7 +257,7 @@ class Dao {
             state.name
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+         throw err;
         }
       });
   
@@ -279,7 +279,7 @@ class Dao {
           			parent.name
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -302,7 +302,7 @@ class Dao {
             district.state
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -325,7 +325,7 @@ class Dao {
             agency.parent
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -347,7 +347,7 @@ class Dao {
           );
         }catch(err){
 			console.log(err);
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -368,7 +368,7 @@ class Dao {
             website.domain
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -390,7 +390,7 @@ class Dao {
             office.name
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -413,7 +413,7 @@ class Dao {
             ownershipType.description
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
@@ -438,7 +438,7 @@ class Dao {
             recOwnership.notes
           );
         }catch(err){
-          if(!this.db.inTransaction) throw err;
+           throw err;
         }
       });
   
