@@ -7,11 +7,15 @@
  *
 */
 
-var Company = require("../../models/Company.js");
+var Recipient = require("../../models/Recipient.js");
 var Award   = require("../../models/Award.js");
+var State = require("../../models/State.js");
+var District = require("../../models/District.js");
+
+var RowParser = require("./RowParser.js");
 
 var Dao     = require("../../DAO.js");
-let sqlDatabaseName = "data/POLITICS_OF_THE_GRID_1.db";
+let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 var dao = new Dao(sqlDatabaseName);
 
 var Excel   = require("exceljs");
@@ -22,34 +26,26 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
     let worksheet = workbook.getWorksheet("All_FY_Combined");
     var migrate = new Promise((resolve, reject)=>{
         worksheet.eachRow(function(row, index){
-					 	//the first row of this worksheet is a header, do not consume these fields
-						if (index != 1){
+		 	//the first row of this worksheet is a header, do not consume these fields
+			if (index != 1){
+				//zip is a TEXT type field (sometimes alphanumeric)
+				//the exceljs worksheet framework will return all to numeric fields as reals
+				//to recast those numberic fields as Integers take the first substring
+			    var zip = String(row.getCell(15).value)
+				let zipArray = zip.split(".");
+				zip = zipArray[1];
+				
+				let parser = new RowParser(row);	
+				
+				parser.insertParentAwardAgency();
+				parser.insertState(true);
+				parser.insertDistrict(true);			
+				//parser.insertPlaceOfPerformance();
+				//parser.insertParentAwardAgency();
+				//parser.insertRecipient();
+				//parser.insertAward();
 
-								//zip is a TEXT type field (sometimes alphanumeric)
-								//the exceljs worksheet framework will return all to numeric fields as reals
-								//to recast those numberic fields as Integers take the first substring
-						    var zip = String(row.getCell(15).value)
-								let zipArray = zip.split(".");
-								zip = zipArray[1];
-
-								company = new Company("",row.getCell(6).value, row.getCell(10).value, row.getCell(11).value, row.getCell(12).value, row.getCell(13).value, zip, row.getCell(16).value);
-								try {
-										dao.pg1_CompanyInsert(company);
-								}catch(err) {
-										console.log(err);
-								}
-
-								company = dao.selectCompanyByName(company.name);
-								
-
-								try {
-										award = new Award("", row.getCell(1).value, company.id, row.getCell(4).value,row.getCell(5).value, row.getCell(2).value, row.getCell(3).value, row.getCell(8).value, row.getCell(9).value, row.getCell(42).value)
-								}catch(err) {
-										console.log(err);
-								}
-								dao.pg1_AwardInsert(award)
-					
-						}
+			}
         })
     });
     //Once the eachRow function is complete, then close the DB.

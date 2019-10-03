@@ -14,7 +14,7 @@ const sqlite3 = require('better-sqlite3');
 var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
-var Place = require(".models/PlaceOfPerformance.js");
+var Place = require("./models/PlaceOfPerformance.js");
 var state = require("./models/State.js");
 var RecParent = require("./models/RecipientParent.js");
 var district = require("./models/District.js");
@@ -43,7 +43,7 @@ class Dao {
 			let comp = new Recipient();
 			
 			if (row){
-				recipient = new Recipient(
+				let recipient = new Recipient(
 					row.recipient_id, 
 					row.recipient_name, 
 					row.recipient_address_line_1, 
@@ -56,8 +56,9 @@ class Dao {
 					row.recipient_website_id,
 					row.place_of_performance_id
 				)
+				return recipient;
 			}
-			return recipient;
+			return null;
 		}
 	
 
@@ -88,7 +89,6 @@ class Dao {
 				row.place_of_performance_id
 			)
 		}
-
 		return  recipient;
 	}
 	
@@ -100,13 +100,13 @@ class Dao {
 				recipient_name, 
 				recipient_address_line_1, 
 				recipient_address_line_2, 
-				recpient_city, 
+				recipient_city, 
 				recipient_state_code, 
 				recipient_zip_4_code, 
 				recipient_parent_id,
 				recipient_district_id,
 				recipient_website_id,
-				recipient_place_of_performance_id,
+				recipient_place_of_performance_id
 			) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		);
 			
@@ -124,8 +124,11 @@ class Dao {
 					recipient.congressionalDistrict,
 					recipient.website, 
 					recipient.placeOfPerformance
-				)
+				);
+				console.log("yay");
+
 			}catch(err){
+				console.log(err);
 				if(!this.db.inTransaction) throw err;
 			}
 		});
@@ -143,7 +146,7 @@ class Dao {
 				description, 
 				source, 
 				url,
-				website_id
+				website_id,
 				recipient_id
 			) VALUES(?, ?, ?, ?, ?, ?, ?)`
 		);
@@ -207,7 +210,7 @@ class Dao {
     //insert into PG1_PLACE_OF_PERFORMANCE table
     insertPlace(place) {
 		const stmt = this.db.prepare(
-			`INSERT INTO PG1_AWARD (
+			`INSERT INTO PG1_PLACE_OF_PERFORMANCE (
         place_of_performance_id,
         place_of_performance_city,
         place_of_performance_county,
@@ -335,7 +338,7 @@ class Dao {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_PARENT_AWARD_AGENCY (
           parent_award_agency_id,
-          parent_award_agency_name
+          parent_awarding_agency_name
         ) VALUES(?, ?)`
       );
   
@@ -346,6 +349,7 @@ class Dao {
             ParentAward.name
           );
         }catch(err){
+			console.log(err);
           if(!this.db.inTransaction) throw err;
         }
       });
