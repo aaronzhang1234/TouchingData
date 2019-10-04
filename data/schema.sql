@@ -48,21 +48,22 @@ CREATE TABLE `PG1_PLACE_OF_PERFORMANCE`(
 	place_of_performance_county TEXT,
 	place_of_performance_state_code TEXT,
 	place_of_performance_district_id TEXT,
+	UNIQUE(place_of_performance_city, place_of_performance_zip),
 	FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)
 );
 CREATE TABLE `PG1_AWARDING_AGENCY`(
 	awarding_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	awarding_agency_name TEXT,
+	awarding_agency_name TEXT UNIQUE,
 	parent_award_agency_id integer,
 	FOREIGN KEY(parent_award_agency_id) REFERENCES PG1_PARENT_AWARD_AGENCY(parent_award_agency_id)
 );
 CREATE TABLE `PG1_PARENT_AWARD_AGENCY`(
 	parent_award_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	parent_awarding_agency_name integer
+	parent_awarding_agency_name integer UNIQUE
 );
 CREATE TABLE `PG1_OFFICE`(
 	office_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	office_name TEXT
+	office_name TEXT UNIQUE
 );
 CREATE TABLE `PG1_STATE`(
 	state_code TEXT NOT NULL PRIMARY KEY,
@@ -75,7 +76,7 @@ CREATE TABLE `PG1_CONGRESSIONAL_DISTRICT`(
 );
 CREATE TABLE `PG1_WEBSITE`(
 	website_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	website_domain TEXT
+	website_domain TEXT UNIQUE
 );
 CREATE TABLE `PG1_RECIPIENT_OWNERSHIP_TYPE`(
 	ownership_type_id TEXT NOT NULL,
@@ -91,7 +92,7 @@ CREATE TABLE `PG1_OWNERSHIP_TYPE`(
 );
 CREATE TABLE `PG1_RECIPIENT_PARENT`(
 	recipient_parent_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	recipient_parent_name TEXT 
+	recipient_parent_name TEXT UNIQUE
 );
 CREATE INDEX idx_media_recipient_id
 ON PG1_MEDIA(recipient_id);

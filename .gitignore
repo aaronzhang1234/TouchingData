@@ -88,6 +88,11 @@ typings/
 .dynamodb/
 
 .vscode 
+<<<<<<< HEAD
 data/POLITICS_OF_THE_GRID_1.db
 data/POLITICS_OF_THE_GRID.db
+=======
+
+*.db
+>>>>>>> 38243c44fdd32998bcabb9728b5a3fa1ba007ac8
 .DS_Store
