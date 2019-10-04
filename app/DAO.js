@@ -24,8 +24,9 @@ var Place = require("./models/PlaceOfPerformance.js");
 var state = require("./models/State.js");
 var RecParent = require("./models/RecipientParent.js");
 var District = require("./models/District.js");
-var ParentAward = require("./models/ParentAwardAgency.js");
+var ParentAwardingAgency = require("./models/ParentAwardAgency.js");
 var AwardingAgency = require("./models/AwardingAgency.js");
+var PlaceOfPerformance = require("./models/PlaceOfPerformance.js");
 var Website = require("./models/Website.js");
 var Office = require("./models/Office.js");
 var OwnershipType = require("./models/OwnershipType.js");
@@ -34,7 +35,7 @@ var RecOwnership = require("./models/RecipientOwnershipType.js");
 class Dao {
     //constructor connects to database with file path given
     constructor(dbFilePath){
-			 this.db = new sqlite3(dbFilePath,  { verbose: console.log });
+			 this.db = new sqlite3(dbFilePath);//,  { verbose: console.log });
     }
 
 
@@ -131,10 +132,8 @@ class Dao {
 					recipient.website, 
 					recipient.placeOfPerformance
 				);
-				console.log("yay");
 
 			}catch(err){
-				console.log(err);
 				if(!this.db.inTransaction) throw err;
 			}
 		});
@@ -297,21 +296,19 @@ class Dao {
     insertPlace(place) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_PLACE_OF_PERFORMANCE (
-        place_of_performance_id,
         place_of_performance_city,
         place_of_performance_county,
         place_of_performance_zip,
         place_of_performance_state_code,
         place_of_performance_district_id
-			) VALUES(?, ?, ?, ?, ?, ?)`
+			) VALUES(?, ?, ?, ?, ?)`
 		);
 
 		const insert = this.db.transaction((place)=>{
 			try{
 				stmt.run(
-          place.id,
           place.city,
-          place.couty,
+          place.county,
           place.zip,
           place.state,
           place.congressionalDistrict
@@ -447,6 +444,7 @@ class Dao {
             district.state
           );
         }catch(err){
+			console.log(err);
           if(!this.db.inTransaction) throw err;
         }
       });
@@ -480,16 +478,14 @@ class Dao {
     insertAwardingAgency(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_AWARDING_AGENCY (
-          awarding_agency_id,
           awarding_agency_name,
           parent_award_agency_id
-        ) VALUES(?, ?, ?)`
+        ) VALUES(?, ?)`
       );
   
       const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            agency.id,
             agency.name,
             agency.parent
           );
@@ -504,7 +500,7 @@ class Dao {
   //returns a recipient object selected from the id index on PG1_PARENT_AWARDING_AGENCY table
 	selectParentAwardingAgency(name) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_PARENT_AWARD_AGENCY
-    WHERE parent_award_agency_name = ?`);
+    WHERE parent_awarding_agency_name = ?`);
 		  const select = this.db.transaction((name)=>{
 			  return stmt.get(name)
 		});
@@ -513,12 +509,13 @@ class Dao {
 		let parentAwardingAgency = new ParentAwardingAgency();
 		
 		if (row){
+        	console.log("log 1 : " + row.parent_award_agency_id);
 			let parentAwardingAgency = new ParentAwardingAgency(
-        row.parent_awarding_agency_id,
-        row.parent_awarding_agency_name
-      )
+        		row.parent_award_agency_id,
+        		row.parent_awarding_agency_name
+	  		)
   		return parentAwardingAgency;
-    }
+	}
     return null;
 	}
 
@@ -526,19 +523,16 @@ class Dao {
     insertParentAward(agency) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_PARENT_AWARD_AGENCY (
-          parent_award_agency_id,
           parent_awarding_agency_name
-        ) VALUES(?, ?)`
+        ) VALUES(?)`
       );
   
       const insert = this.db.transaction((agency)=>{
         try{
           stmt.run(
-            agency.id,
             agency.name
           );
         }catch(err){
-			console.log(err);
           if(!this.db.inTransaction) throw err;
         }
       });

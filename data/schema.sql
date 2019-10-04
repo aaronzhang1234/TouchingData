@@ -53,8 +53,9 @@ CREATE TABLE `PG1_PLACE_OF_PERFORMANCE`(
 );
 CREATE TABLE `PG1_AWARDING_AGENCY`(
 	awarding_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	awarding_agency_name TEXT UNIQUE,
+	awarding_agency_name TEXT,
 	parent_award_agency_id integer,
+	UNIQUE(awarding_agency_name, parent_award_agency_id),
 	FOREIGN KEY(parent_award_agency_id) REFERENCES PG1_PARENT_AWARD_AGENCY(parent_award_agency_id)
 );
 CREATE TABLE `PG1_PARENT_AWARD_AGENCY`(
