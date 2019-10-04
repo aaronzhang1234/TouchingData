@@ -38,11 +38,13 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
 				
 				let parser = new RowParser(row);	
 				
-				parser.insertParentAwardAgency();
-				parser.insertState(true);
-				parser.insertDistrict(true);			
-				//parser.insertPlaceOfPerformance();
-				//parser.insertParentAwardAgency();
+				parser.insertParentAwardAgency();		
+				parser.insertPlaceOfPerformance();
+				parser.insertRecipientParent();
+				parser.insertRecipientOwnershipTypes();
+
+				
+				//parser.insertAwardingAgency();
 				//parser.insertRecipient();
 				//parser.insertAward();
 
