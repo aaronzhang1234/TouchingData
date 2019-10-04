@@ -444,7 +444,6 @@ class Dao {
             district.state
           );
         }catch(err){
-			console.log(err);
           if(!this.db.inTransaction) throw err;
         }
       });
@@ -509,7 +508,6 @@ class Dao {
 		let parentAwardingAgency = new ParentAwardingAgency();
 		
 		if (row){
-        	console.log("log 1 : " + row.parent_award_agency_id);
 			let parentAwardingAgency = new ParentAwardingAgency(
         		row.parent_award_agency_id,
         		row.parent_awarding_agency_name
@@ -607,15 +605,13 @@ class Dao {
 	insertOffice(office) {
       const stmt = this.db.prepare(
         `INSERT INTO PG1_OFFICE (
-          office_id,
           office_name
-        ) VALUES(?, ?)`
+        ) VALUES(?)`
       );
   
       const insert = this.db.transaction((office)=>{
         try{
           stmt.run(
-            office.id,
             office.name
           );
         }catch(err){

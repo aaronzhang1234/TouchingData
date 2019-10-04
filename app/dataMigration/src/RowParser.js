@@ -1,11 +1,11 @@
+var Excel   = require("exceljs");
+
 var Dao     = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 var dao = new Dao(sqlDatabaseName);
 
 const types = ["alaskan_native_owned_corporation_or_firm", "american_indian_owned_business", "indian_tribe_federally_recognized", "native_hawaiian_owned_business", "tribally_owned_business", "veteran_owned_business", "service_disabled_veteran_owned_business", "woman_owned_business", "women_owned_small_business", "economically_disadvantaged_women_owned_small_business", "joint_venture_women_owned_small_business", "joint_venture_economic_disadvantaged_women_owned_small_business", "asian_pacific_american_owned_business", "black_american_owned_business", "hispanic_american_owned_business", "native_american_owned_business", "other_minority_owned_business"];
 
-<<<<<<< HEAD
-=======
 let State = require("../../models/State.js")
 let District = require("../../models/District.js");
 let PlaceOfPerformance = require("../../models/PlaceOfPerformance");
@@ -13,85 +13,15 @@ let Ownership = require("../../models/RecipientOwnershipType.js");
 var Type = require("../../models/OwnershipType.js");
 
 
->>>>>>> 38243c44fdd32998bcabb9728b5a3fa1ba007ac8
 let ParentAwardAgency = require("../../models/ParentAwardAgency");
 let AwardingAgency = require("../../models/AwardingAgency");
-let PlaceOfPerformance = require("../../models/PlaceOfPerformance");
 let Recipient = require("../../models/Recipient.js");
 let Award = require("../../models/Award.js");
 let RecipientParent = require("../../models/RecipientParent.js");
+let Office = require("../../models/Office.js");
 class RowParser{
-<<<<<<< HEAD
-    constructor(row){
-        this.row = row
-    }
-    //complete
-    insertParentAwardAgency(){
-        let parent_name = this.row.getCell(2).value;
-
-        let parentawardagency = new ParentAwardAgency("",parent_name);
-        dao.insertParentAward(parentawardagency);
-    }
-    //need parentAwardAgency ID
-    insertAwardingAgency(){
-        let agency_name = this.row.getCell(3).value;
-
-        let awardingagency = new AwardingAgency("", agency_name, parent_name);
-        dao.insertAwardingAgency(awardingagency);
-    }
-    //complete
-=======
 	constructor(row){
 		this.row = row
-		
-		// initalize all validation tables
-		types.forEach(function(type){
-			ownType = new Type(type,"");
-			try{
-				dao.insertOwnershipType(ownType);
-			}catch(err){
-				console.log(err);
-			}
-		});
-
-		workbook.xlsx.readFile("data/postalCodes.xlsx").then(function(){
-			var addStates = new Promise((resolve, reject)=>{
-				let worksheet = workbook.getWorksheet("postalCodes");
-				worksheet.eachRow(function(row,index){
-					let state = new State(row.getCell(2).value, row.getCell(1).value)
-					console.log(state);
-					try{
-						dao.insertState(state);
-					}catch(err){
-						console.log(err);
-					}
-				});
-			});
-			addStates.then(()=>{});
-		});
-		workbook.xlsx.readFile("data/districts.xlsx").then(function(){
-			var addDistricts = new Promise((resolve, reject)=>{
-				let worksheet = workbook.getWorksheet("congress");
-				worksheet.eachRow(function(row,index){
-					// only representatives in congress have congressional districts
-					if (row.getCell(1).value == "rep"){
-						district = new District(row.getCell(3).value, row.getCell(2).value)
-						console.log(district);
-						try{
-							dao.insertDistrict(district)
-						}catch(err){
-							console.log(err);
-						}
-					}
-				});
-			});
-			addDistricts.then(()=>{
-				dao.closeDb();
-			}).catch(function(){
-				dao.closeDb();
-				console.log("Promise Rejected");
-			});
-		});
 	}
 
 	// states should be handled by the InitValidationTables script
@@ -122,22 +52,21 @@ class RowParser{
   //      let district = new District(district_num, state_code);
   //      dao.insertDistrict(district);
   //  }
->>>>>>> 38243c44fdd32998bcabb9728b5a3fa1ba007ac8
     insertPlaceOfPerformance(){
         let pop_city = this.row.getCell(17).value;
         let pop_county = this.row.getCell(18).value;
         let pop_statecode = this.row.getCell(19).value;
-<<<<<<< HEAD
-        let pop_zip = Math.round(this.row.getCell(21).value);
-        let pop_district = Math.round(this.row.getCell(22).value);
-    
-=======
+
         let pop_zip = this.row.getCell(21).value;
+        if(pop_zip != null){
+            pop_zip = this.convertToInt(pop_zip); 
+        }
+
         let pop_district = this.row.getCell(22).value;
-			//  this.insertState(false);
-			//  this.insertDistrict(false);
-        
->>>>>>> 38243c44fdd32998bcabb9728b5a3fa1ba007ac8
+        if(pop_district != null){
+            pop_district = this.convertToInt(pop_district); 
+        }
+    
         let placeofperformance = new PlaceOfPerformance("", pop_city, pop_county, pop_statecode, pop_zip, pop_district);
         dao.insertPlace(placeofperformance);
     }
@@ -148,21 +77,31 @@ class RowParser{
         let recipientparent = new RecipientParent("", parent_name);
         dao.insertRecParent(recipientparent);
     }
-<<<<<<< HEAD
-    //need place of performance id
-=======
-
->>>>>>> 38243c44fdd32998bcabb9728b5a3fa1ba007ac8
     insertRecipient(){
-        let name = row.getCell(6).value; 
-        let addr = row.getCell(10).value; 
-        let addr2 = row.getCell(11).value; 
-        let city = row.getCell(12).value; 
-        let state_code = row.getCell(13).value; 
-        let zip = row.getCell(15).value; 
-        let parent = row.getCell(7).value;
+        let name = this.row.getCell(6).value; 
+        let addr = this.row.getCell(10).value; 
+        let addr2 = this.row.getCell(11).value; 
+        let city = this.row.getCell(12).value; 
+        let state_code = this.row.getCell(13).value; 
+        let zip = this.convertToInt(this.row.getCell(15).value); 
+        let district = this.convertToInt(this.row.getCell(16).value);
 
-        let recipient = new Recipient("", name, addr, addr2, city, state_code, zip, parent);
+        let parent_name = this.row.getCell(7).value
+        let parent = dao.selectRecipientParentbyName(parent_name);
+        let parentid = "";
+        if(parent != null){
+             parentid = parent.id; 
+        }
+
+        let pop_city = this.convertToInt(this.row.getCell(17).value);
+        let pop_zip = this.convertToInt(this.row.getCell(21).value);
+        let PoP = dao.selectPlacePerformance(pop_city, pop_zip);
+        let PoPid = "";
+        if(PoP != null){
+            PoPid = PoP.id; 
+        }
+
+        let recipient = new Recipient("", name, addr, addr2, city, state_code, zip, parentid, district, "", PoPid );
         dao.insertRecipient(recipient);
     }
     insertRecipientOwnershipTypes(){    
@@ -196,17 +135,69 @@ class RowParser{
             }
         }
     }
-    // need awardingoffice, funding office, awarding agency id
-    insertAward(){
-        let fiscal_year = row.getCell(42).value; 
-        //get recipient id   
-        let current_total = row.getCell(4).value;
-        let potential_total = row.getCell(5).value; 
-        //get awarding_agency id
-        //get awarding office id
-        //get funding office id
+    insertParentAwardAgency(){
+        let parent_award_agency_name = this.row.getCell(2).value;
 
-        let award = new Award("", fiscal_year, recipient_id, current_total, potential_total, awarding_agency, awarding_office, funding_office);
+        let parentawardagency = new ParentAwardAgency("", parent_award_agency_name);
+        dao.insertParentAward(parentawardagency);
+    }
+    insertAwardingAgency(){
+        let awarding_agency_name = this.row.getCell(3).value;
+        let parent_award_agency_name = this.row.getCell(2).value;
+        let paa = dao.selectParentAwardingAgency(parent_award_agency_name);
+        let paaid = "";
+        if(paa !=null){
+            paaid = paa.id;
+        }
+        let awardingagency = new AwardingAgency("", awarding_agency_name, paaid);
+        dao.insertAwardingAgency(awardingagency);
+    }
+    insertOffices(){
+        let awarding_office_name = this.row.getCell(8).value;
+        let funding_office_name = this.row.getCell(9).value;
+        
+        let awarding_office = new Office("", awarding_office_name);
+        let funding_office = new Office("", funding_office_name);
+
+        dao.insertOffice(awarding_office);
+        dao.insertOffice(funding_office);
+    }
+    insertAward(){
+        let award_piid = this.row.getCell(1).value;
+        let fiscal_year = this.row.getCell(42).value; 
+
+        let recipient_name = this.row.getCell(6).value;
+        let recipient = dao.selectRecipientByName(recipient_name);
+        let recipient_id = "";
+        if(recipient != null){
+            recipient_id = recipient.id;
+        }
+
+        let current_total = this.row.getCell(4).value;
+        let potential_total = this.row.getCell(5).value; 
+
+        let awarding_agency_name = this.row.getCell(3).value;
+        let awarding_agency = dao.selectAwardingAgency(awarding_agency_name);
+        let awarding_agency_id = "";
+        if(awarding_agency!= null){
+            awarding_agency_id = awarding_agency.id;
+        }
+
+        let awarding_office_name = this.row.getCell(8).value;
+        let awarding_office = dao.selectOffice(awarding_office_name);
+        let awarding_office_id = "";
+        if(awarding_office != null){
+            awarding_office_id = awarding_office.id;
+        }
+
+        let funding_office_name = this.row.getCell(9).value;
+        let funding_office = dao.selectOffice(funding_office_name);
+        let funding_office_id = "";
+        if(funding_office != null){
+            funding_office_id = this.convertToInt(funding_office.id);
+        }
+
+        let award = new Award(award_piid, fiscal_year, recipient_id, current_total, potential_total, awarding_agency_id, awarding_office_id, funding_office_id);
         dao.insertAward(award);
     }
 
@@ -219,7 +210,11 @@ class RowParser{
 			}
 		});
 	}
-
+    convertToInt(num){
+        let numString = String(num);
+        let numArray = numString.split(".");
+        return numArray[0];
+    }
 }
 
 module.exports = RowParser;

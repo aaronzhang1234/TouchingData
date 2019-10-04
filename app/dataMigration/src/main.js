@@ -29,24 +29,17 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
         worksheet.eachRow(function(row, index){
 		 	//the first row of this worksheet is a header, do not consume these fields
 			if (index != 1){
-				//zip is a TEXT type field (sometimes alphanumeric)
-				//the exceljs worksheet framework will return all to numeric fields as reals
-				//to recast those numberic fields as Integers take the first substring
-			    var zip = String(row.getCell(15).value)
-				let zipArray = zip.split(".");
-				zip = zipArray[1];
-				
 				let parser = new RowParser(row);	
-				
-				parser.insertParentAwardAgency();		
+
 				parser.insertPlaceOfPerformance();
 				parser.insertRecipientParent();
 				parser.insertRecipientOwnershipTypes();
+				parser.insertRecipient();
 
-				
-				//parser.insertAwardingAgency();
-				//parser.insertRecipient();
-				//parser.insertAward();
+				parser.insertParentAwardAgency();
+				parser.insertAwardingAgency();
+				parser.insertOffices();
+				parser.insertAward();
 
 			}
         })
