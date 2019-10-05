@@ -134,7 +134,7 @@ class Dao {
 				);
 
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -194,7 +194,7 @@ class Dao {
 					media.recpient
 				)
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 
 		});
@@ -258,7 +258,7 @@ class Dao {
 					award.fundingOffice
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -314,7 +314,7 @@ class Dao {
 					place.congressionalDistrict
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -357,7 +357,7 @@ class Dao {
 					state.name
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -400,7 +400,7 @@ class Dao {
 					parent.name
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -444,7 +444,7 @@ class Dao {
 					district.state
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -489,7 +489,7 @@ class Dao {
 					agency.parent
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -531,7 +531,7 @@ class Dao {
 					agency.name
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -574,7 +574,7 @@ class Dao {
 					website.domain
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -615,7 +615,7 @@ class Dao {
 					office.name
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -660,7 +660,7 @@ class Dao {
 					ownershipType.description
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -708,7 +708,7 @@ class Dao {
 					recOwnership.notes
 				);
 			}catch(err){
-				if(!this.db.inTransaction) throw err;
+				throw err;
 			}
 		});
 
@@ -733,23 +733,23 @@ class Dao {
 		this.createWebsiteTable();
 		this.createMediaTable();
 	}
-	
+
 	//WILL DROP ALL TABLES FROM THE DATABASE LOSING ALL DATA
 	dropAllTables(){
-		 this.db.prepare("DROP TABLE IF EXISTS `PG1_MEDIA`;").run();
+		this.db.prepare("DROP TABLE IF EXISTS `PG1_MEDIA`;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_WEBSITE;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_AWARD;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_OFFICE;").run();
-		
+
 		this.db.prepare("DROP TABLE IF EXISTS PG1_AWARDING_AGENCY;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_PARENT_AWARD_AGENCY;").run();
 
-	 	this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT_OWNERSHIP_TYPE;").run();
-	
+		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT_OWNERSHIP_TYPE;").run();
+
 		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT_PARENT;").run();
@@ -771,12 +771,12 @@ class Dao {
 			"recipient_address_line_1 TEXT,"+
 			"recipient_address_line_2 TEXT,"+
 			"recipient_city TEXT,"+
-			"recipient_state_code TEXT,"+
+			"recipient_state_code TEXT NULL,"+
 			"recipient_zip_4_code TEXT,"+
 			"recipient_parent_id integer,"+
 			"recipient_district_id integer,"+
 			"recipient_website_id TEXT,"+
-			"recipient_place_of_performance_id integer,"+
+			"recipient_place_of_performance_id INTEGER NULL,"+
 			"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
 			"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
 			"FOREIGN KEY(recipient_place_of_performance_id) REFERENCES PG1_PLACE_OF_PERFORMANCE(place_of_performance_id));"
@@ -787,13 +787,13 @@ class Dao {
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_MEDIA`("+
 			"media_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
-			"recipient_id INTEGER NOT NULL,"+
+			"recipient_id INTEGER NULL,"+
 			"filePath TEXT NOT NULL,"+
 			"fileType TEXT NOT NULL,"+
 			"description TEXT,"+
 			"source TEXT,"+
 			"url TEXT,"+
-			"website_id integer,"+
+			"website_id integer NULL,"+
 			"FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
@@ -812,9 +812,9 @@ class Dao {
 			"recipient_id INTEGER,"+
 			"current_total_value_of_award REAL,"+
 			"potential_total_value_of_award REAL,"+
-			"awarding_agency_id integer,"+
-			"awarding_office_id integer,"+
-			"funding_office_id TEXT,"+
+			"awarding_agency_id integer NULL,"+
+			"awarding_office_id integer NULL,"+
+			"funding_office_id TEXT NULL,"+
 			"fiscal_year TEXT,"+
 			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(awarding_office_id) REFERENCES PG1_OFFICE(office_id),"+
@@ -847,8 +847,8 @@ class Dao {
 			"place_of_performance_city TEXT,"+
 			"place_of_performance_zip TEXT,"+
 			"place_of_performance_county TEXT,"+
-			"place_of_performance_state_code TEXT,"+
-			"place_of_performance_district_id TEXT,"+
+			"place_of_performance_state_code TEXT NULL,"+
+			"place_of_performance_district_id TEXT NULL,"+
 			"UNIQUE(place_of_performance_city, place_of_performance_zip),"+
 			"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
 		).run();
@@ -859,7 +859,7 @@ class Dao {
 			"CREATE TABLE IF NOT EXISTS `PG1_AWARDING_AGENCY`("+
 			"awarding_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
 			"awarding_agency_name TEXT,"+
-			"parent_award_agency_id integer,"+
+			"parent_award_agency_id INTEGER NULL,"+
 			"UNIQUE(awarding_agency_name, parent_award_agency_id),"+
 			"FOREIGN KEY(parent_award_agency_id) REFERENCES PG1_PARENT_AWARD_AGENCY(parent_award_agency_id));"
 		).run();

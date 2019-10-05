@@ -5,7 +5,7 @@
  ********************************************
  * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
  *
-*/
+ */
 
 var Recipient = require("../../models/Recipient.js");
 var Award   = require("../../models/Award.js");
@@ -24,30 +24,46 @@ var Excel   = require("exceljs");
 
 let workbook = new Excel.Workbook();
 workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
-    let worksheet = workbook.getWorksheet("All_FY_Combined");
-    var migrate = new Promise((resolve, reject)=>{
-        worksheet.eachRow(function(row, index){
-		 	//the first row of this worksheet is a header, do not consume these fields
+	let worksheet = workbook.getWorksheet("All_FY_Combined");
+	var migrate = new Promise((resolve, reject)=>{
+		worksheet.eachRow(function(row, index){
+			//the first row of this worksheet is a header, do not consume these fields
 			if (index != 1){
-				//console.log(`Currently on row ${index}`);
+				if (index % 500 === 0) console.log(`Currently on row ${index}`);
 				let parser = new RowParser(row);	
 				//This order of inserts is very important, do not move. 
-				parser.insertPlaceOfPerformance();
-				parser.insertRecipientParent();
-				parser.insertRecipient();
-				parser.insertOwnerships();
-
-				parser.insertParentAwardAgency();
-				parser.insertAwardingAgency();
-				parser.insertOffices();
-				parser.insertAward();
+				try {
+					parser.insertPlaceOfPerformance();
+				}catch(err){}
+				try{
+					parser.insertRecipientParent();
+				}catch(err){}
+				try{
+					parser.insertRecipient();
+				}catch(err){}
+				try{
+					parser.insertOwnerships();
+				}catch(err){}
+				try{
+					parser.insertParentAwardAgency();
+				}catch(err){}
+				try{
+					parser.insertAwardingAgency();
+				}catch(err){}
+				try{
+					parser.insertOffices();
+				}catch(err){}
+				try{
+					parser.insertAward();
+				}catch(err){}
 
 			}
-        })
-    });
-    //Once the eachRow function is complete, then close the DB.
-    migrate.then(()=>{
-      dao.closeDb();
-    });
+		})
+		console.log("migration done");
+	});
+	//Once the eachRow function is complete, then close the DB.
+	migrate.then(()=>{
+		dao.closeDb();
+	});
 });
 
