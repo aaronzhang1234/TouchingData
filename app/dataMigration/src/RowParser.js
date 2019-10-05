@@ -31,6 +31,7 @@ class RowParser{
         let place_of_performance = new PlaceOfPerformance("", pop_city, pop_county, pop_statecode, pop_zip, pop_district);
         dao.insertPlace(place_of_performance);
     }
+
     //complete enough
     insertRecipientParent(){
         let parent_name = this.row.getCell(7).value;
@@ -38,6 +39,7 @@ class RowParser{
         let recipient_parent = new RecipientParent("", parent_name);
         dao.insertRecParent(recipient_parent);
     }
+
     insertRecipient(){
         let name = this.row.getCell(6).value; 
         let addr = this.row.getCell(10).value; 
@@ -51,6 +53,7 @@ class RowParser{
         let parent_name = this.row.getCell(7).value
         let parent = dao.selectRecipientParentbyName(parent_name);
         let parent_id = "";
+
         if(parent != null){
              parent_id = parent.id; 
         }
@@ -66,43 +69,14 @@ class RowParser{
         let recipient = new Recipient("", name, addr, addr2, city, state_code, zip, parent_id, district, "", PoP_id );
         dao.insertRecipient(recipient);
     }
-    insertRecipientOwnershipTypes(){    
-        let ownershipTypes = [
-            {name:"alaskan_native_owned_corporation_or_firm", cell:23},
-            {name:"american_indian_owned_business", cell:24},
-            {name:"indian_tribe_federally_recognized", cell:25},
-            {name:"native_hawaiian_owned_business", cell:26},
-            {name:"tribally_owned_business", cell:27},
-            {name:"veteran_owned_business", cell:28},
-            {name:"service_disabled_veteran_owned_business", cell:29},
-            {name:"woman_owned_business", cell:30},
-            {name:"women_owned_small_business", cell:31},
-            {name:"economically_disadvantaged_women_owned_small_business", cell:32},
-            {name:"joint_venture_women_owned_small_business", cell:33},
-            {name:"joint_venture_economic_disadvantaged_women_owned_small_bus", cell:34},
-            {name:"minority_owned_business", cell:35},
-            {name:"subcontinent_asian_asian_indian_american_owned_business", cell:36},
-            {name:"asian_pacific_american_owned_business", cell:37},
-            {name:"black_american_owned_business", cell:38},
-            {name:"hispanic_american_owned_business", cell:39},
-            {name:"native_american_owned_business", cell:40},
-            {name:"other_minority_owned_business", cell:41},            
-        ]
-        //get recipient id
-        for(let i = 0; i<ownershipTypes.length; i++){
-            let ownershipType = ownershipTypes[i];
-            if(this.row.getCell(ownershipType.cell).value == "t"){
-                //get ownershipid
-                //dao.insertRecOwnership(ownershipid, recipientid, "")
-            }
-        }
-    }
+
     insertParentAwardAgency(){
         let parent_award_agency_name = this.row.getCell(2).value;
 
         let parent_award_agency = new ParentAwardAgency("", parent_award_agency_name);
         dao.insertParentAward(parent_award_agency);
     }
+
     insertAwardingAgency(){
         let awarding_agency_name = this.row.getCell(3).value;
         let parent_award_agency_name = this.row.getCell(2).value;
@@ -114,6 +88,7 @@ class RowParser{
         let awarding_agency = new AwardingAgency("", awarding_agency_name, paa_id);
         dao.insertAwardingAgency(awarding_agency);
     }
+
     insertOffices(){
         let awarding_office_name = this.row.getCell(8).value;
         let funding_office_name = this.row.getCell(9).value;
@@ -124,6 +99,7 @@ class RowParser{
         dao.insertOffice(awarding_office);
         dao.insertOffice(funding_office);
     }
+
     insertAward(){
         let award_piid = this.row.getCell(1).value;
         console.log(award_piid);
@@ -164,14 +140,16 @@ class RowParser{
         dao.insertAward(award);
     }
 
+	//for each recipient, createa a record for each *ownership type* marked as t in .xlsx
 	insertOwnerships(){
-        let recipient_name = this.row.getCell(6).value;
-        let recipient = dao.selectRecipientByName(recipient_name);
-        let recipient_id = "";
-        if(recipient != null){
-            recipient_id = recipient.id;
-        }
-        let thisthat = this;
+		let recipient_name = this.row.getCell(6).value;
+		let recipient = dao.selectRecipientByName(recipient_name);
+		let recipient_id = "";
+		if(recipient != null){
+			recipient_id = recipient.id;
+		}
+		let thisthat = this;
+
 		types.forEach(function (type, i){
 			//the first ownership type is at column 23 in the worksheet
 			if (thisthat.row.getCell(i + 23).value === "t"){
@@ -179,13 +157,17 @@ class RowParser{
 				dao.insertRecOwnership(ownership);
 			}
 		});
-    }
+
+
+	}
+
     //Do not insert as decimals instead insert as ints
     convertToNoDecimal(num){
         let num_string = String(num);
         let num_array = num_string.split(".");
         return num_array[0];
     }
+
 }
 
 module.exports = RowParser;
