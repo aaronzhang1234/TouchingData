@@ -4,7 +4,9 @@ var Dao     = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 var dao = new Dao(sqlDatabaseName);
 
-const types = ["alaskan_native_owned_corporation_or_firm", "american_indian_owned_business", "indian_tribe_federally_recognized", "native_hawaiian_owned_business", "tribally_owned_business", "veteran_owned_business", "service_disabled_veteran_owned_business", "woman_owned_business", "women_owned_small_business", "economically_disadvantaged_women_owned_small_business", "joint_venture_women_owned_small_business", "joint_venture_economic_disadvantaged_women_owned_small_business", "asian_pacific_american_owned_business", "black_american_owned_business", "hispanic_american_owned_business", "native_american_owned_business", "other_minority_owned_business"];
+var types = require("./types.js")
+
+//const types = ["alaskan_native_owned_corporation_or_firm", "american_indian_owned_business", "indian_tribe_federally_recognized", "native_hawaiian_owned_business", "tribally_owned_business", "veteran_owned_business", "service_disabled_veteran_owned_business", "woman_owned_business", "women_owned_small_business", "economically_disadvantaged_women_owned_small_business", "joint_venture_women_owned_small_business", "joint_venture_economic_disadvantaged_women_owned_small_business", "asian_pacific_american_owned_business", "black_american_owned_business", "hispanic_american_owned_business", "native_american_owned_business", "other_minority_owned_business"];
 
 let PlaceOfPerformance = require("../../models/PlaceOfPerformance");
 let Ownership = require("../../models/RecipientOwnershipType.js");
@@ -102,7 +104,7 @@ class RowParser{
 
     insertAward(){
         let award_piid = this.row.getCell(1).value;
-        console.log(award_piid);
+		//console.log(award_piid);
         let fiscal_year = this.row.getCell(42).value; 
 
         let recipient_name = this.row.getCell(6).value;

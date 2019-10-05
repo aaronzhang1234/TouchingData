@@ -29,7 +29,7 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
         worksheet.eachRow(function(row, index){
 		 	//the first row of this worksheet is a header, do not consume these fields
 			if (index != 1){
-				console.log(`Currently on row ${index}`);
+				//console.log(`Currently on row ${index}`);
 				let parser = new RowParser(row);	
 				//This order of inserts is very important, do not move. 
 				parser.insertPlaceOfPerformance();
