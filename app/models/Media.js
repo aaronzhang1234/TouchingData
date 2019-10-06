@@ -1,4 +1,5 @@
 /* ****************** Company ******************
+ * 2019 September 28 : Nathan Reiber : update for DB v2
  * 2019 September 23 : Nathan Reiber : Set default values
  * 2019 September 22 : Nathan Reiber : Created
  * *********************************************
@@ -7,14 +8,15 @@
 */
 
  class Media {
-	constructor(id = "", compId = "" , filePath = "", fileType = "", description = "", medLength = "", source = ""){
+	constructor(id = "", recipient = "" , filePath = "", fileType = "", description = "", source = "", url="", website=""){
 		this.id = id; 
-		this.compId = compId; 
+		this.recipient = recipient; 
 		this.filePath = filePath; 
 		this.fileType = fileType; 
 		this.description = description; 
-		this.medLength = medLength; 
 		this.source = source; 
+		this.url = url; 
+		this.website = website; 
 	}
 }
 

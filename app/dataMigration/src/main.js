@@ -5,13 +5,17 @@
  ********************************************
  * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
  *
-*/
+ */
 
-var Company = require("../../models/Company.js");
+var Recipient = require("../../models/Recipient.js");
 var Award   = require("../../models/Award.js");
+var State = require("../../models/State.js");
+var District = require("../../models/District.js");
+
+var RowParser = require("./RowParser.js");
 
 var Dao     = require("../../DAO.js");
-let sqlDatabaseName = "data/POLITICS_OF_THE_GRID_1.db";
+let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 var dao = new Dao(sqlDatabaseName);
 
 var Excel   = require("exceljs");
@@ -20,42 +24,46 @@ var Excel   = require("exceljs");
 
 let workbook = new Excel.Workbook();
 workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
-    let worksheet = workbook.getWorksheet("All_FY_Combined");
-    var migrate = new Promise((resolve, reject)=>{
-        worksheet.eachRow(function(row, index){
-					 	//the first row of this worksheet is a header, do not consume these fields
-						if (index != 1){
+	let worksheet = workbook.getWorksheet("All_FY_Combined");
+	var migrate = new Promise((resolve, reject)=>{
+		worksheet.eachRow(function(row, index){
+			//the first row of this worksheet is a header, do not consume these fields
+			if (index != 1){
+				if (index % 500 === 0) console.log(`Currently on row ${index}`);
+				let parser = new RowParser(row);	
+				//This order of inserts is very important, do not move. 
+				try {
+					parser.insertPlaceOfPerformance();
+				}catch(err){}
+				try{
+					parser.insertRecipientParent();
+				}catch(err){}
+				try{
+					parser.insertRecipient();
+				}catch(err){}
+				try{
+					parser.insertOwnerships();
+				}catch(err){}
+				try{
+					parser.insertParentAwardAgency();
+				}catch(err){}
+				try{
+					parser.insertAwardingAgency();
+				}catch(err){}
+				try{
+					parser.insertOffices();
+				}catch(err){}
+				try{
+					parser.insertAward();
+				}catch(err){}
 
-								//zip is a TEXT type field (sometimes alphanumeric)
-								//the exceljs worksheet framework will return all to numeric fields as reals
-								//to recast those numberic fields as Integers take the first substring
-						    var zip = String(row.getCell(15).value)
-								let zipArray = zip.split(".");
-								zip = zipArray[1];
-
-								company = new Company("",row.getCell(6).value, row.getCell(10).value, row.getCell(11).value, row.getCell(12).value, row.getCell(13).value, zip, row.getCell(16).value);
-								try {
-										dao.pg1_CompanyInsert(company);
-								}catch(err) {
-										console.log(err);
-								}
-
-								company = dao.selectCompanyByName(company.name);
-								
-
-								try {
-										award = new Award("", row.getCell(1).value, company.id, row.getCell(4).value,row.getCell(5).value, row.getCell(2).value, row.getCell(3).value, row.getCell(8).value, row.getCell(9).value, row.getCell(42).value)
-								}catch(err) {
-										console.log(err);
-								}
-								dao.pg1_AwardInsert(award)
-					
-						}
-        })
-    });
-    //Once the eachRow function is complete, then close the DB.
-    migrate.then(()=>{
-      dao.closeDb();
-    });
+			}
+		})
+		console.log("migration done");
+	});
+	//Once the eachRow function is complete, then close the DB.
+	migrate.then(()=>{
+		dao.closeDb();
+	});
 });
 
