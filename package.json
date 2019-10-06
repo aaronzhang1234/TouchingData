@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "node app/dataMigration/src/main.js",
-    "webscrape": "node app/web-scraping/src/main.js"
+    "webscrape": "node app/web-scraping/src/main.js",
+    "initValTables": "node app/dataMigration/src/initValidationTables.js",
+    "initDb": "node app/dataMigration/src/initdb.js"
   },
   "repository": {
     "type": "git",
@@ -22,11 +24,12 @@
   "dependencies": {
     "axios": "^0.19.0",
     "azure-cognitiveservices-websearch": "^2.0.0",
-    "ms-rest-azure": "^3.0.0",
     "better-sqlite3": "^5.4.3",
     "cheerio": "^1.0.0-rc.3",
+    "child_process": "^1.0.2",
     "exceljs": "^2.0.1",
     "fs": "0.0.1-security",
+    "ms-rest-azure": "^3.0.0",
     "sqlite3": "^4.1.0"
   }
 }

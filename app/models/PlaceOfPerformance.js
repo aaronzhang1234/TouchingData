@@ -5,8 +5,8 @@
  *
 */
 
- class PlaceOfPerformance {
-	constructor(id = "", city = "" county = "", state="", zip = "", congressionalDistrict  = ""){
+class PlaceOfPerformance {
+	constructor(id = "", city = "", county = "", state="", zip = "", congressionalDistrict  = ""){
 		this.id = id; 
 		this.city = city; 
 		this.county = county; 
