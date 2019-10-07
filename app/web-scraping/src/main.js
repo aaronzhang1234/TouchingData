@@ -14,4 +14,4 @@ const DAO = require("../../DAO.js");
 
 var webscraper = new webscraperjs();
 //webscraper.getSiteFromName("Federal Express Corporation");
-webscraper.getSite("https://adsinc.com/", "https://adsinc.com/",[]);
+webscraper.getSite("https://www.satcomdirect.com/", "https://www.satcomdirect.com/",[]);

@@ -1,7 +1,12 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const url = require("url");
+const exec = require("child_process").exec;
+const fs = require('fs');
 const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
 const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
+const youtubedl = require("ytdl-core");
+const sleep = require("sleep");
 
 class webscraper{
     //Creating a websearch client using an API Key
@@ -23,29 +28,43 @@ class webscraper{
         })
     }
     //Getting webscraped data from a site
-    getSite(orig, website_name, links_visited){
+    async getSite(orig, website_name, links_visited){
         if(orig == website_name){
             this.findAbout(orig);
         }
+        const response = await axios.get(website_name);
+        const $ = cheerio.load(response.data);
+        let thisthat = this;
+        await this.findAudio($, website_name);
+        const links = await this.findLinks($, orig, website_name, links_visited);
+        links_visited = links_visited.concat(links);
+        for(let i = 0; i < links.length-1; i++){
+            const waiting = await thisthat.delay(4000);
+            setTimeout(function(){
+                links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
+                return links_visited;
+            },5000)
+        }
+        /*
         axios.get(website_name).then(response=>{
-            //console.log(links_visited.length);
             const $ = cheerio.load(response.data);
             let thisthat = this;
-            thisthat.findAudio($, website_name).then(function(){
-                thisthat.findLinks($, orig, website_name, links_visited).then(function(links){
-                    links_visited = links_visited.concat(links);
-                    for(let i = 0; i < links.length-1; i++){
-                        setTimeout(function(){
-                            links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
-                            return links_visited;
-                        },5000);
-                    }
-                });
-            });
+            await this.findAudio($, website_name);
+            const links = this.findLinks($, website_name);
+            links_visited = links_visited.concat(links);
+            for(let i = 0; i < links.length-1; i++){
+                const waiting = await thisthat.delay(4000);
+                setTimeout(function(){
+                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
+                    return links_visited;
+                },5000)
+            }
+
         })
         .catch(error=>{
             //console.log(error);
         })
+        */
     }
     findAbout(website){
 
@@ -55,6 +74,17 @@ class webscraper{
             console.log("Scraping : " + website);
             $("source").each((i, elem)=>{
                 console.log("Website Source is: " + website + " | Link is: " + $(elem).attr("src"));
+                let src_url = $(elem).attr("src");
+                console.log("downloading");
+                let DOWNLOAD_DIR =  "./data/scraped";
+                var src_name = url.parse(src_url).pathname.split('/').pop();
+                // compose the wget command
+                var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + src_url;
+                // excute wget using child_process' exec function
+                var child = exec(wget, function(err, stdout, stderr) {
+                    if (err) throw err;
+                    else console.log(src_name + ' downloaded to ' + DOWNLOAD_DIR);
+                });
             });
             $("video").each((i, elem)=>{
                 console.log("Website Video is: " + website + " | Link is: " + $(elem).attr("src"));
@@ -63,7 +93,18 @@ class webscraper{
                 console.log("Website Audio is: " + website + " | Link is: " + $(elem).attr("src"));
             });
             $("a[href*='/youtu.be/']").each((i, elem)=>{
+                let DOWNLOAD_DIR =  "./data/scraped";
                 console.log("Website href is " + website + " | Link is: " + $(elem).attr("href"));
+
+                console.log("youtube");
+                let youtube_link = $(elem).attr("href");
+                var ytid = url.parse(youtube_link).pathname.split('/').pop();
+                let video = youtubedl(youtube_link);
+                video.on('info', function(info){
+                    console.log(`File name is ${info._filename}`);
+                });
+                video.pipe(fs.createWriteStream(`${DOWNLOAD_DIR}/${ytid}.mp4`));
+                
             });
             resolve("");
         });
@@ -101,10 +142,18 @@ class webscraper{
                 }
             }
             links = links.filter(function(item, idk){
-                return item.startsWith(orig) && !links_visited.includes(item);
+                return item.startsWith(orig) 
+                       && !links_visited.includes(item) 
+                       && !item.includes("#")
+                       && !item.includes(".pdf")
+                       && !item.includes(".png")
+                       && !item.includes(".jpg");
             });
             resolve(links);
         })
+    }
+    delay(ms){
+        return new Promise(resolve=>setTimeout(resolve, ms));
     }
 }
 module.exports = webscraper;
