@@ -8,7 +8,7 @@
 */
 
  class Media {
-	constructor(id = "", recipient = "" , filePath = "", fileType = "", description = "", source = "", url="", website=""){
+	constructor(id = null, recipient = null , filePath = null, fileType = null, description = null, source = null, url=null, website=null){
 		this.id = id; 
 		this.recipient = recipient; 
 		this.filePath = filePath; 

@@ -8,7 +8,7 @@
 */
 
 class Company {
-	constructor(id = "", name= "", addr1= "", addr2= "", city= "", state= "", zip= "", parent="", congressionalDistrict= "", website= "", placeOfPerformance= ""){
+	constructor(id = null, name= null, addr1= null, addr2= null, city= null, state= null, zip= null, parent=null, congressionalDistrict= null, website= null, placeOfPerformance= null){
 		this.id = id; 
 		this.name = name; 
 		this.addr1 = addr1; 

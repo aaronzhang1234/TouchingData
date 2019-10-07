@@ -6,7 +6,7 @@
 */
 
 class State { // id of this class is official two letter state code
-	constructor(id = "", name=""){
+	constructor(id = null, name=null){
 		this.id = id
 		this.name = name
 	}

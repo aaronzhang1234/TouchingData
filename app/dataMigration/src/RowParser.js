@@ -6,8 +6,6 @@ var dao = new Dao(sqlDatabaseName);
 
 var types = require("./types.js")
 
-//const types = ["alaskan_native_owned_corporation_or_firm", "american_indian_owned_business", "indian_tribe_federally_recognized", "native_hawaiian_owned_business", "tribally_owned_business", "veteran_owned_business", "service_disabled_veteran_owned_business", "woman_owned_business", "women_owned_small_business", "economically_disadvantaged_women_owned_small_business", "joint_venture_women_owned_small_business", "joint_venture_economic_disadvantaged_women_owned_small_business", "asian_pacific_american_owned_business", "black_american_owned_business", "hispanic_american_owned_business", "native_american_owned_business", "other_minority_owned_business"];
-
 let PlaceOfPerformance = require("../../models/PlaceOfPerformance");
 let Ownership = require("../../models/RecipientOwnershipType.js");
 let ParentAwardAgency = require("../../models/ParentAwardAgency");
@@ -30,7 +28,7 @@ class RowParser{
 		let pop_zip = this.convertToNoDecimal(this.row.getCell(21).value);
 		let pop_district = this.convertToNoDecimal(this.row.getCell(22).value);
 
-		let place_of_performance = new PlaceOfPerformance("", pop_city, pop_county, pop_statecode, pop_zip, pop_district);
+		let place_of_performance = new PlaceOfPerformance(null, pop_city, pop_county, pop_statecode, pop_zip, pop_district);
 		try {
 			dao.insertPlace(place_of_performance);
 		}catch(err){
@@ -42,7 +40,7 @@ class RowParser{
 	insertRecipientParent(){
 		let parent_name = this.row.getCell(7).value;
 
-		let recipient_parent = new RecipientParent("", parent_name);
+		let recipient_parent = new RecipientParent(null, parent_name);
 		try {
 			dao.insertRecParent(recipient_parent);
 		}catch(err){
@@ -75,7 +73,7 @@ class RowParser{
 			PoP_id = PoP.id; 
 		}
 
-		let recipient = new Recipient("", name, addr, addr2, city, state_code, zip, parent_id, district, "", PoP_id );
+		let recipient = new Recipient(null, name, addr, addr2, city, state_code, zip, parent_id, district, null, PoP_id );
 		try {
 			dao.insertRecipient(recipient);
 		}catch(err){
@@ -86,7 +84,7 @@ class RowParser{
 	insertParentAwardAgency(){
 		let parent_award_agency_name = this.row.getCell(2).value;
 
-		let parent_award_agency = new ParentAwardAgency("", parent_award_agency_name);
+		let parent_award_agency = new ParentAwardAgency(null, parent_award_agency_name);
 		try{
 			dao.insertParentAward(parent_award_agency);
 		}catch(err){
@@ -102,7 +100,7 @@ class RowParser{
 		if(paa !=null){
 			paa_id = paa.id;
 		}
-		let awarding_agency = new AwardingAgency("", awarding_agency_name, paa_id);
+		let awarding_agency = new AwardingAgency(null, awarding_agency_name, paa_id);
 		try {
 			dao.insertAwardingAgency(awarding_agency);
 		}catch(err){
@@ -114,8 +112,8 @@ class RowParser{
 		let awarding_office_name = this.row.getCell(8).value;
 		let funding_office_name = this.row.getCell(9).value;
 
-		let awarding_office = new Office("", awarding_office_name);
-		let funding_office = new Office("", funding_office_name);
+		let awarding_office = new Office(null, awarding_office_name);
+		let funding_office = new Office(null, funding_office_name);
 
 		try{
 			dao.insertOffice(awarding_office);
@@ -185,7 +183,7 @@ class RowParser{
 		types.forEach(function (type, i){
 			//the first ownership type is at column 23 in the worksheet
 			if (thisthat.row.getCell(i + 23).value === "t"){
-				let ownership = new Ownership(type, recipient_id, "");
+				let ownership = new Ownership(type, recipient_id, null);
 				try{
 					dao.insertRecOwnership(ownership);
 				}catch(err){

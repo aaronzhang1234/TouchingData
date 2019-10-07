@@ -1,5 +1,6 @@
 /* ****************** DAO ******************
- * 2019 October   03 : Hadi Haidar : Select Statements
+ * 2019 October   07 : Nathan Reiber  : select all recipients
+ * 2019 October   03 : Hadi Haidar    : Select Statements
  * 2019 October   02 : Nathan Reiber  : revise naming conventions for consistency
  * 									  : removed methods for deprecated tables
  * 2019 September 29 : Hadi Haidar    : add insert methods
@@ -38,6 +39,29 @@ class Dao {
 		this.db = new sqlite3(dbFilePath);//,  { verbose: console.log });
 	}
 
+	// selects all recipients from PG1_RECIPIENT
+	selectAllRecipients(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_RECIPIENT`).all();
+		var recipients = [];
+		rows.forEach(function(row, i){
+			let recipient = new Recipient(
+				row.recipient_id, 
+				row.recipient_name, 
+				row.recipient_address_line_1, 
+				row.recipient_address_line_2, 
+				row.recipient_city, 
+				row.recipient_state_code, 
+				row.recipient_zip_4_code, 
+				row.recipient_parent_id,
+				row.recipient_district_id, 
+				row.recipient_website_id,
+				row.place_of_performance_id
+			)
+			recipients.push(recipient);
+		});
+		//console.log(recipients);
+		return recipients;
+	}
 
 	// returns a company object selected from the name index on PG1_RECPIPIENT
 	selectRecipientByName(name) {

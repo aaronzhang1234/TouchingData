@@ -6,7 +6,7 @@
 */
 
  class OwnershipType {
-	constructor(id = "", description=""){
+	constructor(id = null, description=null){
 		this.id = id;
 		this.description = description;
 	}
