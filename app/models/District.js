@@ -6,7 +6,7 @@
 */
 
 class District {  // id represents the district number)
-	constructor(id = "", state=""){
+	constructor(id = null, state=null){
 		this.id = id
 		this.state = state
 	}

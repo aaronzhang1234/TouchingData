@@ -6,7 +6,7 @@
 */
 
  class AwardingAgency {
-	constructor(id = "", name="", parent=""){
+	constructor(id = null, name=null, parent=null){
 		this.id = id;
 		this.name = name;
 		this.parent = parent;

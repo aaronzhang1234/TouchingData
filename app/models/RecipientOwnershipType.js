@@ -6,7 +6,7 @@
 */
 
  class RecipientOwnershipType {
-	constructor(ownershipType="", recipient="", notes=""){
+	constructor(ownershipType=null, recipient=null, notes=null){
 		this.ownershipType = ownershipType;
 		this.recipient = recipient;
 		this.notes = notes;

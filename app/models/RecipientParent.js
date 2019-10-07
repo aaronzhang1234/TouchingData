@@ -6,7 +6,7 @@
 */
 
  class RecipientParent {
-	constructor(id = "", name=""){
+	constructor(id = null, name=null){
 		this.id = id
 		this.name = name
 	}
