@@ -6,7 +6,7 @@
 */
 
  class Website {
-	constructor(id = "", domain=""){
+	constructor(id = null, domain=null){
 		this.id = id
 		this.domain = domain
 	}

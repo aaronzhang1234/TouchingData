@@ -9,7 +9,7 @@
 */
 
  class Award {
-	constructor(piid = "", fiscalYear = "" ,recipient = "", currentTotal = "", potentialTotal = "", awardingAgency = "", awardingOffice = "", fundingOffice = ""){
+	constructor(piid = null, fiscalYear = null ,recipient = null, currentTotal = null, potentialTotal = null, awardingAgency = null, awardingOffice = null, fundingOffice = null){
 		this.piid = piid; 
 		this.fiscalYear = fiscalYear; 
 		this.recipient = recipient; 
