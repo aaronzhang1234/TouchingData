@@ -28,48 +28,33 @@ class webscraper{
         })
     }
     //Getting webscraped data from a site
-    async getSite(orig, website_name, links_visited){
-        if(orig == website_name){
-            this.findAbout(orig);
-        }
-        const response = await axios.get(website_name);
-        const $ = cheerio.load(response.data);
-        let thisthat = this;
-        await this.findAudio($, website_name);
-        const links = await this.findLinks($, orig, website_name, links_visited);
-        links_visited = links_visited.concat(links);
-        for(let i = 0; i < links.length-1; i++){
-            const waiting = await thisthat.delay(4000);
-            setTimeout(function(){
-                links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
-                return links_visited;
-            },5000)
-        }
-        /*
-        axios.get(website_name).then(response=>{
+    async getSite(orig, website_name, links_visited, stopTime){
+        console.log(`Current time is ${new Date().getTime()} and stop time is ${stopTime}`);
+        if(new Date().valueOf() < stopTime){
+            if(orig == website_name){
+                this.findAbout(orig);
+            }
+            const response = await axios.get(website_name);
             const $ = cheerio.load(response.data);
-            let thisthat = this;
             await this.findAudio($, website_name);
-            const links = this.findLinks($, website_name);
+            let thisthat = this;
+            const links = await this.findLinks($, orig, website_name, links_visited);
             links_visited = links_visited.concat(links);
             for(let i = 0; i < links.length-1; i++){
-                const waiting = await thisthat.delay(4000);
+                const waiting = await this.delay(4000);
                 setTimeout(function(){
-                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited));
+                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited, stopTime));
                     return links_visited;
                 },5000)
             }
-
-        })
-        .catch(error=>{
-            //console.log(error);
-        })
-        */
+        }
+        return;
     }
     findAbout(website){
 
     }
     findAudio($, website){
+        console.log("Scraping : " + website);
         return new Promise(function(resolve, reject){
             console.log("Scraping : " + website);
             $("source").each((i, elem)=>{

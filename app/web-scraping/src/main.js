@@ -14,4 +14,11 @@ const DAO = require("../../DAO.js");
 
 var webscraper = new webscraperjs();
 //webscraper.getSiteFromName("Federal Express Corporation");
-webscraper.getSite("https://www.satcomdirect.com/", "https://www.satcomdirect.com/",[]);
+let seconds = 600;
+let stopTime = new Date().valueOf() + (seconds*1000);
+/*
+while(new Date().valueOf() < stopTime){
+    console.log("fuck");
+}
+*/
+webscraper.getSite("https://www.fedex.com/", "https://www.fedex.com/",[], stopTime);

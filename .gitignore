@@ -91,3 +91,4 @@ typings/
 
 *.db
 .DS_Store
+data/scraped/*
