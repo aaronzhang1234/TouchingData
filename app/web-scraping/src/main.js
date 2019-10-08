@@ -7,18 +7,26 @@
 
 const webscraperjs = require("./webscraper.js");
 const DAO = require("../../DAO.js");
-//const Company = require("../../models/Company.js");
-//const db = require('better-sqlite3')('data/POLITICS_OF_THE_GRID_1.db');
+let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 
-//const row = db.prepare("INSERT INTO pg1_company (name, addr1, addr2, city, state, zip, congressionalDistrict) VALUES(?,?,?,?,?,?,?)").run("","1","312","","123","hj","");
 
 var webscraper = new webscraperjs();
 //webscraper.getSiteFromName("Federal Express Corporation");
 let seconds = 600;
 let stopTime = new Date().valueOf() + (seconds*1000);
-/*
-while(new Date().valueOf() < stopTime){
-    console.log("fuck");
+
+let dao = new DAO(sqlDatabaseName);
+let recipients = dao.selectAllRecipients();
+//console.log(recipients);
+
+for(let i =0; i<10; i++){
+    let recipient = recipients[i];
+    webscraper.getSiteFromName(recipient.name).then(function(url){
+        dao.insertWebsite(url);
+        console.log(url);
+    });
 }
-*/
-webscraper.getSite("https://www.fedex.com/", "https://www.fedex.com/",[], stopTime);
+
+
+
+//webscraper.getSite("https://www.varidesk.com/", "https://www.varidesk.com/",[], stopTime);

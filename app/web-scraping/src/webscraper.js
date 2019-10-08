@@ -17,44 +17,55 @@ class webscraper{
     }
     //Getting a company's website using Bing
     getSiteFromName(companyName){
-        this.webSearchAPIClient.web.search(companyName).then((results)=>{
-            let numresults = Object.keys(results["webPages"]["value"]).length;
-            for(var i =0; i<numresults-1 ;i++){                
-                console.log(results["webPages"]["value"][i]);
-            }
-            //console.log(results["webPages"]["value"]);
-        }).catch((err)=>{
-            console.log(err)
+        let thisthat = this;
+        return new Promise(function(resolve, reject){
+            thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
+                console.log(companyName);
+                let numresults = Object.keys(results["webPages"]["value"]).length;
+                resolve(results["webPages"]["value"][0]["url"]);
+            }).catch((err)=>{
+                console.log(err)
+            })
         })
     }
     //Getting webscraped data from a site
     async getSite(orig, website_name, links_visited, stopTime){
-        console.log(`Current time is ${new Date().getTime()} and stop time is ${stopTime}`);
-        if(new Date().valueOf() < stopTime){
+       // if(new Date().valueOf() < stopTime){
             if(orig == website_name){
                 this.findAbout(orig);
             }
-            const response = await axios.get(website_name);
-            const $ = cheerio.load(response.data);
-            await this.findAudio($, website_name);
-            let thisthat = this;
-            const links = await this.findLinks($, orig, website_name, links_visited);
-            links_visited = links_visited.concat(links);
-            for(let i = 0; i < links.length-1; i++){
-                const waiting = await this.delay(4000);
-                setTimeout(function(){
-                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited, stopTime));
-                    return links_visited;
-                },5000)
+            try{
+                const response = await axios.get(website_name); 
+                //console.log(response.data);
+                const $ = cheerio.load(response.data);
+                try{
+                    await this.findAudio($, website_name);
+                }catch(err){
+                    console.log(err);
+                }
+                let thisthat = this;
+                const links = await this.findLinks($, orig, website_name, links_visited);
+                links_visited = links_visited.concat(links);
+                for(let i = 0; i < links.length-1; i++){
+                    const waiting = await this.delay(5000);
+                    setTimeout(function(){
+                        links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited, stopTime));
+                        return links_visited;
+                    },5000);
+                }
+            }catch(err){
+                await this.delay(5000);
+                console.log('ouf');
+                if(err.response == 404){
+                    console.log(`Failed to load ${err.response.config.url}`);
+                }   
             }
-        }
-        return;
+        //}
     }
     findAbout(website){
 
     }
     findAudio($, website){
-        console.log("Scraping : " + website);
         return new Promise(function(resolve, reject){
             console.log("Scraping : " + website);
             $("source").each((i, elem)=>{
@@ -89,7 +100,6 @@ class webscraper{
                     console.log(`File name is ${info._filename}`);
                 });
                 video.pipe(fs.createWriteStream(`${DOWNLOAD_DIR}/${ytid}.mp4`));
-                
             });
             resolve("");
         });
@@ -113,15 +123,14 @@ class webscraper{
                    !links[i].includes(".gov") && 
                    !links[i].includes(".jpg") &&
                    !links[i].includes(".pdf") &&
-                   !links[i].includes("://") &&
                    !links[i].includes(":") &&
                    !links[i].includes("#")){
-                    if(current_site.substr(-1) == "/" && links[i].substr(0)=="/"){
-                        let current_site_no_leading = current_site.substr(0,current_site.length-1);                        
-                        links[i] = current_site_no_leading+links[i];
+                    if(links[i].substr(0,1)=="/"){
+                        links[i] = orig.slice(0,-1)+links[i];
                     }else if(current_site.substr(-1) != "/" && links[i].substr(0)!="/"){
                         links[i] = current_site+"/"+links[i];
                     }else{
+                        //console.log(links[i]);
                         links[i] = current_site+links[i];
                     }
                 }
