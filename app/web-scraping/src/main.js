@@ -10,15 +10,15 @@ const DAO = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 
+
 var webscraper = new webscraperjs();
 //webscraper.getSiteFromName("Federal Express Corporation");
-let seconds = 600;
-let stopTime = new Date().valueOf() + (seconds*1000);
 
 let dao = new DAO(sqlDatabaseName);
 let recipients = dao.selectAllRecipients();
 //console.log(recipients);
 
+/*
 let time = 1000;
 for(let i =0; i<recipients.length; i++){
     time = time + 3000;
@@ -37,7 +37,44 @@ for(let i =0; i<recipients.length; i++){
         });
     }, time);
 }
+*/
 
 
+/* DOWNLOAD AN MP4
+let DOWNLOAD_DIR =  "./data/scraped";
+var src_name = url.parse(src_url).pathname.split('/').pop();
+// compose the wget command
+var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + src_url;
+// excute wget using child_process' exec function
+var child = exec(wget, function(err, stdout, stderr) {
+    if (err) throw err;
+    else console.log(src_name + ' downloaded to ' + DOWNLOAD_DIR);
+});
+*/
 
-//webscraper.getSite("https://adsinc.com/", "https://adsinc.com/",[], stopTime);
+
+/*DOWNLOAD YOUTUBE LINK
+var ytid = url.parse(youtube_link).pathname.split('/').pop();
+let video = youtubedl(youtube_link);
+video.on('info', function(info){
+    console.log(`File name is ${info._filename}`);
+});
+video.pipe(fs.createWriteStream(`${DOWNLOAD_DIR}/${ytid}.mp4`));
+*/
+let howlong = 1;
+let time = 0;
+const minute  = 60000;
+
+//OH BOY FUN TIMES
+for(let i = 0; i<recipients.length; i++){
+    let recipient = recipients[i];
+    let recipient_id = recipient.website;
+    console.log(recipient.name);
+    //let website = dao.selectWebsiteByID(recipient_id);
+    //let website_id = website.id;
+    let stop_time = new Date().valueOf() + time +  (howlong*minute);
+    setTimeout(function(){
+        webscraper.getSite("https://adsinc.com/", "https://adsinc.com/",[], recipient_id, 0, stop_time );
+    },time);
+    time = time + (howlong * minute)
+};
