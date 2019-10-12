@@ -22,7 +22,7 @@ var Recipient = require("./models/Recipient.js");
 var Award = require("./models/Award.js");
 var Media = require("./models/Media.js");
 var Place = require("./models/PlaceOfPerformance.js");
-var state = require("./models/State.js");
+var State = require("./models/State.js");
 var RecParent = require("./models/RecipientParent.js");
 var District = require("./models/District.js");
 var ParentAwardingAgency = require("./models/ParentAwardAgency.js");
@@ -762,8 +762,6 @@ class Dao {
 	dropAllTables(){
 		this.db.prepare("DROP TABLE IF EXISTS `PG1_MEDIA`;").run();
 
-		this.db.prepare("DROP TABLE IF EXISTS PG1_WEBSITE;").run();
-
 		this.db.prepare("DROP TABLE IF EXISTS PG1_AWARD;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_OFFICE;").run();
@@ -775,6 +773,8 @@ class Dao {
 		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT_OWNERSHIP_TYPE;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT;").run();
+
+		this.db.prepare("DROP TABLE IF EXISTS PG1_WEBSITE;").run();
 
 		this.db.prepare("DROP TABLE IF EXISTS PG1_RECIPIENT_PARENT;").run();
 
@@ -798,11 +798,12 @@ class Dao {
 			"recipient_state_code TEXT NULL,"+
 			"recipient_zip_4_code TEXT,"+
 			"recipient_parent_id integer,"+
-			"recipient_district_id integer,"+
-			"recipient_website_id TEXT,"+
+			"recipient_district_id integer NULL,"+
+			"recipient_website_id TEXT NULL,"+
 			"recipient_place_of_performance_id INTEGER NULL,"+
-			"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
-			"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
+			//"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
+			"FOREIGN KEY(recipient_website_id) REFERENCES PG1_WEBSITE(website_id)"+
+			//"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
 			"FOREIGN KEY(recipient_place_of_performance_id) REFERENCES PG1_PLACE_OF_PERFORMANCE(place_of_performance_id));"
 		).run();
 	}
@@ -873,8 +874,8 @@ class Dao {
 			"place_of_performance_county TEXT,"+
 			"place_of_performance_state_code TEXT NULL,"+
 			"place_of_performance_district_id TEXT NULL,"+
-			"UNIQUE(place_of_performance_city, place_of_performance_zip),"+
-			"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
+			"UNIQUE(place_of_performance_city, place_of_performance_zip));"
+			//"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
 		).run();
 	}
 

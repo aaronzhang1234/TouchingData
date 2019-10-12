@@ -34,13 +34,13 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
 				//This order of inserts is very important, do not move. 
 				try {
 					parser.insertPlaceOfPerformance();
-				}catch(err){}
+				}catch(err){ }
 				try{
 					parser.insertRecipientParent();
 				}catch(err){}
 				try{
 					parser.insertRecipient();
-				}catch(err){}
+				}catch(err){console.log(err)}
 				try{
 					parser.insertOwnerships();
 				}catch(err){}

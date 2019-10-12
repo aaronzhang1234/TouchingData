@@ -1,3 +1,9 @@
+/* ****************** initDb ******************
+ * 2019 October 01 : Nathan Reiber  : Created
+ ********************************************
+ * Purpose : drop and create all tables
+ */
+
 var Dao = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 var dao = new Dao(sqlDatabaseName);

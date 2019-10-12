@@ -15,6 +15,8 @@ let Recipient = require("../../models/Recipient.js");
 var Type = require("../../models/OwnershipType.js");
 let Office = require("../../models/Office.js");
 let Award = require("../../models/Award.js");
+let State = require("../../models/State.js");
+let District = require("../../models/District.js");
 
 class RowParser{
 	constructor(row){
@@ -27,12 +29,28 @@ class RowParser{
 		let pop_statecode = this.row.getCell(19).value;
 		let pop_zip = this.convertToNoDecimal(this.row.getCell(21).value);
 		let pop_district = this.convertToNoDecimal(this.row.getCell(22).value);
+		
+		let state = dao.selectStateByCode(pop_statecode);
 
+		if (state === null){
+			state = new State(this.row.getCell(20).value, this.row.getCell(20).value);
+			try{
+			dao.insertState(state)
+			}catch(err){}
+			pop_stateCode = state.id
+		}
+
+		let district = new District(pop_district, pop_statecode);
+		try {
+			dao.insertDistrict(district);
+		}catch(err){
+		}
+
+		
 		let place_of_performance = new PlaceOfPerformance(null, pop_city, pop_county, pop_statecode, pop_zip, pop_district);
 		try {
 			dao.insertPlace(place_of_performance);
 		}catch(err){
-			throw err;
 		}
 	}
 
@@ -44,7 +62,7 @@ class RowParser{
 		try {
 			dao.insertRecParent(recipient_parent);
 		}catch(err){
-			throw err;
+	
 		}
 	}
 
@@ -56,6 +74,7 @@ class RowParser{
 		let state_code = this.row.getCell(13).value; 
 		let zip = this.convertToNoDecimal(this.row.getCell(15).value); 
 		let district = this.convertToNoDecimal(this.row.getCell(16).value);
+
 
 		//Getting the object by name, if object is null then set id to null else set id to object.id
 		let parent_name = this.row.getCell(7).value
@@ -72,12 +91,26 @@ class RowParser{
 		if(PoP != null){
 			PoP_id = PoP.id; 
 		}
+		
+		let state = dao.selectStateByCode(state_code);
+		if (state === null){
+			state = new State(this.row.getCell(14).value, this.row.getCell(14).value);
+			try {
+			dao.insertState(state)
+			}catch(err){}
+			state_code = state.id
+		}
+
+		let district_object = new District(district, state_code);
+		try {
+			dao.insertDistrict(district_object);
+		}catch(err){
+		}
 
 		let recipient = new Recipient(null, name, addr, addr2, city, state_code, zip, parent_id, district, null, PoP_id );
 		try {
 			dao.insertRecipient(recipient);
 		}catch(err){
-			throw err;
 		}
 	}
 
@@ -88,7 +121,6 @@ class RowParser{
 		try{
 			dao.insertParentAward(parent_award_agency);
 		}catch(err){
-			//throw err;
 		}
 	}
 
@@ -104,7 +136,6 @@ class RowParser{
 		try {
 			dao.insertAwardingAgency(awarding_agency);
 		}catch(err){
-			//throw err;
 		}
 	}
 
@@ -118,12 +149,10 @@ class RowParser{
 		try{
 			dao.insertOffice(awarding_office);
 		}catch(err){
-			//throw err
 		}
 		try{
 			dao.insertOffice(funding_office);
 		}catch(err){
-			//throw err
 		}
 	}
 
@@ -166,7 +195,6 @@ class RowParser{
 		try {
 			dao.insertAward(award);
 		}catch(err){
-			throw err;
 		}
 	}
 
@@ -187,7 +215,6 @@ class RowParser{
 				try{
 					dao.insertRecOwnership(ownership);
 				}catch(err){
-					throw err;
 				}
 			}
 		});
@@ -202,6 +229,8 @@ class RowParser{
 		return num_array[0];
 	}
 
+
 }
+
 
 module.exports = RowParser;
