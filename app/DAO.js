@@ -562,7 +562,7 @@ class Dao {
 		insert(agency);
 	}
 
-	//returns a recipient object selected from the id index on PG1_WEBSITE table
+	//returns a website object selected from the domain index on PG1_WEBSITE table
 	selectWebsite(domain) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_domain = ?`);
 		const select = this.db.transaction((domain)=>{
@@ -570,6 +570,26 @@ class Dao {
 		});
 
 		const row = select(domain);
+		let website = new Website();
+
+		if (row){
+			let website = new Website(
+				row.website_id,
+				row.website_domain
+			)
+			return website;
+		}
+		return null;
+	}
+
+	//returns a website object selected from the id index on PG1_WEBSITE table
+	selectWebsite(id) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_id = ?`);
+		const select = this.db.transaction((id)=>{
+			return stmt.get(id)
+		});
+
+		const row = select(id);
 		let website = new Website();
 
 		if (row){
