@@ -65,16 +65,34 @@ let howlong = 1;
 let time = 0;
 const minute  = 60000;
 
+const websites = [
+   "https://tenica.biz/" ,                     
+   "https://mtausa.com/",
+   "https://trsinc.com/" ,                     
+   "http://www.mans.us/",
+   "https://www.dtm.ca/" ,                  
+   "https://dmv.ny.gov/",
+   "https://reiusa.net/",
+   "http://ncrpsta.com/",
+   "https://talton.com/",
+   "https://sendum.com/" ,                   
+   "http://optivor.com/",
+   "http://dtelinc.com/",
+   "http://360tcpr.com/",
+   "http://bmltool.com/"
+]
+
 //OH BOY FUN TIMES
-for(let i = 0; i<recipients.length; i++){
-    let recipient = recipients[i];
-    let recipient_id = recipient.website;
-    console.log(recipient.name);
+for(let i = 0; i<websites.length; i++){
+    
+    //let recipient = recipients[i];
+    //let recipient_id = recipient.website;
+    //console.log(recipient.name);
     //let website = dao.selectWebsiteByID(recipient_id);
     //let website_id = website.id;
     let stop_time = new Date().valueOf() + time +  (howlong*minute);
     setTimeout(function(){
-        webscraper.getSite("https://adsinc.com/", "https://adsinc.com/",[], recipient_id, 0, stop_time );
+        webscraper.getSite(websites[i], websites[i],[], 0, 0, stop_time );
     },time);
     time = time + (howlong * minute)
 };

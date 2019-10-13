@@ -45,11 +45,11 @@ class webscraper{
             return;
         }
         if(orig == website_name){
-            console.log("welcome to new shit");
+            console.log(`Scraping ${orig}`);
             this.findAbout(orig);
         }
         try{
-            const response = await axios.get(website_name); 
+            const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
             await this.findAudio($, website_name, recipient_id, website_id);
             const links = await this.findLinks($, orig, website_name, links_visited);
@@ -66,9 +66,9 @@ class webscraper{
                 },5000);                
             }
         }catch(err){
-            await this.delay(20000);
             console.log(`oopsie whoopie fucko`);
-            console.log(err.errno);
+            console.log(err);
+            await this.delay(20000);
         }
     }
 
@@ -144,7 +144,8 @@ class webscraper{
                        && !item.includes("#")
                        && !item.includes(".pdf")
                        && !item.includes(".png")
-                       && !item.includes(".jpg");
+                       && !item.includes(".jpg")
+                       && !item.includes(".zip");
             });
             resolve(links);
         })
