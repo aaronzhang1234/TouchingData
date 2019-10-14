@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+html,
+body {
+  height: 100%;
+}
+
+body,
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+router-outlet + * {
+  flex: 1;
+}

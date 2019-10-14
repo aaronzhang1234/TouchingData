@@ -1,12 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { WebscraperComponent } from './views/webscraper/webscraper.component';
-import { HeaderComponent } from './layout/header/header.component';
-import { FooterComponent } from './layout/footer/footer.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { DashboardComponent } from "./views/dashboard/dashboard.component";
+import { WebscraperComponent } from "./views/webscraper/webscraper.component";
+import { HeaderComponent } from "./layout/header/header.component";
+import { FooterComponent } from "./layout/footer/footer.component";
+import { NavigationComponent } from "./layout/navigation/navigation.component";
+import { DatabaseComponent } from "./views/database/database.component";
 
 @NgModule({
   declarations: [
@@ -14,13 +16,12 @@ import { FooterComponent } from './layout/footer/footer.component';
     DashboardComponent,
     WebscraperComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    NavigationComponent,
+    DatabaseComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  imports: [BrowserModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
