@@ -28,8 +28,7 @@ class webscraper{
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 console.log(err)
-            })
-        })
+            }) })
     }
     /*
     Getting webscraped data from a site
@@ -67,7 +66,8 @@ class webscraper{
             }
         }catch(err){
             console.log(`oopsie whoopie fucko`);
-            console.log(err);
+            console.log(`Scraper had a ${err.name} error at ${err.config.url}`);
+            //console.log(err);
             await this.delay(20000);
         }
     }
@@ -78,11 +78,18 @@ class webscraper{
     findAudio($, website, recipient_id, website_id){
         let thisthat = this;
         return new Promise(function(resolve, reject){
-            let media = new Media("",recipient_id,"","", "", "", website, website_id);
             console.log("Scraping : " + website);
             $("source").each((i, elem)=>{
                 let media = new Media()
-                console.log("Website Source is: " + website + " | Link is: " + $(elem).attr("src"));
+                let src = $(elem).attr("src");
+                if(src){
+                    console.log("Website Source is: " + website + " | Link is: " + $(elem).attr("src"));
+                    let file_type = src.split(".").pop();
+                    console.log(recipient_id);
+                    console.log(website_id);
+                    let media = new Media("",recipient_id,"" , file_type, "", src, website, website_id);
+                    thisthat.dao.insertMedia(media);
+                }
             });
             $("video").each((i, elem)=>{
                 console.log("Website Video is: " + website + " | Link is: " + $(elem).attr("src"));
@@ -94,6 +101,9 @@ class webscraper{
               "a[href*='/youtube.com\\/embed/'],"+ 
               "a[href*='/youtube.com\\/watch']"  ).each((i, elem)=>{
                 console.log("Website href is " + website + " | Youtube is: " + $(elem).attr("href"));
+                let src = $(elem).attr("href");
+                let media = new Media("",recipient_id,"" , "youtube", "", src,website, website_id);
+                thisthat.dao.insertMedia(media);
             });
             resolve("");
         });

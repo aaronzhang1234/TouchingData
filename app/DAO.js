@@ -256,29 +256,32 @@ class Dao {
 	insertMedia(media) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_MEDIA (
+				recipient_id,
 				filePath, 
 				fileType, 
 				description, 
 				source, 
 				url,
-				website_id,
-				recipient_id
+				website_id
 			) VALUES(?, ?, ?, ?, ?, ?, ?)`
 		);
 
 		const insert = this.db.transaction((media)=> {
+			console.log(`Media is ${media.website}`);
+			console.log(`Media is ${media.recipient}`);
 
 			try{
 				stmt.run(
+					media.recipient,
 					media.filePath, 
 					media.fileType, 
 					media.description, 
-					media.medLength, 
 					media.source, 
-					media.website,
-					media.recpient
+					media.url,
+					media.website
 				)
 			}catch(err){
+				console.log(err);
 				throw err;
 			}
 
@@ -877,21 +880,12 @@ class Dao {
 			"recipient_state_code TEXT NULL,"+
 			"recipient_zip_4_code TEXT,"+
 			"recipient_parent_id integer,"+
-<<<<<<< HEAD
-			"recipient_district_id integer,"+
-			"recipient_website_id INTEGER NULL,"+
-			"recipient_place_of_performance_id INTEGER NULL,"+
-			"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
-			"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
-			"FOREIGN KEY(recipient_website_id) REFERENCES PG1_WEBSITE(website_id)"+
-=======
 			"recipient_district_id integer NULL,"+
 			"recipient_website_id TEXT NULL,"+
 			"recipient_place_of_performance_id INTEGER NULL,"+
 			//"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
 			"FOREIGN KEY(recipient_website_id) REFERENCES PG1_WEBSITE(website_id)"+
 			//"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
->>>>>>> master
 			"FOREIGN KEY(recipient_place_of_performance_id) REFERENCES PG1_PLACE_OF_PERFORMANCE(place_of_performance_id));"
 		).run();
 	}
@@ -907,7 +901,7 @@ class Dao {
 			"source TEXT,"+
 			"url TEXT,"+
 			"website_id integer NULL,"+
-			"FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),"+
+			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
 
