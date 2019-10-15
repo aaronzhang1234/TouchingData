@@ -8,7 +8,6 @@ import { WebscraperComponent } from "./views/webscraper/webscraper.component";
 import { HeaderComponent } from "./layout/header/header.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { NavigationComponent } from "./layout/navigation/navigation.component";
-import { DatabaseComponent } from "./views/database/database.component";
 
 @NgModule({
   declarations: [
@@ -17,8 +16,7 @@ import { DatabaseComponent } from "./views/database/database.component";
     WebscraperComponent,
     HeaderComponent,
     FooterComponent,
-    NavigationComponent,
-    DatabaseComponent
+    NavigationComponent
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [],
