@@ -1,12 +1,12 @@
 /* ****************** MAIN.JS ******************
  * 2019 September 22 : Aaron Zhang : Created
  ********************************************
- * Purpose : File that runs the webscraper.js class. 
- *
+ * Purpose : File that runs the webscraper.js class. *
 */
 
 const webscraperjs = require("./webscraper.js");
 const DAO = require("../../DAO.js");
+const url = require("url");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 
@@ -61,6 +61,16 @@ video.on('info', function(info){
 });
 video.pipe(fs.createWriteStream(`${DOWNLOAD_DIR}/${ytid}.mp4`));
 */
+
+/*
+let string_to_split = "https://ouf.com/hello/world|../me";
+let split_string = string_to_split.split("|");
+console.log(split_string);
+let concated = url.resolve("https://www.griffeye.com/talk-to-rey-leading-the-way-for-griffeye-inc/the-platform/","/wp-content/uploads/2016/10/The-Griffeye-Platform.mp4.mp4");
+console.log(url.resolve(split_string[0], split_string[1]));
+console.log(concated);
+
+*/
 let howlong = 1;
 let time = 0;
 const minute  = 60000;
@@ -71,10 +81,11 @@ for(let i = 0; i<recipients.length; i++){
     let recipient_website_id = recipient.website;
     let website = dao.selectWebsite(recipient_website_id);
     let website_domain  = website.domain;
+    //let website_domain = "https://www.dtccom.net/";
 
     let stop_time = new Date().valueOf() + time +  (howlong*minute);
     setTimeout(function(){
-        webscraper.getSite(website_domain, website_domain,[], recipient.id, recipient_website_id, stop_time );
+        let links_visited =  webscraper.getSite(website_domain, website_domain,[website_domain], recipient.id, recipient_website_id, stop_time );
     },time);
     time = time + (howlong * minute)
 };

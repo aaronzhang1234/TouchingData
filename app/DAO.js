@@ -267,9 +267,6 @@ class Dao {
 		);
 
 		const insert = this.db.transaction((media)=> {
-			console.log(`Media is ${media.website}`);
-			console.log(`Media is ${media.recipient}`);
-
 			try{
 				stmt.run(
 					media.recipient,
@@ -281,12 +278,10 @@ class Dao {
 					media.website
 				)
 			}catch(err){
-				console.log(err);
 				throw err;
 			}
 
 		});
-
 		insert(media);
 	}
 
