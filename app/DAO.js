@@ -34,12 +34,24 @@ var OwnershipType = require("./models/OwnershipType.js");
 var RecOwnership = require("./models/RecipientOwnershipType.js");
 
 class Dao {
-	//constructor connects to database with file path given
+	// Constructor connects to database with file path give
+	// Pass the file path to the .db as a paramter to constructor
+	// Will throw an exception if no connection created.
 	constructor(dbFilePath){
-		this.db = new sqlite3(dbFilePath);//,  { verbose: console.log });
+		try {
+			this.db = new sqlite3(dbFilePath);
+		}catch (err){
+			throw err;
+		}
 	}
 
+
+/**************************************************
+*************** selection Statements**************
+***************************************************/
+
 	// selects all recipients from PG1_RECIPIENT
+	// returns the result set as an array of Recipient objects
 	selectAllRecipients(){
 		let rows = this.db.prepare(`SELECT * FROM PG1_RECIPIENT`).all();
 		var recipients = [];
@@ -59,11 +71,13 @@ class Dao {
 			)
 			recipients.push(recipient);
 		});
-		//console.log(recipients);
 		return recipients;
 	}
 
-	// returns a company object selected from the name index on PG1_RECPIPIENT
+	// Select a single record from PG1_RECPIPIENT with the given name 
+	// - names are unique
+	// Takes a recipient_name as input and return a Recipient Object with the matching name
+	// returns null if no such record exists
 	selectRecipientByName(name) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where recipient_name = ? `);
 		const select = this.db.transaction((name)=>{
@@ -93,7 +107,9 @@ class Dao {
 	}
 
 
-	//returns a recipient object selected from the id index on PG1_RECIPIENT
+	// Returns the recipient selected from PG1_RECIPIENT with the given id
+	// takes id as input
+	// returns recipient as Recipient Object
 	selectRecipientById(id) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where id = ? `);
 		const select = this.db.transaction((id)=>{
@@ -123,49 +139,10 @@ class Dao {
 		return null;
 	}
 
-
-	//insert a record into PG1_RECIPIENT table, returns nothing, will throw any exception
-	insertRecipient(recipient) {
-		const stmt = this.db.prepare(
-			`INSERT INTO PG1_RECIPIENT (
-				recipient_name, 
-				recipient_address_line_1, 
-				recipient_address_line_2, 
-				recipient_city, 
-				recipient_state_code, 
-				recipient_zip_4_code, 
-				recipient_parent_id,
-				recipient_district_id,
-				recipient_website_id,
-				recipient_place_of_performance_id
-			) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-		);
-
-
-		const insert =  this.db.transaction((recipient)=> {
-			try{
-				stmt.run(
-					recipient.name, 
-					recipient.addr1, 
-					recipient.addr2, 
-					recipient.city, 
-					recipient.state, 
-					recipient.zip, 
-					recipient.parent, 
-					recipient.congressionalDistrict,
-					recipient.website, 
-					recipient.placeOfPerformance
-				);
-
-			}catch(err){
-				throw err;
-			}
-		});
-
-		insert(recipient);
-	}
-
-	//returns a recipient object selected from the id index on PG1_Media
+	// Select the record from PG1_MEDIA with the given id
+	// take id as input paramter
+	// return the selected record as Media object
+	// return null if no such objects exists
 	selectMediaById(id) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_Media WHERE media_id = ?;`);
 		const select = this.db.transaction((id)=>{
@@ -191,42 +168,9 @@ class Dao {
 		return null;
 	}
 
-	//insert into PG1_Media table
-	insertMedia(media) {
-		const stmt = this.db.prepare(
-			`INSERT INTO PG1_MEDIA (
-				filePath, 
-				fileType, 
-				description, 
-				source, 
-				url,
-				website_id,
-				recipient_id
-			) VALUES(?, ?, ?, ?, ?, ?, ?)`
-		);
-
-		const insert = this.db.transaction((media)=> {
-
-			try{
-				stmt.run(
-					media.filePath, 
-					media.fileType, 
-					media.description, 
-					media.medLength, 
-					media.source, 
-					media.website,
-					media.recpient
-				)
-			}catch(err){
-				throw err;
-			}
-
-		});
-
-		insert(media);
-	}
-
-	//returns a recipient object selected from the id index on PG1_Award table
+	// Select a record from the PG1_Award table with the matching id,year combination
+	// Returns the selected record as an Award object 
+	// return null if no such record exists
 	selectAwardId(id,year) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_AWARD 
 	WHERE award_id_piid = ? AND fiscal_year = ?`);
@@ -254,45 +198,12 @@ class Dao {
 		return null;
 	}
 
-	//insert into PG1_Award table
-	insertAward(award) {
-		const stmt = this.db.prepare(
-			`INSERT INTO PG1_AWARD (
-				award_id_piid, 
-				fiscal_year,
-				recipient_id, 
-				current_total_value_of_award, 
-				potential_total_value_of_award, 
-				awarding_agency_id, 
-				awarding_office_id, 
-				funding_office_id
-			) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
-		);
-
-		const insert = this.db.transaction((award)=>{
-			try{
-				stmt.run(
-					award.piid, 
-					award.fiscalYear,
-					award.recipient, 
-					award.currentTotal, 
-					award.potentialTotal, 
-					award.awardingAgency, 
-					award.awardingOffice, 
-					award.fundingOffice
-				);
-			}catch(err){
-				throw err;
-			}
-		});
-
-		insert(award);
-	}
-
-	//returns a recipient object selected from the id index on PG1_PLACE_OF_PERFORMANCE table
+	// Select a record from the PG1_PLACE_OF_PERFORMANCE table with the matching city, zip combination (a unique combination on the table);
+	// Returns the selected record as a Place object
+	// returns null if no such record exists
 	selectPlacePerformance(city,zip) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_PLACE_OF_PERFORMANCE
-	WHERE place_of_performance_city = ? AND place_of_performance_zip = ?`);
+			WHERE place_of_performance_city = ? AND place_of_performance_zip = ?`);
 
 		const select = this.db.transaction((city,zip)=>{
 			return stmt.get(city,zip)
@@ -316,7 +227,383 @@ class Dao {
 		return null;
 	}
 
-	//insert into PG1_PLACE_OF_PERFORMANCE table
+	// Select a record from the PG1_STATE table with the matching code
+	// Returns the selected record as a State object
+	// returns null if no such record exists
+	selectStateByCode(code) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_STATE WHERE state_code = ?`);
+		const select = this.db.transaction((code)=>{
+			return stmt.get(code)
+		});
+
+		const row = select(code);
+		let state = new State();
+
+		if (row){
+			let state = new State(
+				row.state_code,
+				row.state_name
+			)
+			return state;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_RECIPIENT_PARENT table with the matching name
+	// Returns the selected record as a RecipientParent object
+	// returns null if no such record exists
+	selectRecipientParentbyName(name) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT_PARENT WHERE recipient_parent_name = ?;`);
+		const select = this.db.transaction((name)=>{
+			return stmt.get(name)
+		});
+
+		const row = select(name);
+		let recParent = new RecParent();
+
+		if (row){
+			let recParent = new RecParent(
+				row.recipient_parent_id,
+				row.recipient_parent_name
+			)
+			return recParent;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_CONGRESSIONAL_DISTRICT_TABLE table with the matching id, code combination
+	// Returns the selected record as a District object
+	// returns null if no such record exists
+	selectCongressDistrict(id,code) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_CONGRESSIONAL_DISTRICT
+	WHERE district_id = ? AND state_code = ?`);
+		const select = this.db.transaction((id,code)=>{
+			return stmt.get(id,code)
+		});
+
+		const row = select(id,code);
+		let congressDistrict = new CongresDistrict();
+
+		if (row){
+			let congressDistrict = new CongresDistrict(
+				row.district_id,
+				row.state_code
+			)
+			return congressDistrict;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_AWARDING_AGENCY table with the matching name
+	// Returns the selected record as an AwardingAgency object
+	// returns null if no such record exists
+	selectAwardingAgency(name) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_AWARDING_AGENCY
+	WHERE awarding_agency_name = ?`);
+		const select = this.db.transaction((name)=>{
+			return stmt.get(name)
+		});
+
+		const row = select(name);
+		let awardingAgency = new AwardingAgency();
+
+		if (row){
+			let awardingAgency = new AwardingAgency(
+				row.awarding_agency_id,
+				row.awarding_agency_name,
+				row.parent_award_agency_id
+			)
+			return awardingAgency;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_PARENT_AWARD_AGENCY table with the matching name
+	// Returns the selected record as an ParentAwardAgency object
+	// returns null if no such record exists
+	selectParentAwardingAgency(name) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_PARENT_AWARD_AGENCY
+	WHERE parent_awarding_agency_name = ?`);
+		const select = this.db.transaction((name)=>{
+			return stmt.get(name)
+		});
+
+		const row = select(name);
+		let parentAwardingAgency = new ParentAwardingAgency();
+
+		if (row){
+			let parentAwardingAgency = new ParentAwardingAgency(
+				row.parent_award_agency_id,
+				row.parent_awarding_agency_name
+			)
+			return parentAwardingAgency;
+		}
+		return null;
+	}
+	
+	// Select a record from PG1_WEBSITE table with the matching domain
+	// Returns the selected record as an Website object
+	// returns null if no such record exists
+	selectWebsite(domain) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_domain = ?`);
+		const select = this.db.transaction((domain)=>{
+			return stmt.get(domain)
+		});
+
+		const row = select(domain);
+		let website = new Website();
+
+		if (row){
+			let website = new Website(
+				row.website_id,
+				row.website_domain
+			)
+			return website;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_WEBSITE table with the matching id
+	// Returns the selected record as an Website object
+	// returns null if no such record exists
+	selectWebsite(id) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_id = ?`);
+		const select = this.db.transaction((id)=>{
+			return stmt.get(id)
+		});
+
+		const row = select(id);
+		let website = new Website();
+
+		if (row){
+			let website = new Website(
+				row.website_id,
+				row.website_domain
+			)
+			return website;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_OFFICE table with the matching name
+	// Returns the selected record as an Office object
+	// returns null if no such record exists
+	selectOffice(name) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_OFFICE WHERE office_name = ?`);
+		const select = this.db.transaction((name)=>{
+			return stmt.get(name)
+		});
+
+		const row = select(name);
+		let office = new Office();
+
+		if (row){
+			let office = new Office(
+				row.office_id,
+				row.office_name
+			)
+			return office;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_OWNERSHIP_TYPE table with the matching id
+	// Returns the selected record as an OwnershipType object
+	// returns null if no such record exists
+	selectOwnershipType(id) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_OWNERSHIP_TYPE
+	WHERE ownership_type_id = ?`);
+		const select = this.db.transaction((id)=>{
+			return stmt.get(id)
+		});
+
+		const row = select(id);
+		let ownershipType = new OwnershipType();
+
+		if (row){
+			let ownershipType = new OwnershipType(
+				row.ownership_type_id,
+				row.ownership_type_description
+			)
+			return ownershipType;
+		}
+		return null;
+	}
+
+	// Select a record from PG1_RECIPIENT_OWNERSHIP_TYPE table with the matching typeId, recId combo
+	// Returns the selected record as an RecipientOwnershipType object
+	// returns null if no such record exists
+	selectRecOwnerType(typeId,recId) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT_OWNERSHIP_TYPE
+	WHERE ownership_type_id = ? AND recipient_id = ?`);
+		const select = this.db.transaction((typeId,recId)=>{
+			return stmt.get(typeId,recId)
+		});
+
+		const row = select(typeId,recId);
+		let recOwnership = new RecOwnership();
+
+		if (row){
+			let recOwnership = new RecOwnership(
+				row.ownership_type_id,
+				row.recipient_id,
+				row.recipient_ownership_notes
+			)
+			return recOwnership;
+		}
+		return null;
+	}
+
+		/**************************************************
+		 *  insertion statements * 
+		 *************************************************/
+
+	// insert a record into PG1_RECIPIENT table, returns nothing, 
+	// will catch any exception, log it to console
+	// returns id to selected record
+	// if a record with the same name already exists return id of that record
+	insertRecipient(recipient) {
+		let selectRecipient = new Recipient(selectRecipientByName(recipient.name))
+		if (selectRecipient === null){
+
+
+			const stmt = this.db.prepare(
+				`INSERT INTO PG1_RECIPIENT (
+				recipient_name, 
+				recipient_address_line_1, 
+				recipient_address_line_2, 
+				recipient_city, 
+				recipient_state_code, 
+				recipient_zip_4_code, 
+				recipient_parent_id,
+				recipient_district_id,
+				recipient_website_id,
+				recipient_place_of_performance_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			);
+
+			const insert =  this.db.transaction((recipient)=> {
+				try{
+					stmt.run(
+						recipient.name, 
+						recipient.addr1, 
+						recipient.addr2, 
+						recipient.city, 
+						recipient.state, 
+						recipient.zip, 
+						recipient.parent, 
+						recipient.congressionalDistrict,
+						recipient.website, 
+						recipient.placeOfPerformance
+					);
+				}catch(err){
+					console.log(err)
+					return null;
+				}
+			});
+			insert(recipient);
+				
+		let selectRecipient = new Recipient(selectRecipientByName(recipient.name))
+
+		}
+		return selectRecipient.id;
+	}
+
+
+	// insert a record into PG1_MEDIA
+	// will catch any exception and log it to console
+	// returns id to selected record
+	// if a record with the same url already exists return id of that record
+	insertMedia(media) {
+		let selectMedia = selectMediaByUrl(media.url)
+		if(selectMedia === null){
+			const stmt = this.db.prepare(
+				`INSERT INTO PG1_MEDIA (
+				filePath, 
+				fileType, 
+				description, 
+				source, 
+				url,
+				website_id,
+				recipient_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?)`
+			);
+
+			const insert = this.db.transaction((media)=> {
+
+				try{
+					stmt.run(
+						media.filePath, 
+						media.fileType, 
+						media.description, 
+						media.medLength, 
+						media.source, 
+						media.website,
+						media.recpient
+					)
+				}catch(err){
+					console.log(err);
+					return null;
+				}
+
+			});
+
+			insert(media);
+			let selectMedia = selectMediaByUrl(media.url)
+		}
+		return selectMedia.id;
+	}
+
+
+	// insert a record into PG1_AWARD
+	// will catch any exception, log it to console and return null
+	// returns the new record as an Award Object
+	// if a record with the same id already exists, return that record as an Award object
+	insertAward(award) {
+		let selectAward = selectAwardId(award.id, award.fiscal_year)
+		if (selectAward === null){
+			const stmt = this.db.prepare(
+				`INSERT INTO PG1_AWARD (
+				award_id_piid, 
+				fiscal_year,
+				recipient_id, 
+				current_total_value_of_award, 
+				potential_total_value_of_award, 
+				awarding_agency_id, 
+				awarding_office_id, 
+				funding_office_id
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
+			);
+
+			const insert = this.db.transaction((award)=>{
+				try{
+					stmt.run(
+						award.piid, 
+						award.fiscalYear,
+						award.recipient, 
+						award.currentTotal, 
+						award.potentialTotal, 
+						award.awardingAgency, 
+						award.awardingOffice, 
+						award.fundingOffice
+					);
+				}catch(err){
+					console.log(err);
+					return null
+				}
+			});
+
+			insert(award);
+			let selectAward = selectAwardId(award.id, award.fiscal_year)
+		}
+		return selectAward;
+	}
+
+
+	// insert a record into PG1_PLACE_OF_PERFORMANCE 
+	// will catch any exception, log it to console and return null
+	// returns id of selected record
+	// if a record with the same name already exists return  of that record
 	insertPlace(place) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_PLACE_OF_PERFORMANCE (
@@ -345,26 +632,6 @@ class Dao {
 		insert(place);
 	}
 
-	//returns a recipient object selected from the id index on PG1_STATE table
-	selectStateByCode(code) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_STATE WHERE state_code = ?`);
-		const select = this.db.transaction((code)=>{
-			return stmt.get(code)
-		});
-
-		const row = select(code);
-		let state = new State();
-
-		if (row){
-			let state = new State(
-				row.state_code,
-				row.state_name
-			)
-			return state;
-		}
-		return null;
-	}
-
 	//insert into PG1_STATE table
 	insertState(state) {
 		const stmt = this.db.prepare(
@@ -389,28 +656,10 @@ class Dao {
 	}
 
 
-	//returns a recipient object selected from the id index on PG1_RECIPIENT_PARENT table
-	selectRecipientParentbyName(name) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT_PARENT WHERE recipient_parent_name = ?;`);
-		const select = this.db.transaction((name)=>{
-			return stmt.get(name)
-		});
-
-		const row = select(name);
-		let recParent = new RecParent();
-
-		if (row){
-			let recParent = new RecParent(
-				row.recipient_parent_id,
-				row.recipient_parent_name
-			)
-			return recParent;
-		}
-		return null;
-	}
 
 
-	//insert into PG1_RECIPIENT_PARENT table
+	//insert record into PG1_RECIPIENT_PARENT table
+	//will catch any exception
 	insertRecParent(parent) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_RECIPIENT_PARENT (
@@ -424,35 +673,16 @@ class Dao {
 					parent.name
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
 		insert(parent);
 	}
 
-	//returns a recipient object selected from the id index on PG1_CONGRESSIONAL_DISTRICT table
-	selectCongressDistrict(id,code) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_CONGRESSIONAL_DISTRICT
-	WHERE district_id = ? AND state_code = ?`);
-		const select = this.db.transaction((id,code)=>{
-			return stmt.get(id,code)
-		});
 
-		const row = select(id,code);
-		let congressDistrict = new CongresDistrict();
-
-		if (row){
-			let congressDistrict = new CongresDistrict(
-				row.district_id,
-				row.state_code
-			)
-			return congressDistrict;
-		}
-		return null;
-	}
-
-	//insert into PG1_CONGRESSIONAL_DISTRICT table
+	//insert a record into PG1_CONGRESSIONAL_DISTRICT table
+	// will catch any error
 	insertDistrict(district) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_CONGRESSIONAL_DISTRICT (
@@ -468,36 +698,16 @@ class Dao {
 					district.state
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
 		insert(district);
 	}
 
-	//returns a recipient object selected from the id index on PG1_AWARDING_AGENCY table
-	selectAwardingAgency(name) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_AWARDING_AGENCY
-	WHERE awarding_agency_name = ?`);
-		const select = this.db.transaction((name)=>{
-			return stmt.get(name)
-		});
 
-		const row = select(name);
-		let awardingAgency = new AwardingAgency();
-
-		if (row){
-			let awardingAgency = new AwardingAgency(
-				row.awarding_agency_id,
-				row.awarding_agency_name,
-				row.parent_award_agency_id
-			)
-			return awardingAgency;
-		}
-		return null;
-	}
-
-	//insert into PG1_AWARDING_AGENCY table
+	//insert a record into PG1_AWARDING_AGENCY table
+	//will catch any exception
 	insertAwardingAgency(agency) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_AWARDING_AGENCY (
@@ -513,35 +723,16 @@ class Dao {
 					agency.parent
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
 		insert(agency);
 	}
 
-	//returns a recipient object selected from the id index on PG1_PARENT_AWARDING_AGENCY table
-	selectParentAwardingAgency(name) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_PARENT_AWARD_AGENCY
-	WHERE parent_awarding_agency_name = ?`);
-		const select = this.db.transaction((name)=>{
-			return stmt.get(name)
-		});
 
-		const row = select(name);
-		let parentAwardingAgency = new ParentAwardingAgency();
-
-		if (row){
-			let parentAwardingAgency = new ParentAwardingAgency(
-				row.parent_award_agency_id,
-				row.parent_awarding_agency_name
-			)
-			return parentAwardingAgency;
-		}
-		return null;
-	}
-
-	//insert into PG1_PARENT_AWARD_AGENCY table
+	//insert a record into PG1_PARENT_AWARD_AGENCY table
+	//will catch any exception
 	insertParentAward(agency) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_PARENT_AWARD_AGENCY (
@@ -555,54 +746,16 @@ class Dao {
 					agency.name
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
 		insert(agency);
 	}
 
-	//returns a website object selected from the domain index on PG1_WEBSITE table
-	selectWebsite(domain) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_domain = ?`);
-		const select = this.db.transaction((domain)=>{
-			return stmt.get(domain)
-		});
 
-		const row = select(domain);
-		let website = new Website();
-
-		if (row){
-			let website = new Website(
-				row.website_id,
-				row.website_domain
-			)
-			return website;
-		}
-		return null;
-	}
-
-	//returns a website object selected from the id index on PG1_WEBSITE table
-	selectWebsite(id) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_id = ?`);
-		const select = this.db.transaction((id)=>{
-			return stmt.get(id)
-		});
-
-		const row = select(id);
-		let website = new Website();
-
-		if (row){
-			let website = new Website(
-				row.website_id,
-				row.website_domain
-			)
-			return website;
-		}
-		return null;
-	}
-
-	//insert into PG1_WEBSITE table
+	//insert a record into PG1_WEBSITE table
+	//will catch any exception
 	insertWebsite(website) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_WEBSITE (
@@ -618,34 +771,16 @@ class Dao {
 					website.domain
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
 		insert(website);
 	}
 
-	//returns a recipient object selected from the id index on PG1_OFFICE table
-	selectOffice(name) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_OFFICE WHERE office_name = ?`);
-		const select = this.db.transaction((name)=>{
-			return stmt.get(name)
-		});
 
-		const row = select(name);
-		let office = new Office();
-
-		if (row){
-			let office = new Office(
-				row.office_id,
-				row.office_name
-			)
-			return office;
-		}
-		return null;
-	}
-
-	//insert into PG1_OFFICE table
+	//insert a record into PG1_OFFICE table
+	//will catch any exception
 	insertOffice(office) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_OFFICE (
@@ -659,7 +794,7 @@ class Dao {
 					office.name
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
@@ -667,28 +802,9 @@ class Dao {
 	}
 
 
-	//returns a recipient object selected from the id index on PG1_OWNERSHIP_TYPE table
-	selectOwnershipType(id) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_OWNERSHIP_TYPE
-	WHERE ownership_type_id = ?`);
-		const select = this.db.transaction((id)=>{
-			return stmt.get(id)
-		});
 
-		const row = select(id);
-		let ownershipType = new OwnershipType();
-
-		if (row){
-			let ownershipType = new OwnershipType(
-				row.ownership_type_id,
-				row.ownership_type_description
-			)
-			return ownershipType;
-		}
-		return null;
-	}
-
-	//insert into PG1_OWNERSHIP_TYPE table
+	//insert a record into PG1_OWNERSHIP_TYPE table
+	//will catch any exception
 	insertOwnershipType(ownershipType) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_OWNERSHIP_TYPE (
@@ -704,7 +820,7 @@ class Dao {
 					ownershipType.description
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
@@ -712,29 +828,9 @@ class Dao {
 	}
 
 
-	//returns a recipient object selected from the id index on PG1_RECIPIENT_OWNERSHIP_TYPE table
-	selectRecOwnerType(type_id,rec_id) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT_OWNERSHIP_TYPE
-	WHERE ownership_type_id = ? AND recipient_id = ?`);
-		const select = this.db.transaction((type_id,rec_id)=>{
-			return stmt.get(type_id,rec_id)
-		});
 
-		const row = select(type_id,rec_id);
-		let recOwnership = new RecOwnership();
-
-		if (row){
-			let recOwnership = new RecOwnership(
-				row.ownership_type_id,
-				row.recipient_id,
-				row.recipient_ownership_notes
-			)
-			return recOwnership;
-		}
-		return null;
-	}
-
-	//insert into PG1_RECIPIENT_OWNERSHIP_TYPE table
+	//insert a record into PG1_RECIPIENT_OWNERSHIP_TYPE table
+	//will catch any exception
 	insertRecOwnership(recOwnership) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_RECIPIENT_OWNERSHIP_TYPE (
@@ -759,7 +855,9 @@ class Dao {
 		insert(recOwnership);
 	}
 
-	//create and drop tables
+	/***********************************************
+	 ********** create and drop tables *************
+	 ***********************************************/ 
 
 	//WILL CREATE ALL TABLES FOR THE DATABASE if they don't already exist
 	createAllTables(){
@@ -821,9 +919,9 @@ class Dao {
 			"recipient_district_id integer NULL,"+
 			"recipient_website_id TEXT NULL,"+
 			"recipient_place_of_performance_id INTEGER NULL,"+
-			//"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
+			"FOREIGN KEY(recipient_district_id, recipient_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code)"+
 			"FOREIGN KEY(recipient_website_id) REFERENCES PG1_WEBSITE(website_id)"+
-			//"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
+			"FOREIGN KEY(recipient_state_code) REFERENCES PG1_STATE(state_code)"+
 			"FOREIGN KEY(recipient_place_of_performance_id) REFERENCES PG1_PLACE_OF_PERFORMANCE(place_of_performance_id));"
 		).run();
 	}
@@ -837,7 +935,7 @@ class Dao {
 			"fileType TEXT NOT NULL,"+
 			"description TEXT,"+
 			"source TEXT,"+
-			"url TEXT,"+
+			"url TEXT NOT NULL UNIQUE,"+ 
 			"website_id integer NULL,"+
 			"FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
@@ -895,7 +993,7 @@ class Dao {
 			"place_of_performance_state_code TEXT NULL,"+
 			"place_of_performance_district_id TEXT NULL,"+
 			"UNIQUE(place_of_performance_city, place_of_performance_zip));"
-			//"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
+			"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
 		).run();
 	}
 
@@ -977,6 +1075,14 @@ class Dao {
 			"recipient_parent_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			"recipient_parent_name TEXT UNIQUE);"
 		).run();
+	}
+
+	backupDb(){
+		db.backup(`backup-${Date.now()}.db`).then(() => {
+			console.log('backup complete!');
+		}).catch((err) => {
+			console.log('backup failed:', err);
+		});
 	}
 
 	closeDb(){
