@@ -12,4 +12,9 @@ export class WebscraperComponent implements OnInit {
   ngOnInit() {
   }
 
+  startScrape(){
+    let bar = document.getElementById("progressbar");
+    bar.setAttribute("style", "display:inline-block;");
+  }
+
 }

@@ -1,0 +1,12 @@
+#navigation {
+    background-color: black;
+    border-radius: 20px;
+}
+.nav-link {
+    color: white;
+    border-radius: 20px;
+    background-color: black;
+}
+.nav-item > .active {
+    background-color: #4b5320;
+}

@@ -12,4 +12,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   }
 
+  import() {
+    let bar = document.getElementById("progressbar");
+    bar.setAttribute("style", "display:inline-block;");
+  }
+
 }
