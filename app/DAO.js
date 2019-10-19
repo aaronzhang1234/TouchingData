@@ -41,7 +41,7 @@ class Dao {
 		try {
 			this.db = new sqlite3(dbFilePath);
 		}catch (err){
-			throw err;
+			 
 		}
 	}
 
@@ -111,7 +111,7 @@ class Dao {
 	// takes id as input
 	// returns recipient as Recipient Object
 	selectRecipientById(id) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where id = ? `);
+		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where recipient_id = ? `);
 		const select = this.db.transaction((id)=>{
 			return stmt.get(id)
 		});
@@ -180,7 +180,6 @@ class Dao {
 		});
 
 		const row = select(id,year);
-		let award = new Award();
 
 		if (row){
 			let award = new Award(
@@ -344,7 +343,7 @@ class Dao {
 	// Select a record from PG1_WEBSITE table with the matching domain
 	// Returns the selected record as an Website object
 	// returns null if no such record exists
-	selectWebsite(domain) {
+	selectWebsiteByDomain(domain) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_domain = ?`);
 		const select = this.db.transaction((domain)=>{
 			return stmt.get(domain)
@@ -366,7 +365,7 @@ class Dao {
 	// Select a record from PG1_WEBSITE table with the matching id
 	// Returns the selected record as an Website object
 	// returns null if no such record exists
-	selectWebsite(id) {
+	selectWebsiteById(id) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_WEBSITE WHERE website_id = ?`);
 		const select = this.db.transaction((id)=>{
 			return stmt.get(id)
@@ -455,7 +454,7 @@ class Dao {
 	}
 
 		/**************************************************
-		 *  insertion statements * 
+		 ********** insert and delete statements ********* 
 		 *************************************************/
 
 	// insert a record into PG1_RECIPIENT table, returns nothing, 
@@ -463,9 +462,9 @@ class Dao {
 	// returns id to selected record
 	// if a record with the same name already exists return id of that record
 	insertRecipient(recipient) {
-		let selectRecipient = new Recipient(selectRecipientByName(recipient.name))
+		let selectRecipient = new Recipient()
+		selectRecipient = this.selectRecipientByName(recipient.name)
 		if (selectRecipient === null){
-
 
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_RECIPIENT (
@@ -497,26 +496,42 @@ class Dao {
 						recipient.placeOfPerformance
 					);
 				}catch(err){
-					console.log(err)
+					throw err
 					return null;
 				}
 			});
 			insert(recipient);
 				
-		let selectRecipient = new Recipient(selectRecipientByName(recipient.name))
+		let selectRecipient = this.selectRecipientByName(recipient.name)
 
 		}
 		return selectRecipient.id;
 	}
 
+	deleteRecipient(id){
+		const stmt = this.db.prepare(
+			`DELETE FROM PG1_RECIPIENT WHERE recipient_id = ?`
+		);1134
+
+		const deleteRec =  this.db.transaction((id)=> {
+			try{
+				stmt.run(id);
+			}catch(err){
+				return false;
+			}
+		});
+		deleteRec(id);
+		return true;
+	}
 
 	// insert a record into PG1_MEDIA
 	// will catch any exception and log it to console
 	// returns id to selected record
 	// if a record with the same url already exists return id of that record
 	insertMedia(media) {
-		let selectMedia = selectMediaByUrl(media.url)
-		if(selectMedia === null){
+		let selectMedia = new Media();
+		selectMedia = selectMediaByUrl(media.url)
+		if(selectMedia.id === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_MEDIA (
 				filePath, 
@@ -542,7 +557,7 @@ class Dao {
 						media.recpient
 					)
 				}catch(err){
-					console.log(err);
+					 
 					return null;
 				}
 
@@ -557,10 +572,11 @@ class Dao {
 
 	// insert a record into PG1_AWARD
 	// will catch any exception, log it to console and return null
-	// returns the new record as an Award Object
+	// returns the new record as an Award Object1134
 	// if a record with the same id already exists, return that record as an Award object
 	insertAward(award) {
-		let selectAward = selectAwardId(award.id, award.fiscal_year)
+		let selectAward = new Award()
+		selectAward = this.selectAwardId(award.piid, award.fiscalYear)
 		if (selectAward === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_AWARD (
@@ -588,13 +604,13 @@ class Dao {
 						award.fundingOffice
 					);
 				}catch(err){
-					console.log(err);
+					 
 					return null
 				}
 			});
 
 			insert(award);
-			let selectAward = selectAwardId(award.id, award.fiscal_year)
+			let selectAward = this.selectAwardId(award.piid, award.fiscalYear)
 		}
 		return selectAward;
 	}
@@ -625,7 +641,7 @@ class Dao {
 					place.congressionalDistrict
 				);
 			}catch(err){
-				throw err;
+				 
 			}
 		});
 
@@ -648,7 +664,7 @@ class Dao {
 					state.name
 				);
 			}catch(err){
-				throw err;
+				 
 			}
 		});
 
@@ -673,7 +689,7 @@ class Dao {
 					parent.name
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -698,7 +714,7 @@ class Dao {
 					district.state
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -723,7 +739,7 @@ class Dao {
 					agency.parent
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -746,7 +762,7 @@ class Dao {
 					agency.name
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -771,7 +787,7 @@ class Dao {
 					website.domain
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -794,7 +810,7 @@ class Dao {
 					office.name
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
@@ -820,13 +836,12 @@ class Dao {
 					ownershipType.description
 				);
 			}catch(err){
-				console.log(err);
+				 
 			}
 		});
 
 		insert(ownershipType);
 	}
-
 
 
 	//insert a record into PG1_RECIPIENT_OWNERSHIP_TYPE table
@@ -848,7 +863,7 @@ class Dao {
 					recOwnership.notes
 				);
 			}catch(err){
-				throw err;
+				 
 			}
 		});
 
@@ -992,7 +1007,7 @@ class Dao {
 			"place_of_performance_county TEXT,"+
 			"place_of_performance_state_code TEXT NULL,"+
 			"place_of_performance_district_id TEXT NULL,"+
-			"UNIQUE(place_of_performance_city, place_of_performance_zip));"
+			"UNIQUE(place_of_performance_city, place_of_performance_zip),"+
 			"FOREIGN KEY(place_of_performance_district_id, place_of_performance_state_code) REFERENCES PG1_CONGRESSIONAL_DISTRICT(district_id, state_code));"
 		).run();
 	}
@@ -1078,8 +1093,10 @@ class Dao {
 	}
 
 	backupDb(){
-		db.backup(`backup-${Date.now()}.db`).then(() => {
+		let backupName = `backup-${Date.now()}.db`
+		db.backup(backupName).then(() => {
 			console.log('backup complete!');
+			return backupName
 		}).catch((err) => {
 			console.log('backup failed:', err);
 		});
