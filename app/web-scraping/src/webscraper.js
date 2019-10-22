@@ -2,8 +2,9 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const url = require("url");
 const winston = require("winston");
-const exec = require("child_process").exec;
+const path = require("path");
 const fs = require("fs");
+const download = require("download-file");
 const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
 const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
 const youtubedl = require("ytdl-core");
@@ -15,7 +16,7 @@ class webscraper{
     constructor(bing_APIKEY){  
         let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
         this.dao = new DAO(sqlDatabaseName);
-        this.credentials = new CognitiveServicesCredentials("ce530745bc7b4a45b1c66356a9af2879");
+        this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
         this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
 
         //Creating a logger at the specified area.
@@ -95,7 +96,7 @@ class webscraper{
     findAudio($, website, recipient_id, website_id){
         let thisthat = this;
         return new Promise(function(resolve, reject){
-//            thisthat.logger.info(`Scraping : ${website}`);
+           thisthat.logger.info(`Scraping : ${website}`);
             $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
@@ -121,6 +122,36 @@ class webscraper{
             });
             resolve("");
         });
+    }
+    downloadFile(parent_directory , full_url){
+        let DOWNLOAD_DIR =  "./data/scraped";
+        var src_name = url.parse(full_url).pathname.split('/').pop();
+        let full_download_path = path.join(DOWNLOAD_DIR, parent_directory);
+        var options = {
+            directory: full_download_path,
+            filename: src_name
+        }
+        download(full_url, options, function(err){
+            if(err) console.log(err); 
+            console.log("downloaded");
+        })    
+    }
+    downloadYoutube(parent_directory, youtube_link){
+
+        let DOWNLOAD_DIR =  "./data/scraped";
+        var ytid = url.parse(youtube_link).pathname.split('/').pop();
+
+        let full_download_path = path.join(DOWNLOAD_DIR, parent_directory, ytid+".mp4");
+        console.log(full_download_path);
+        try{
+            let video = youtubedl(youtube_link);
+            video.on('info', function(info){
+                console.log(`File name is ${info._filename}`);
+            });
+            video.pipe(fs.createWriteStream(full_download_path));
+        }catch(err){
+            console.log(err);
+        }
     }
     findLinks($, orig, current_site, links_visited){
         let links = [];

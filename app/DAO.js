@@ -225,7 +225,24 @@ class Dao {
 
 		insert(recipient);
 	}
-
+	selectAllMedia(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA GROUP BY SOURCE`).all();
+		var medias = [];
+		rows.forEach(function(row, i){
+			let media = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.source,
+				row.url,
+				row.website_id 
+			)
+			medias.push(media);
+		});
+		return medias;
+	}
 	//returns a recipient object selected from the id index on PG1_Media
 	selectMediaById(id) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_Media WHERE media_id = ?;`);

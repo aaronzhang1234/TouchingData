@@ -11,13 +11,14 @@ let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 
 
-var webscraper = new webscraperjs();
+var webscraper = new webscraperjs("ce530745bc7b4a45b1c66356a9af2879");
 //webscraper.getSiteFromName("Federal Express Corporation");
 
 let dao = new DAO(sqlDatabaseName);
 let recipients = dao.selectAllRecipients();
 //console.log(recipients);
 
+//Find Company's websites based on bing api.
 /*
 let time = 1000;
 for(let i =0; i<recipients.length; i++){
@@ -40,37 +41,6 @@ for(let i =0; i<recipients.length; i++){
 */
 
 
-/* DOWNLOAD AN MP4
-let DOWNLOAD_DIR =  "./data/scraped";
-var src_name = url.parse(src_url).pathname.split('/').pop();
-// compose the wget command
-var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + src_url;
-// excute wget using child_process' exec function
-var child = exec(wget, function(err, stdout, stderr) {
-    if (err) throw err;
-    else console.log(src_name + ' downloaded to ' + DOWNLOAD_DIR);
-});
-*/
-
-
-/*DOWNLOAD YOUTUBE LINK
-var ytid = url.parse(youtube_link).pathname.split('/').pop();
-let video = youtubedl(youtube_link);
-video.on('info', function(info){
-    console.log(`File name is ${info._filename}`);
-});
-video.pipe(fs.createWriteStream(`${DOWNLOAD_DIR}/${ytid}.mp4`));
-*/
-
-/*
-let string_to_split = "https://ouf.com/hello/world|../me";
-let split_string = string_to_split.split("|");
-console.log(split_string);
-let concated = url.resolve("https://www.griffeye.com/talk-to-rey-leading-the-way-for-griffeye-inc/the-platform/","/wp-content/uploads/2016/10/The-Griffeye-Platform.mp4.mp4");
-console.log(url.resolve(split_string[0], split_string[1]));
-console.log(concated);
-
-*/
 let howlong = 1;
 let time = 0;
 const minute  = 60000;
@@ -89,3 +59,26 @@ for(let i = 0; i<recipients.length; i++){
     },time);
     time = time + (howlong * minute)
 };
+
+
+//To Download all Files in the SQL Database.
+//
+//let medias = dao.selectAllMedia();
+//let time = 1000;
+//for(let i = 0; i<medias.length; i++){
+//    let media = medias[i];
+//    let recipient = dao.selectRecipientById(media.recipient);
+//    let media_url = media.url;
+//    let media_source = media.source;
+//    time = time + 2000;
+//    setTimeout(function(){
+//        if(media.fileType == "youtube"){
+//            webscraper.downloadYoutube(recipient.name, media_source);        
+//        }else{
+//            /*
+//            let full_link = url.resolve(media_url, media_source);
+//            webscraper.downloadFile(recipient.name, full_link);
+//            */
+//        }
+//    },time);
+//}

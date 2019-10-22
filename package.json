@@ -27,6 +27,7 @@
     "better-sqlite3": "^5.4.3",
     "cheerio": "^1.0.0-rc.3",
     "child_process": "^1.0.2",
+    "download-file": "^0.1.5",
     "exceljs": "^2.0.1",
     "fs": "0.0.1-security",
     "ms-rest-azure": "^3.0.0",
