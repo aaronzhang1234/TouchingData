@@ -41,6 +41,7 @@ for(let i =0; i<recipients.length; i++){
 */
 
 
+/*
 let howlong = 1;
 let time = 0;
 const minute  = 60000;
@@ -60,25 +61,27 @@ for(let i = 0; i<recipients.length; i++){
     time = time + (howlong * minute)
 };
 
+*/
 
 //To Download all Files in the SQL Database.
-//
-//let medias = dao.selectAllMedia();
-//let time = 1000;
-//for(let i = 0; i<medias.length; i++){
-//    let media = medias[i];
-//    let recipient = dao.selectRecipientById(media.recipient);
-//    let media_url = media.url;
-//    let media_source = media.source;
-//    time = time + 2000;
-//    setTimeout(function(){
-//        if(media.fileType == "youtube"){
-//            webscraper.downloadYoutube(recipient.name, media_source);        
-//        }else{
-//            /*
-//            let full_link = url.resolve(media_url, media_source);
-//            webscraper.downloadFile(recipient.name, full_link);
-//            */
-//        }
-//    },time);
-//}
+
+let medias = dao.selectAllMedia();
+let time = 1000;
+for(let i = 0; i<medias.length; i++){
+    let media = medias[i];
+    let recipient = dao.selectRecipientById(media.recipient);
+    let media_url = media.url;
+    let media_source = media.source;
+    let media_id = media.id;
+    time = time + 2000;
+
+    setTimeout(function(){
+        if(media.fileType == "youtube"){
+            //webscraper.downloadYoutube(recipient.name, media_source);        
+        }else{
+            let full_link = url.resolve(media_url, media_source);
+            console.log(recipient.name);
+            webscraper.downloadFile(recipient.name, full_link, media_id );
+        }
+    },time);
+}

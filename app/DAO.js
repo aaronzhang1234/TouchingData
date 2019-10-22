@@ -301,7 +301,14 @@ class Dao {
 		});
 		insert(media);
 	}
-
+	updateMediaPath(media_path, media_id){
+		console.log("fuck");
+		try{
+			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?;`).run(media_path, media_id);
+		}catch(err){
+			console.log(err);
+		}
+	}
 	//returns a recipient object selected from the id index on PG1_Award table
 	selectAwardId(id,year) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_AWARD 
