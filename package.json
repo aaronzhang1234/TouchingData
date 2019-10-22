@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node .test/test.js",
     "migrate": "node app/dataMigration/src/main.js",
     "webscrape": "node app/web-scraping/src/main.js",
     "initValTables": "node app/dataMigration/src/initValidationTables.js",
-    "initDb": "node app/dataMigration/src/initdb.js",
-    "test": "node .test/testAllRecs.js"
+    "initDb": "node app/dataMigration/src/initdb.js"
   },
   "repository": {
     "type": "git",
@@ -28,9 +27,14 @@
     "better-sqlite3": "^5.4.3",
     "cheerio": "^1.0.0-rc.3",
     "child_process": "^1.0.2",
+    "download-file": "^0.1.5",
     "exceljs": "^2.0.1",
     "fs": "0.0.1-security",
     "ms-rest-azure": "^3.0.0",
-    "sqlite3": "^4.1.0"
+    "sleep": "^6.1.0",
+    "sqlite3": "^4.1.0",
+    "winston": "^3.2.1",
+    "youtube-dl": "^2.0.1",
+    "ytdl-core": "^1.0.0"
   }
 }

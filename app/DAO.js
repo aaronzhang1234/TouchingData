@@ -92,10 +92,71 @@ class Dao {
 		return null;
 	}
 
+	//returns an array of arrays,
+	//the fields of the inner array are a recipient and that recipient's parent - in that order
+	//example output:
+	//[
+	//	[
+	//		{
+	//			id: 1106,
+	//			name: 'GLOBAL TRAVELER LLC',
+	//			addr1: '18283 RIVIERA WAY',
+	//			addr2: null,
+	//			city: 'LEESBURG',
+	//			state: 'VA',
+	//			zip: '201767470',
+	//			parent: 1296,
+	//			congressionalDistrict: 10,
+	//			website: null,
+	//			placeOfPerformance: null
+	//		},
+	//		{
+	//			id: 1296,
+	//			name: 'GLOBAL TRAVELER LLC'
+	//		}
+	//	],
+	//	...
+	//]
+	selectRecsAndParents(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_RECIPIENT r LEFT JOIN PG1_RECIPIENT_PARENT p on p.recipient_parent_id = r.recipient_parent_id`).all();
+		//console.log(recipients);
+		var records = [];
+		rows.forEach(function(row, i){
+			let recipient = new Recipient(
+				row.recipient_id, 
+				row.recipient_name, 
+				row.recipient_address_line_1, 
+				row.recipient_address_line_2, 
+				row.recipient_city, 
+				row.recipient_state_code, 
+				row.recipient_zip_4_code, 
+				row.recipient_parent_id,
+				row.recipient_district_id, 
+				row.recipient_website_id,
+				row.place_of_performance_id
+			)
+			let parent = new RecParent(
+				row.recipient_parent_id,
+				row.recipient_parent_name
+			)
+			records.push([recipient, parent]);
+		});
+
+		return records;
+	}
+
+	//updates recipient website id 
+	updateRecipientWebsite(recId, websiteId){
+		try{
+			this.db.prepare(`UPDATE PG1_RECIPIENT SET recipient_website_id = ? WHERE recipient_id = ?;`).run(websiteId, recId);
+		}catch(err){
+			console.log(err);
+		}
+	}
 
 	//returns a recipient object selected from the id index on PG1_RECIPIENT
 	selectRecipientById(id) {
-		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where id = ? `);
+		const stmt = this.db.prepare(`SELECT * FROM PG1_RECIPIENT where recipient_id = ? `);
 		const select = this.db.transaction((id)=>{
 			return stmt.get(id)
 		});
@@ -164,7 +225,24 @@ class Dao {
 
 		insert(recipient);
 	}
-
+	selectAllMedia(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA GROUP BY SOURCE`).all();
+		var medias = [];
+		rows.forEach(function(row, i){
+			let media = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.source,
+				row.url,
+				row.website_id 
+			)
+			medias.push(media);
+		});
+		return medias;
+	}
 	//returns a recipient object selected from the id index on PG1_Media
 	selectMediaById(id) {
 		const stmt = this.db.prepare(`SELECT * FROM PG1_Media WHERE media_id = ?;`);
@@ -195,34 +273,32 @@ class Dao {
 	insertMedia(media) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_MEDIA (
+				recipient_id,
 				filePath, 
 				fileType, 
 				description, 
 				source, 
 				url,
-				website_id,
-				recipient_id
+				website_id
 			) VALUES(?, ?, ?, ?, ?, ?, ?)`
 		);
 
 		const insert = this.db.transaction((media)=> {
-
 			try{
 				stmt.run(
+					media.recipient,
 					media.filePath, 
 					media.fileType, 
 					media.description, 
-					media.medLength, 
 					media.source, 
-					media.website,
-					media.recpient
+					media.url,
+					media.website
 				)
 			}catch(err){
 				throw err;
 			}
 
 		});
-
 		insert(media);
 	}
 
@@ -606,19 +682,17 @@ class Dao {
 	insertWebsite(website) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_WEBSITE (
-		  website_id,
 		  website_domain
-		) VALUES(?, ?)`
+		) VALUES(?)`
 		);
 
 		const insert = this.db.transaction((website)=>{
 			try{
 				stmt.run(
-					website.id,
 					website.domain
 				);
 			}catch(err){
-				throw err;
+				console.log(err);
 			}
 		});
 
@@ -839,7 +913,7 @@ class Dao {
 			"source TEXT,"+
 			"url TEXT,"+
 			"website_id integer NULL,"+
-			"FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),"+
+			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
 
