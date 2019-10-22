@@ -123,16 +123,21 @@ class webscraper{
             resolve("");
         });
     }
-    downloadFile(parent_directory , full_url){
+
+    downloadFile(parent_directory , full_url, media_id){
         let DOWNLOAD_DIR =  "./data/scraped";
         var src_name = url.parse(full_url).pathname.split('/').pop();
-        let full_download_path = path.join(DOWNLOAD_DIR, parent_directory);
+        let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
+        let full_download_path = path.join(parent_path, src_name);
+        let thisthat = this;
         var options = {
-            directory: full_download_path,
+            directory: parent_path,
             filename: src_name
         }
         download(full_url, options, function(err){
             if(err) console.log(err); 
+            console.log(full_download_path);
+            thisthat.dao.updateMediaPath(full_download_path, media_id);
             console.log("downloaded");
         })    
     }
