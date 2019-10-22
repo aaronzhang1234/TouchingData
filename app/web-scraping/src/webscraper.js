@@ -123,6 +123,7 @@ class webscraper{
             resolve("");
         });
     }
+
     downloadFile(parent_directory , full_url, media_id){
         let DOWNLOAD_DIR =  "./data/scraped";
         var src_name = url.parse(full_url).pathname.split('/').pop();
