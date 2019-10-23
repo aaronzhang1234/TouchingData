@@ -37,6 +37,9 @@ function getRecipientName(min, max)
 	// post("min " + min + " ");
 	// post("max " + max + " ");
 	// post("i " + i + " ");
+	mediaSqlStatement = "SELECT M.filePath, M.RECIPIENT_ID FROM PG1_MEDIA M WHERE M.RECIPIENT_ID IN (select DISTINCT R.RECIPIENT_ID from PG1_AWARD A join PG1_RECIPIENT R WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + " limit 1 offset " + i + ") and m.filePath != ''";
+	sqlite.exec(mediaSqlStatement, mediaResult);
+	
 	recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME from PG1_AWARD A join PG1_RECIPIENT R WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN " + min + " and " + max + " limit 1 offset " + i;
     sqlite.exec(recipientSqlStatement, nameResult);
 	getCount(min, max);
@@ -45,7 +48,8 @@ function getRecipientName(min, max)
 	if(nameResult.value(0,0) != 0)
 	{
 		outlet(0, nameResult.value(0,0));
-		getMedia(recipientSqlStatement);
+		post(mediaResult.value(0,0));
+		outlet(1, mediaResult.value(0,0));
 		i++;
 	}
 	else
@@ -56,10 +60,11 @@ function getRecipientName(min, max)
 }
 
 //output media file from recipient that has award between min and max
-function getMedia(recipientSqlStatement)
+function getMedia(min, max, i)
 {
-	mediaSqlStatement = "SELECT M.filePath FROM PG1_MEDIA M WHERE M.RECIPIENT_ID IN (" + recipientSqlStatement + ")"
+	mediaSqlStatement = "SELECT M.filePath, M.RECIPIENT_ID FROM PG1_MEDIA M WHERE M.RECIPIENT_ID IN (select DISTINCT R.RECIPIENT_ID from PG1_AWARD A join PG1_RECIPIENT R WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + " limit 1 offset " + i + ") and m.filePath != ''";
 	sqlite.exec(mediaSqlStatement, mediaResult);
+	post(mediaResult.value(0,1));
 	outlet(1, mediaResult.value(0,0));
 }
 

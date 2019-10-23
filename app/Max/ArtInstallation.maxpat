@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 0,
-			"revision" : 8,
+			"minor" : 1,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 40.0, 84.0, 984.0, 570.0 ],
+		"rect" : [ 34.0, 79.0, 1212.0, 882.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,11 +39,47 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-47",
+					"maxclass" : "toggle",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 249.0, 533.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-41",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 97.0, 387.0, 178.0, 22.0 ],
+					"text" : "if $i1 == \"0\" then bang else out2"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-31",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"patching_rect" : [ 179.0, 217.0, 69.0, 22.0 ],
+					"text" : "metro 3100"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-33",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 206.0, 62.125, 150.0, 20.0 ],
+					"patching_rect" : [ 207.0, 100.708333730697632, 150.0, 20.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 32.0, 57.125, 95.0, 20.0 ],
 					"text" : "Start Installation"
@@ -246,9 +282,10 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 16.0, 777.5, 532.0, 62.0 ],
+					"patching_rect" : [ 16.0, 777.5, 532.0, 60.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 40.518515527248383, 353.653216004371643, 754.423539400100708, 62.0 ],
+					"presentation_rect" : [ 40.518515527248383, 353.653216004371643, 754.423539400100708, 60.0 ],
+					"text" : "GOVPLACE",
 					"textjustification" : 1
 				}
 
@@ -260,9 +297,10 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 580.0625, 825.037665963172913, 532.0, 62.0 ],
+					"patching_rect" : [ 580.0625, 825.037665963172913, 532.0, 60.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 260.230285227298737, 178.770784139633179, 315.0, 62.0 ],
+					"presentation_rect" : [ 260.230285227298737, 178.770784139633179, 315.0, 60.0 ],
+					"text" : "7",
 					"textjustification" : 1
 				}
 
@@ -302,9 +340,9 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1174.908176720142365, 801.6875, 532.0, 62.0 ],
+					"patching_rect" : [ 1174.908176720142365, 801.6875, 532.0, 60.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 260.230285227298737, 63.278767943382263, 315.0, 62.0 ],
+					"presentation_rect" : [ 260.230285227298737, 63.278767943382263, 315.0, 60.0 ],
 					"textjustification" : 1
 				}
 
@@ -316,10 +354,10 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1332.5, 175.0, 172.0, 23.0 ],
+					"patching_rect" : [ 1332.5, 175.0, 172.0, 22.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 1034.924554109573364, 63.278767943382263, 96.19354784488678, 23.0 ],
-					"text" : "$ 5,773,349"
+					"presentation_rect" : [ 1034.924554109573364, 63.278767943382263, 96.19354784488678, 22.0 ],
+					"text" : "$ 460,464"
 				}
 
 			}
@@ -414,8 +452,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 31.0, 412.0, 99.0, 22.0 ],
-					"text" : "prepend set read"
+					"patching_rect" : [ 230.291658639907837, 429.249041438102722, 346.0, 22.0 ],
+					"text" : "prepend set read /Users/jessicarajko/Workspace/TouchingData/"
 				}
 
 			}
@@ -427,7 +465,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 172.1875, 60.125, 24.0, 24.0 ],
+					"patching_rect" : [ 174.1875, 96.5, 24.0, 24.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 3.192769169807434, 55.125, 24.0, 24.0 ]
 				}
@@ -516,7 +554,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 521.5625, 96.5, 196.0, 22.0 ],
-					"text" : "6472868.217054"
+					"text" : "131017.932171"
 				}
 
 			}
@@ -587,8 +625,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 7.225806474685669, 28.0, 214.0, 22.0 ],
-					"text" : "opendb POLITICS_OF_THE_GRID.db"
+					"patching_rect" : [ 7.225806474685669, 44.0, 484.0, 22.0 ],
+					"text" : "opendb /Users/jessicarajko/Workspace/TouchingData/data/POLITICS_OF_THE_GRID.db"
 				}
 
 			}
@@ -610,7 +648,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 289.25, 314.9375, 207.0, 22.0 ]
+					"patching_rect" : [ 289.25, 314.9375, 207.0, 22.0 ],
+					"text" : "getRecipientName 129707 131017"
 				}
 
 			}
@@ -822,7 +861,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-44", 0 ],
+					"destination" : [ "obj-41", 0 ],
 					"source" : [ "obj-2", 1 ]
 				}
 
@@ -892,6 +931,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-31", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-36", 0 ],
 					"source" : [ "obj-32", 0 ]
 				}
@@ -907,7 +953,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
-					"order" : 2,
+					"order" : 1,
 					"source" : [ "obj-38", 0 ]
 				}
 
@@ -923,15 +969,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-3", 0 ],
-					"order" : 3,
-					"source" : [ "obj-38", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-4", 0 ],
-					"order" : 1,
+					"order" : 2,
 					"source" : [ "obj-38", 0 ]
 				}
 
@@ -945,8 +983,31 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-38", 0 ],
+					"destination" : [ "obj-31", 0 ],
+					"order" : 1,
 					"source" : [ "obj-40", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-38", 0 ],
+					"order" : 0,
+					"source" : [ "obj-40", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-44", 0 ],
+					"source" : [ "obj-41", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-47", 0 ],
+					"source" : [ "obj-41", 0 ]
 				}
 
 			}
@@ -1070,14 +1131,14 @@
  ],
 		"dependency_cache" : [ 			{
 				"name" : "MaxIntegration.js",
-				"bootpath" : "~/Documents/Current Schoolwork/CSC4996/Workspace/TouchingData/app/Max",
+				"bootpath" : "~/Workspace/TouchingData/app/Max",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "formatCurrency.js",
-				"bootpath" : "~/Documents/Current Schoolwork/CSC4996/Workspace/TouchingData/app/Max",
+				"bootpath" : "~/Workspace/TouchingData/app/Max",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1
