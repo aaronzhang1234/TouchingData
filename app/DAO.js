@@ -920,6 +920,7 @@ class Dao {
 		this.db.prepare("DROP TABLE IF EXISTS PG1_OWNERSHIP_TYPE;").run();
 	}
 
+	//Will create the PG1_RECIPIENT table using the specified schema
 	createRecipientTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_RECIPIENT`("+
@@ -940,7 +941,8 @@ class Dao {
 			"FOREIGN KEY(recipient_place_of_performance_id) REFERENCES PG1_PLACE_OF_PERFORMANCE(place_of_performance_id));"
 		).run();
 	}
-
+	
+	// will create hte PG1_MEDIA table with the specified schema
 	createMediaTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_MEDIA`("+
@@ -962,6 +964,7 @@ class Dao {
 		).run();
 	}
 
+	// this method will create PG1_MEDIA table with
 	// this method will also create 3 indexes on this table
 	createAwardTable(){
 		this.db.prepare(
@@ -997,7 +1000,7 @@ class Dao {
 		).run();
 
 	}
-
+	//Create PG1_PLACE_OF_PERFORMANCE table
 	createPOPTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_PLACE_OF_PERFORMANCE`("+
@@ -1012,6 +1015,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_AWARDING_AGENCY table
 	createAwardingAgencyTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_AWARDING_AGENCY`("+
@@ -1023,6 +1027,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_PARENT_AWARD_AGENCY table
 	createParentAgencyTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_PARENT_AWARD_AGENCY`("+
@@ -1031,6 +1036,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_OFFICE table
 	createOfficeTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_OFFICE`("+
@@ -1039,6 +1045,7 @@ class Dao {
 		).run();
 	}
 
+	//create PG1_STATE table
 	createStateTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_STATE`("+
@@ -1047,6 +1054,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_CONGRESSIONAL_DISTRICT	table
 	createDistrictTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_CONGRESSIONAL_DISTRICT`("+
@@ -1056,6 +1064,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_WEBSITE table
 	createWebsiteTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_WEBSITE`("+
@@ -1063,7 +1072,8 @@ class Dao {
 			"website_domain TEXT UNIQUE);"
 		).run();
 	}
-
+	
+	//Create PG1_RECIPIENT_OWNERSHIP_TYPE_TABLE
 	createRecOwnTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_RECIPIENT_OWNERSHIP_TYPE`("+
@@ -1076,6 +1086,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_OWNERSHIP_TYPE table
 	createOwnTypeTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_OWNERSHIP_TYPE`(" +
@@ -1084,6 +1095,7 @@ class Dao {
 		).run();
 	}
 
+	//Create PG1_RECIPIENT_PARENT table
 	createRecParentTable(){
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_RECIPIENT_PARENT`(" +
@@ -1092,6 +1104,7 @@ class Dao {
 		).run();
 	}
 
+	//create a back of the database with the name backup-<<timestamp>>.db
 	backupDb(){
 		let backupName = `backup-${Date.now()}.db`
 		db.backup(backupName).then(() => {
@@ -1102,6 +1115,7 @@ class Dao {
 		});
 	}
 
+	//closes connection to DB
 	closeDb(){
 		this.db.close();
 	}
