@@ -10,6 +10,7 @@ const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
 const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
+const EM = require("./emitter.js");
 
 class webscraper{
     //Creating a websearch client using an API Key
@@ -52,6 +53,7 @@ class webscraper{
     */
     async getSite(orig, website_name, links_visited, recipient_id, website_id, stopTime){
         //If time has run out then kill the program.
+        EM.emit("fug");
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
