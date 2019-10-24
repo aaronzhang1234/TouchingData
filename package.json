@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node .test/test.js",
+    "test": "mocha",
     "migrate": "node app/dataMigration/src/main.js",
     "webscrape": "node app/web-scraping/src/main.js",
     "initValTables": "node app/dataMigration/src/initValidationTables.js",
@@ -30,6 +30,7 @@
     "download-file": "^0.1.5",
     "exceljs": "^2.0.1",
     "fs": "0.0.1-security",
+    "mocha": "^6.2.1",
     "ms-rest-azure": "^3.0.0",
     "sleep": "^6.1.0",
     "sqlite3": "^4.1.0",
