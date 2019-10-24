@@ -65,8 +65,9 @@ class WS_Controller {
     }
   }
   downloadAllMedia() {
-    let medias = dao.selectAllMedia();
+    let medias = this.dao.selectAllMedia();
     let time = 1000;
+    let thisthat = this;
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
@@ -78,9 +79,9 @@ class WS_Controller {
           // webscraper.downloadYoutube(recipient.name, media_source);
         } else {
           let name = recipient.name;
-          name = name.replace(" ", "_");
+          name = name.replace(/ /g, "_");
           let full_link = url.resolve(media_url, media_source);
-          webscraper.downloadFile(naem, full_link);
+          thisthat.webscraper.downloadFile(name, full_link, media.id);
         }
       }, time);
     }

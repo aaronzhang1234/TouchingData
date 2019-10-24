@@ -98,4 +98,4 @@ data/scraped/*
 data/scraped.zip
 
 data/media/*
-
+*.DS_Store

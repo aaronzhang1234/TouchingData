@@ -160,6 +160,7 @@ class Dao {
 	}
 
 	//updates recipient website id 
+
 	updateRecipientWebsite(recId, websiteId){
 		try{
 			this.db.prepare(`UPDATE PG1_RECIPIENT SET recipient_website_id = ? WHERE recipient_id = ?;`).run(websiteId, recId);
@@ -230,6 +231,33 @@ class Dao {
 		return null;
 	}
 
+	selectAllMedia(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA GROUP BY SOURCE`).all();
+		var medias = [];
+		rows.forEach(function(row, i){
+			let media = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.source,
+				row.url,
+				row.website_id 
+			)
+			medias.push(media);
+		});
+		return medias;
+	}
+	updateMediaPath(media_path, media_id){
+		try{
+			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?;`).run(media_path, media_id);
+			console.log("fuck");
+			console.log(media_id);
+		}catch(err){
+			console.log(err);
+		}
+	}
 
 	// Select a record from the PG1_Award table with the matching id,year combination
 	// Returns the selected record as an Award object 
