@@ -80,8 +80,8 @@ class WS_Controller {
         } else {
           let name = recipient.name;
           name = name.replace(/ /g, "_");
-          name = name.replace(/./g, "");
-          name = name.replace(/,/g, "");
+          name.replace(/./g, "");
+          name.replace(/,/g, "");
           let full_link = url.resolve(media_url, media_source);
           thisthat.webscraper.downloadFile(name, full_link, media.id);
         }
