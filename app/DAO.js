@@ -106,6 +106,67 @@ class Dao {
 		return null;
 	}
 
+	//returns an array of arrays,
+	//the fields of the inner array are a recipient and that recipient's parent - in that order
+	//example output:
+	//[
+	//	[
+	//		{
+	//			id: 1106,
+	//			name: 'GLOBAL TRAVELER LLC',
+	//			addr1: '18283 RIVIERA WAY',
+	//			addr2: null,
+	//			city: 'LEESBURG',
+	//			state: 'VA',
+	//			zip: '201767470',
+	//			parent: 1296,
+	//			congressionalDistrict: 10,
+	//			website: null,
+	//			placeOfPerformance: null
+	//		},
+	//		{
+	//			id: 1296,
+	//			name: 'GLOBAL TRAVELER LLC'
+	//		}
+	//	],
+	//	...
+	//]
+	selectRecsAndParents(){
+		let rows = this.db.prepare(`SELECT * FROM PG1_RECIPIENT r LEFT JOIN PG1_RECIPIENT_PARENT p on p.recipient_parent_id = r.recipient_parent_id`).all();
+		//console.log(recipients);
+		var records = [];
+		rows.forEach(function(row, i){
+			let recipient = new Recipient(
+				row.recipient_id, 
+				row.recipient_name, 
+				row.recipient_address_line_1, 
+				row.recipient_address_line_2, 
+				row.recipient_city, 
+				row.recipient_state_code, 
+				row.recipient_zip_4_code, 
+				row.recipient_parent_id,
+				row.recipient_district_id, 
+				row.recipient_website_id,
+				row.place_of_performance_id
+			)
+			let parent = new RecParent(
+				row.recipient_parent_id,
+				row.recipient_parent_name
+			)
+			records.push([recipient, parent]);
+		});
+
+		return records;
+	}
+
+	//updates recipient website id 
+	updateRecipientWebsite(recId, websiteId){
+		try{
+			this.db.prepare(`UPDATE PG1_RECIPIENT SET recipient_website_id = ? WHERE recipient_id = ?;`).run(websiteId, recId);
+		}catch(err){
+			console.log(err);
+		}
+	}
 
 	// Returns the recipient selected from PG1_RECIPIENT with the given id
 	// takes id as input
@@ -139,6 +200,7 @@ class Dao {
 		return null;
 	}
 
+
 	// Select the record from PG1_MEDIA with the given id
 	// take id as input paramter
 	// return the selected record as Media object
@@ -167,6 +229,7 @@ class Dao {
 		}
 		return null;
 	}
+
 
 	// Select a record from the PG1_Award table with the matching id,year combination
 	// Returns the selected record as an Award object 
@@ -775,19 +838,16 @@ class Dao {
 	insertWebsite(website) {
 		const stmt = this.db.prepare(
 			`INSERT INTO PG1_WEBSITE (
-		  website_id,
 		  website_domain
-		) VALUES(?, ?)`
+		) VALUES(?)`
 		);
 
 		const insert = this.db.transaction((website)=>{
 			try{
 				stmt.run(
-					website.id,
 					website.domain
 				);
 			}catch(err){
-				 
 			}
 		});
 
@@ -954,7 +1014,7 @@ class Dao {
 			"source TEXT,"+
 			"url TEXT NOT NULL UNIQUE,"+ 
 			"website_id integer NULL,"+
-			"FOREIGN KEY(recipient_id) REFERENCES PG1_REPIENT(recipient_id),"+
+			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
 

@@ -7,20 +7,8 @@
  *
  */
 
-var Recipient = require("../../models/Recipient.js");
-var Award   = require("../../models/Award.js");
-var State = require("../../models/State.js");
-var District = require("../../models/District.js");
-
 var RowParser = require("./RowParser.js");
-
-var Dao     = require("../../DAO.js");
-let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
-var dao = new Dao(sqlDatabaseName);
-
 var Excel   = require("exceljs");
-
-
 
 let workbook = new Excel.Workbook();
 workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
@@ -62,8 +50,5 @@ workbook.xlsx.readFile("data/ProjectDataBig.xlsx").then(function(){
 		console.log("migration done");
 	});
 	//Once the eachRow function is complete, then close the DB.
-	migrate.then(()=>{
-		dao.closeDb();
-	});
 });
 
