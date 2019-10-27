@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-webscraper',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WebscraperComponent implements OnInit {
 
-  constructor() { }
+  constructor(private http:HttpClient) { }
 
   ngOnInit() {
   }
@@ -15,6 +16,15 @@ export class WebscraperComponent implements OnInit {
   startScrape(){
     let bar = document.getElementById("progressbar");
     bar.setAttribute("style", "display:inline-block;");
+    console.log("bopped");
+    this.http.get("/whelp").subscribe(
+      data=>{
+        console.log("yay"); 
+      },
+      err => {
+        console.log("wee woo wee woo");
+        console.log(JSON.stringify(err));
+      }
+    );
   }
-
 }

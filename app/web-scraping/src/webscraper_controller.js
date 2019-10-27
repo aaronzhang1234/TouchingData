@@ -26,7 +26,7 @@ class WS_Controller {
           let website = new Website("", url);
           dao.insertWebsite(website);
           console.log(url);
-          website = dao.selectWebsite(url);
+          website = dao.selectWebsiteByDomain(url);
           console.log(website.id);
           let num_string = String(website.id);
           let num_array = num_string.split(".");
@@ -45,7 +45,7 @@ class WS_Controller {
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
       let recipient_website_id = recipient.website;
-      let website = this.dao.selectWebsite(recipient_website_id);
+      let website = this.dao.selectWebsiteById(recipient_website_id);
       let website_domain = website.domain;
       //let website_domain = "https://www.dtccom.net/";
 
@@ -80,6 +80,9 @@ class WS_Controller {
         } else {
           let name = recipient.name;
           name = name.replace(/ /g, "_");
+          name = name.replace(/\./g, "");
+          name = name.replace(/,/g, "");
+
           let full_link = url.resolve(media_url, media_source);
           thisthat.webscraper.downloadFile(name, full_link, media.id);
         }
