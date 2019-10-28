@@ -35,14 +35,15 @@ function resetCounter()
 //outputs all to max msp
 function getRecipientName(min, max, aggregation)
 {
+    post(min + " " + max + " " + aggregation);
     //execute sql statement in sqlite max msp integration
     //get each company getting award amount between min and max 
     if(aggregation == 0)    
         recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id from PG1_AWARD A join PG1_RECIPIENT R WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + " ORDER BY R.Recipient_name limit 1 offset " + i;
     else if(aggregation == 1)
-        recipientSqlStatment = "select r.recipient_name from pg1_recipient r join (select a.recipient_id, sum(a.current_total_value_of_award)as summation from pg1_award agroup by a.recipient_id)n where r.recipient_id = n.recipient_id and n.summation between " + min + " and " + max + " order by r.recipient_name limit 1 offset " + i;
+        recipientSqlStatement = "select r.recipient_name from pg1_recipient r join (select a.recipient_id, sum(a.current_total_value_of_award) as summation from pg1_award a group by a.recipient_id) n where r.recipient_id = n.recipient_id and n.summation between " + min + " and " + max + " order by r.recipient_name limit 1 offset " + i;
 	sqlite.exec(recipientSqlStatement, nameResult);
-    getCount(min, max);
+    getCount(min, max, aggregation);
     //output to max
     post(nameResult.value(0,0) + "\n");
     if(nameResult.value(0,0) != 0)
@@ -76,10 +77,13 @@ function getMedia(recipientSqlStatement)
 }
 
 //get count of results of any sql statement passed in
-function getCount(min, max)
+function getCount(min, max, aggregation)
 {
     //get count of companies
-    countsqlstatement = "select count(*) from (select distinct r.recipient_name from pg1_award a join pg1_recipient r where a.recipient_id = r.recipient_id and a.current_total_value_of_award between " + min + " and " + max + ")";
+    if(aggregation==0)
+        countsqlstatement = "select count(*) from (select distinct r.recipient_name from pg1_award a join pg1_recipient r where a.recipient_id = r.recipient_id and a.current_total_value_of_award between " + min + " and " + max + ")";
+    else if (aggregation==1)
+        countsqlstatement = "select count(*) from pg1_recipient r join (select a.recipient_id, sum(a.current_total_value_of_award)as summation from pg1_award a group by a.recipient_id) n where r.recipient_id = n.recipient_id and n.summation between " + min + " and " + max ;
     sqlite.exec(countsqlstatement, countResult);
     outlet(2, parseInt(countResult.value(0,0)));
 }

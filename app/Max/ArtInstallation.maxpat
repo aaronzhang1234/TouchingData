@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 79.0, 1330.0, 871.0 ],
+		"rect" : [ 34.0, 79.0, 1612.0, 871.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -95,11 +95,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-70",
+					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 424.0, 495.0, 50.0, 22.0 ]
+					"patching_rect" : [ 424.0, 495.0, 50.0, 35.0 ],
+					"text" : "20000000"
 				}
 
 			}
@@ -520,6 +522,7 @@
 					"patching_rect" : [ 1174.908176720142365, 801.6875, 532.0, 60.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 275.230285227298737, 115.007983803749084, 315.0, 60.0 ],
+					"text" : "$ 20,000,000",
 					"textjustification" : 1
 				}
 
@@ -543,8 +546,8 @@
 					"id" : "obj-13",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 1392.7048180103302, 528.0, 114.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "formatCurrency.js",
@@ -689,7 +692,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 521.5625, 96.5, 196.0, 22.0 ]
+					"patching_rect" : [ 521.5625, 96.5, 196.0, 22.0 ],
+					"text" : "20000000"
 				}
 
 			}
@@ -822,6 +826,7 @@
 				"box" : 				{
 					"floatoutput" : 1,
 					"id" : "obj-1",
+					"knobcolor" : [ 0.086274509803922, 0.780392156862745, 0.847058823529412, 0.75 ],
 					"maxclass" : "slider",
 					"numinlets" : 1,
 					"numoutlets" : 1,
@@ -829,7 +834,7 @@
 					"parameter_enable" : 0,
 					"patching_rect" : [ 1271.0, 157.514186143875122, 47.0, 526.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 963.924517154693604, 12.278767943382263, 97.602411508560181, 817.0 ],
+					"presentation_rect" : [ 963.924517154693604, 7.266334056854248, 97.602411508560181, 817.0 ],
 					"relative" : 1,
 					"size" : 20000000.0
 				}
@@ -1188,7 +1193,16 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-15", 0 ],
+					"order" : 1,
+					"source" : [ "obj-61", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-35", 0 ],
+					"order" : 0,
 					"source" : [ "obj-61", 0 ]
 				}
 

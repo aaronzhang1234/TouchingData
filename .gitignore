@@ -99,3 +99,6 @@ data/scraped.zip
 
 data/media/*
 *.DS_Store
+.DS_Store
+dist/*
+package-lock.json
