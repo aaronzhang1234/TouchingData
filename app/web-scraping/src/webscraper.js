@@ -35,6 +35,7 @@ class webscraper{
     //Getting a company's website using Bing
     getSiteFromName(companyName){
         let thisthat = this;
+        console.log(`${companyName}`);
         return new Promise(function(resolve, reject){
             thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
                 let numresults = Object.keys(results["webPages"]["value"]).length;
@@ -130,6 +131,7 @@ class webscraper{
     }
 
     downloadFile(parent_directory , full_url, media_id){
+        console.log(`${full_url}`);
         let DOWNLOAD_DIR =  "./data/scraped";
         var src_name = url.parse(full_url).pathname.split('/').pop();
         let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
