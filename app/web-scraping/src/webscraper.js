@@ -141,7 +141,7 @@ class webscraper{
             console.log(full_download_path);
             thisthat.dao.updateMediaPath(full_download_path, media_id);
             console.log("downloaded");
-        })    
+        }) 
     }
     downloadYoutube(parent_directory, youtube_link){
 
@@ -195,11 +195,12 @@ class webscraper{
                        && !item.includes(".jpg")
                        && !item.includes(".xlsx")
                        && !item.includes(".zip");
+                       //&& item.includes("about");
             });
-
             //Convert array to Set to remove duplicates and convert set back to array
             const uniques = new Set(links);
             links = [...uniques];
+            console.log(links);
             resolve(links);
         })
     }
