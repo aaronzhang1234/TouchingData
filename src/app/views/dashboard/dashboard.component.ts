@@ -10,7 +10,7 @@ export class DashboardComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   fileName: string = "ChooseFile";
-
+  dbCreateStatus: string = "";
   ngOnInit() {}
 
   buildDb() {
@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
       .post("/buildDb", { status: "Go" }, { headers: headers })
       .subscribe(data => {
         console.log(data);
+        this.dbCreateStatus = "Database built!";
       });
   }
 
