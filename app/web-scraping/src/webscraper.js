@@ -31,6 +31,7 @@ class webscraper{
         this.logger = winston.createLogger(logConfiguration);
         console.log(`Scraper Created!\nCurrently logging at /logs/webscraper.log`);
     }
+
     //Getting a company's website using Bing
     getSiteFromName(companyName){
         let thisthat = this;
@@ -42,6 +43,7 @@ class webscraper{
                 thisthat.logger.error(err);
             }) })
     }
+
     /*
     Getting webscraped data from a site
     orig -> original website, straight from SQL
@@ -95,6 +97,7 @@ class webscraper{
     findAbout(website){
 
     }
+
     findAudio($, website, recipient_id, website_id){
         let thisthat = this;
         return new Promise(function(resolve, reject){
@@ -143,6 +146,7 @@ class webscraper{
             console.log("downloaded");
         })    
     }
+
     downloadYoutube(parent_directory, youtube_link){
 
         let DOWNLOAD_DIR =  "./data/scraped";
@@ -160,6 +164,7 @@ class webscraper{
             console.log(err);
         }
     }
+
     findLinks($, orig, current_site, links_visited){
         let links = [];
         return new Promise(function(resolve, reject){

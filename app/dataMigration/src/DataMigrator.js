@@ -28,7 +28,7 @@ class DataMigrator {
 						}catch(err){}
 						try{
 							parser.insertRecipient();
-						}catch(err){console.log(err)}
+						}catch(err){}
 						try{
 							parser.insertOwnerships();
 						}catch(err){}

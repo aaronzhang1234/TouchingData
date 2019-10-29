@@ -1,7 +1,7 @@
 /* ****************** initDb ******************
  * 2019 October 01 : Nathan Reiber  : Created
  ********************************************
- * Purpose : drop and create all tables
+ * Purpose : defines a set of methods for dropping and creating tables and inserting records into validation tables
  */
 
 var Dao = require("../../DAO.js");
@@ -23,6 +23,7 @@ var types = require("./types.js")
 
 class DbBuilder{
 
+	// backup up the database, drop all tables, create all tables and initialize vaildation tables
 	buildDb(){
 		dao.backupDb();
 		dao.dropAllTables();
@@ -30,12 +31,15 @@ class DbBuilder{
 		this.initValidationTables();
 	}
 
+	
+	//initialize all validation tables
 	initValidationTables(){
 		this.initOwnershipTypes();
 		this.initStates();
 		this.initCongressionalDistricts();
 	}
 	
+	//insert all ownership types into PG1_OWNERSHIP_TYPE
 	initOwnershipTypes(){
 		types.forEach(function(type){
 			let ownType = new Type(type,"");
@@ -47,6 +51,8 @@ class DbBuilder{
 		});
 	}
 
+	//retrieves state postal codes for all us postal addresses from Excel spreadsheet
+	//inserts all state into PG1_STATE
 	initStates(){
 		workbook.xlsx.readFile("data/postalCodes.xlsx").then(function(){
 			var addStates = new Promise((resolve, reject)=>{
@@ -65,6 +71,8 @@ class DbBuilder{
 		});
 	}
 
+	//retrieves all congressional district from an Excel spreadsheet
+	//inserts all district into PG1_CONGRESSIONAL_DISTRICT
 	initCongressionalDistricts(){
 		workbook.xlsx.readFile("data/districts.xlsx").then(function(){
 			var addDistricts = new Promise((resolve, reject)=>{

@@ -1,3 +1,6 @@
+// purpose: defines a set of methods for interpreting ExcelJS data to be used by dataMigrator
+// uses: DAO for data acess and insertion
+// uses: ExcelJS to interpret Excel data
 var Excel   = require("exceljs");
 
 var Dao     = require("../../DAO.js");
@@ -19,10 +22,11 @@ let State = require("../../models/State.js");
 let District = require("../../models/District.js");
 
 class RowParser{
+	// row is an json returned byan excelJs.Workbook object
 	constructor(row){
 		this.row = row
 	}
-
+	// inserts a place of performance record
 	insertPlaceOfPerformance(){
 		let pop_city = this.row.getCell(17).value;
 		let pop_county = this.row.getCell(18).value;
@@ -32,6 +36,8 @@ class RowParser{
 		
 		let state = dao.selectStateByCode(pop_statecode);
 
+		// some states are outliers which were not included in initial updload.
+		// These are from outside of the United States, add them as part of the import
 		if (state === null){
 			state = new State(this.row.getCell(20).value, this.row.getCell(20).value);
 			try{
@@ -54,7 +60,7 @@ class RowParser{
 		}
 	}
 
-	//complete enough
+	//insert the parent company of an award recipient
 	insertRecipientParent(){
 		let parent_name = this.row.getCell(7).value;
 
@@ -66,6 +72,7 @@ class RowParser{
 		}
 	}
 
+	//inserts an award recipient record
 	insertRecipient(){
 		let name = this.row.getCell(6).value; 
 		let addr = this.row.getCell(10).value; 
@@ -92,6 +99,7 @@ class RowParser{
 			PoP_id = PoP.id; 
 		}
 		
+		//create records for state not included in validation table
 		let state = dao.selectStateByCode(state_code);
 		if (state === null){
 			state = new State(this.row.getCell(14).value, this.row.getCell(14).value);
@@ -114,6 +122,7 @@ class RowParser{
 		}
 	}
 
+	//inserts the parent agency of the awarding agency
 	insertParentAwardAgency(){
 		let parent_award_agency_name = this.row.getCell(2).value;
 
@@ -124,6 +133,7 @@ class RowParser{
 		}
 	}
 
+	//inserts the awarding agency
 	insertAwardingAgency(){
 		let awarding_agency_name = this.row.getCell(3).value;
 		let parent_award_agency_name = this.row.getCell(2).value;
@@ -139,6 +149,7 @@ class RowParser{
 		}
 	}
 
+	//inserts an office of a government agency(either a funding office or a awarding office)
 	insertOffices(){
 		let awarding_office_name = this.row.getCell(8).value;
 		let funding_office_name = this.row.getCell(9).value;
@@ -156,6 +167,7 @@ class RowParser{
 		}
 	}
 
+	//inserts an award record
 	insertAward(){
 		let award_piid = this.row.getCell(1).value;
 		let fiscal_year = this.row.getCell(42).value; 
@@ -208,6 +220,8 @@ class RowParser{
 		}
 		let thisthat = this;
 
+		//this part of the algorithm is dependent both on the types object and the excel spreadsheet
+		//they must be remain consistent formats
 		types.forEach(function (type, i){
 			//the first ownership type is at column 23 in the worksheet
 			if (thisthat.row.getCell(i + 23).value === "t"){
@@ -228,8 +242,6 @@ class RowParser{
 		let num_array = num_string.split(".");
 		return num_array[0];
 	}
-
-
 }
 
 
