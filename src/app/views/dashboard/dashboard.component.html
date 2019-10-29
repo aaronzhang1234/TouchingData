@@ -1,32 +1,45 @@
 <div id="wrapper">
-<div class="container">
-  <h4 class="text-center mb-5">Create Database</h4>
-  <div class="row justify-content-center">
-    <div class="createDatabase">
-        <button type="submit" class="btn btn-primary">Create Database</button>
+  <div class="container">
+    <h4 class="text-center mb-5">Create Database</h4>
+    <div class="row justify-content-center">
+      <div class="createDatabase">
+        <button type="submit" class="btn btn-primary" (click)="buildDb()">
+          Create Database
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<hr>
-<div class="container">
-  <h4 class="text-center mb-5">Import Data</h4>
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <div class="input-group mb-3">
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="inputGroupFile02" [(ngModel)]="fileName" />
-          <label class="custom-file-label" for="inputGroupFile02" id="file-text"
-		   >{{fileName}}</label>
-        </div>
-        <div class="input-group-append">
-          <span class="input-group-text" id="" (click)="import()">Import</span>
+  <hr />
+  <div class="container">
+    <h4 class="text-center mb-5">Import Data</h4>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <div class="input-group mb-3">
+          <div class="custom-file">
+            <input
+              type="file"
+              class="custom-file-input"
+              id="inputGroupFile02"
+              [(ngModel)]="fileName"
+            />
+            <label
+              class="custom-file-label"
+              for="inputGroupFile02"
+              id="file-text"
+              >{{ fileName }}</label
+            >
+          </div>
+          <div class="input-group-append">
+            <span class="input-group-text" id="" (click)="import()"
+              >Import</span
+            >
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<div id="progressbar" class="bar">
-  <div id="progress" class="progressed"></div>
-  <output id="datamigrationoutput">output</output>
-</div>
+  <div id="progressbar" class="bar">
+    <div id="progress" class="progressed"></div>
+    <output id="datamigrationoutput">output</output>
+  </div>
 </div>
