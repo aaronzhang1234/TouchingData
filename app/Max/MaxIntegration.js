@@ -1,7 +1,7 @@
 //Justin Delisi - MaxIntegration.js
 //global variables for max to know number of inlets and outlets
 inlets = 1;
-outlets = 5;
+outlets = 6;
 //for debugging purposes
 var objectPrinter = require("jm.objectPrinter");
 //require Max integration variables
@@ -49,6 +49,7 @@ function getRecipientName(min, max, aggregation)
     if(nameResult.value(0,0) != 0)
     {
         outlet(0, nameResult.value(0,0));
+        outlet(5, i);
         getMedia(recipientSqlStatement);
         i++;
     }
