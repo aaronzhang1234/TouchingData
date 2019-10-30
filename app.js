@@ -30,10 +30,14 @@ app.post("/buildDb", function(req, res) {
 });
 
 app.post("/import", function(req, res) {
-  console.log(req.body);
-  let dataMigrator = new DataMigrator();
-  dataMigrator.migrateData();
-  res.send({ status: "success" });
+	console.log(req.body);
+
+	let dataMigrator = new DataMigrator();
+	dataMigrator.migrateData()	
+
+	console.log("migration starting")
+	res.send({ status : "Data is Migrating" });
+
 });
 
 const server = http.createServer(app);

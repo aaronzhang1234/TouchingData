@@ -6,7 +6,7 @@
     background-color: #4b5320;
     border-color: #4b5320;
     align-content: center;
-    width: 100%;
+    width: 200px;
 }
 
 .createDatabase {
@@ -35,6 +35,10 @@ hr {
 
 .statusLine {
 	padding-top: 3px;
+}
+
+.responseText {
+	height: 30px;
 }
 
 #wrapper {
