@@ -17,7 +17,29 @@ export class WebscraperComponent implements OnInit {
     let bar = document.getElementById("progressbar");
     bar.setAttribute("style", "display:inline-block;");
     console.log("bopped");
-    this.http.get("/whelp").subscribe(
+    this.http.get("/scrapeSites").subscribe(
+      data=>{
+        console.log("yay"); 
+      },
+      err => {
+        console.log("wee woo wee woo");
+        console.log(JSON.stringify(err));
+      }
+    );
+  }
+  fetchWebsites(){
+     this.http.get("/getWebsites").subscribe(
+      data=>{
+        console.log("yay"); 
+      },
+      err => {
+        console.log("wee woo wee woo");
+        console.log(JSON.stringify(err));
+      }
+    );   
+  }
+  downloadMedia(){
+    this.http.get("/downloadMedia").subscribe(
       data=>{
         console.log("yay"); 
       },

@@ -252,7 +252,6 @@ class Dao {
 	updateMediaPath(media_path, media_id){
 		try{
 			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?;`).run(media_path, media_id);
-			console.log("fuck");
 			console.log(media_id);
 		}catch(err){
 			console.log(err);
