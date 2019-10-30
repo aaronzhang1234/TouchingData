@@ -8,6 +8,7 @@ import { WebscraperComponent } from "./views/webscraper/webscraper.component";
 import { HeaderComponent } from "./layout/header/header.component";
 import { FooterComponent } from "./layout/footer/footer.component";
 import { NavigationComponent } from "./layout/navigation/navigation.component";
+import { FormsModule } from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { NavigationComponent } from "./layout/navigation/navigation.component";
     FooterComponent,
     NavigationComponent
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -17,21 +17,21 @@ class WS_Controller {
     this.dao = new DAO(sqlDatabaseName);
   }
   getBingResults() {
+    let recipients = this.dao.selectAllRecipients();
     let time = 1000;
+    let thisthat = this;
     for (let i = 0; i < recipients.length; i++) {
       time = time + 3000;
       let recipient = recipients[i];
       setTimeout(function() {
-        webscraper.getSiteFromName(recipient.name).then(function(url) {
+        thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
           let website = new Website("", url);
-          dao.insertWebsite(website);
-          console.log(url);
-          website = dao.selectWebsiteByDomain(url);
-          console.log(website.id);
+          thisthat.dao.insertWebsite(website);
+          website = thisthat.dao.selectWebsiteByDomain(url);
           let num_string = String(website.id);
           let num_array = num_string.split(".");
           let website_id = num_array[0];
-          dao.updateRecipientWebsite(recipient.id, website_id);
+          thisthat.dao.updateRecipientWebsite(recipient.id, website_id);
         });
       }, time);
     }
@@ -72,7 +72,7 @@ class WS_Controller {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
       let media_url = media.url;
-      let media_source = media.source;
+      let media_source = media.source;      
       time = time + 2000;
       setTimeout(function() {
         if (media.fileType == "youtube") {
@@ -90,4 +90,5 @@ class WS_Controller {
     }
   }
 }
+
 module.exports = WS_Controller;
