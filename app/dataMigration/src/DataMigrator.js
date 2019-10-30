@@ -13,6 +13,7 @@ class DataMigrator {
 		let workbook = new Excel.Workbook();
 		workbook.xlsx.readFile(workbookName).then(function(){
 			let worksheet = workbook.getWorksheet(worksheetName);
+			
 			var migrate = new Promise((resolve, reject)=>{
 				worksheet.eachRow(function(row, index){
 					//the first row of this worksheet is a header, do not consume these fields
@@ -46,12 +47,10 @@ class DataMigrator {
 						}catch(err){}
 
 					}
-				})
-				console.log("migration done");
+				});
 			});
-			//Once the eachRow function is complete, then close the DB.
 		});
-	}
+	 }
 }
 
 module.exports = DataMigrator;
