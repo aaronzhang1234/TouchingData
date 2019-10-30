@@ -17,8 +17,8 @@ class webscraper{
     constructor(bing_APIKEY){  
         let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
         this.dao = new DAO(sqlDatabaseName);
-        this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
-        this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
+        //this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
+        //this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
 
         //Creating a logger at the specified area.
         const logConfiguration = {
@@ -35,7 +35,7 @@ class webscraper{
     //Getting a company's website using Bing
     getSiteFromName(companyName){
         let thisthat = this;
-        console.log(`${companyName}`);
+        /*
         return new Promise(function(resolve, reject){
             thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
                 let numresults = Object.keys(results["webPages"]["value"]).length;
@@ -43,6 +43,7 @@ class webscraper{
             }).catch((err)=>{
                 thisthat.logger.error(err);
             }) })
+            */
     }
 
     /*
@@ -131,7 +132,6 @@ class webscraper{
     }
 
     downloadFile(parent_directory , full_url, media_id){
-        console.log(`${full_url}`);
         let DOWNLOAD_DIR =  "./data/scraped";
         var src_name = url.parse(full_url).pathname.split('/').pop();
         let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
@@ -143,9 +143,8 @@ class webscraper{
         }
         download(full_url, options, function(err){
             if(err) console.log(err); 
-            console.log(full_download_path);
+            thisthat.logger.info(`Downloading ${full_download_path}`);
             thisthat.dao.updateMediaPath(full_download_path, media_id);
-            console.log("downloaded");
         }) 
     }
 
@@ -155,7 +154,6 @@ class webscraper{
         var ytid = url.parse(youtube_link).pathname.split('/').pop();
 
         let full_download_path = path.join(DOWNLOAD_DIR, parent_directory, ytid+".mp4");
-        console.log(full_download_path);
         try{
             let video = youtubedl(youtube_link);
             video.on('info', function(info){
@@ -207,7 +205,6 @@ class webscraper{
             //Convert array to Set to remove duplicates and convert set back to array
             const uniques = new Set(links);
             links = [...uniques];
-            console.log(links);
             resolve(links);
         })
     }

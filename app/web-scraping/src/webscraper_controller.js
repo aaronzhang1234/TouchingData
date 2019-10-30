@@ -27,9 +27,7 @@ class WS_Controller {
         thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
           let website = new Website("", url);
           thisthat.dao.insertWebsite(website);
-          console.log(url);
           website = thisthat.dao.selectWebsiteByDomain(url);
-          console.log(website.id);
           let num_string = String(website.id);
           let num_array = num_string.split(".");
           let website_id = num_array[0];
@@ -74,7 +72,7 @@ class WS_Controller {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
       let media_url = media.url;
-      let media_source = media.source;
+      let media_source = media.source;      
       time = time + 2000;
       setTimeout(function() {
         if (media.fileType == "youtube") {
