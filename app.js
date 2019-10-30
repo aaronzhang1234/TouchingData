@@ -17,11 +17,6 @@ app.get("/*", function(req, res) {
   res.sendfile(path.join(__dirname));
 });
 
-app.get("/whelp", function(req, res) {
-  let webscraper = new WS_Controller();
-  webscraper.webscrapeAllSites();
-});
-
 app.post("/buildDb", function(req, res) {
   console.log(req.body);
   let dbBuilder = new DbBuilder();
@@ -37,9 +32,23 @@ app.post("/import", function(req, res) {
 
 	console.log("migration starting")
 	res.send({ status : "Data is Migrating" });
+});
 
+app.get("/scrapeSites", function(req, res){
+    let webscraper = new WS_Controller();
+    webscraper.webscrapeAllSites();
+});
+
+app.get("/getWebsites", function(req, res){
+    let webscraper = new WS_Controller();
+    webscraper.getBingResults();
+});
+
+app.get("/downloadMedia", function(req, res){
+    let webscraper = new WS_Controller();
+    webscraper.downloadAllMedia();
 });
 
 const server = http.createServer(app);
 
-server.listen(3000, () => console.log("fug"));
+server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
