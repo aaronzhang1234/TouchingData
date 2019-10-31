@@ -13,7 +13,7 @@ const url = require("url");
 
 class WS_Controller {
   constructor() {
-    this.webscraper = new webscraperjs("ce530745bc7b4a45b1c66356a9af2879");
+    this.webscraper = new webscraperjs("458f7fc0ea5c44d38e45178c62515c7b");
     this.dao = new DAO(sqlDatabaseName);
   }
   getBingResults() {
@@ -25,6 +25,7 @@ class WS_Controller {
       let recipient = recipients[i];
       setTimeout(function() {
         thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
+          console.log(url);
           let website = new Website("", url);
           thisthat.dao.insertWebsite(website);
           website = thisthat.dao.selectWebsiteByDomain(url);

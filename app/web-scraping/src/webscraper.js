@@ -17,8 +17,8 @@ class webscraper{
     constructor(bing_APIKEY){  
         let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
         this.dao = new DAO(sqlDatabaseName);
-        //this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
-        //this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
+        this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
+        this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
 
         //Creating a logger at the specified area.
         const logConfiguration = {
@@ -35,15 +35,14 @@ class webscraper{
     //Getting a company's website using Bing
     getSiteFromName(companyName){
         let thisthat = this;
-        /*
         return new Promise(function(resolve, reject){
             thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
                 let numresults = Object.keys(results["webPages"]["value"]).length;
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);
-            }) })
-            */
+            }) 
+        });
     }
 
     /*
@@ -62,14 +61,13 @@ class webscraper{
             return links_visited;
         }
         //If it is on the first page.
-        if(orig == website_name){
-            this.logger.info(`Scraping ${orig}`);
-            this.findAbout(orig);
-        }
         try{
             //await just pauses the execution until a response is recieved.
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
+            if(orig == website_name){
+                this.findAbout($, recipient_id);
+            }
             await this.findAudio($, website_name, recipient_id, website_id);
             const links = await this.findLinks($, orig, website_name, links_visited);
             links_visited = links_visited.concat(links);
@@ -96,8 +94,35 @@ class webscraper{
         }
     }
 
-    findAbout(website){
+    async findAbout($, recipient_id){
+        let recipient = this.dao.selectRecipientById(recipient_id);
+        this.logger.log(`Found About Page for ${recipient.name}`);
+        let links = [];
+        await $("a").each((i, elem)=>{        
+            let href = $(elem).attr("href");
+            if(href!=null){
+                let full_url = url.resolve(current_site, href);
+                if(full_url.startsWith(orig)
+                    && full_url.includes("about")){
+                        links.push(full_url);
+                }
+            }
+        })
 
+        for(let i = 0; i< links.length; i++){
+            const response = await axios.get(links[i], {timeout:10000}); 
+            const $ = cheerio.load(response.data);
+            //Take each header and paragraph in order!! and add them in order to a txt file.
+            await $("h1").each((i, elem)=>{ 
+                console.log(elem.attr())
+            })
+            await $("p").each((i, elem)=>{
+                console.log(elem);
+               //see if the length of the text in the paragraph is large enough to be considered text.
+               // Larger than 100?
+            })
+            await this.delay(2000);
+        }
     }
 
     findAudio($, website, recipient_id, website_id){
@@ -145,10 +170,6 @@ class webscraper{
             if(err) console.log(err); 
             thisthat.logger.info(`Downloading ${full_download_path}`);
             thisthat.dao.updateMediaPath(full_download_path, media_id);
-<<<<<<< HEAD
-            console.log("downloaded");
-=======
->>>>>>> fb2fc1811d7f0455a483c3e2bc85ceca8a640fac
         }) 
     }
 
@@ -172,40 +193,24 @@ class webscraper{
     findLinks($, orig, current_site, links_visited){
         let links = [];
         return new Promise(function(resolve, reject){
-            //Find every link on the webpage.
+            //Find every link on the webpage and add it to an array.
             $("a").each((i, elem)=>{        
-                links.push($(elem).attr("href"));
-            })
-
-            //Remove all null objects from Array
-            links = links.filter(function(item, idk){
-                return item != null;
-            });
-
-            /*
-            For Links such as href="/lets/go/../back.html", try to combine it the best you can.
-             */
-            for(let i =0 ;i< links.length-1; i++){
-                if(!links[i].includes(".com") && 
-                   !links[i].includes(".org") && 
-                   !links[i].includes(".net") && 
-                   !links[i].includes(".gov") && 
-                   !links[i].includes(":")  ){
-                    links[i] = url.resolve(current_site, links[i]);
+                let href = $(elem).attr("href");
+                if(href!=null){
+                    let full_url = url.resolve(current_site, href);
+                    if(full_url.startsWith(orig)
+                       && !links_visited.includes(full_url)
+                       && !full_url.includes("#")
+                       && !full_url.includes(".pdf")
+                       && !full_url.includes(".png")
+                       && !full_url.includes(".jpg")
+                       && !full_url.includes(".xlsx")
+                       && !full_url.includes(".zip")){
+                          links.push(full_url);
+                    }
                 }
-            }
-            //Filter out static pages / same pages with locator
-            links = links.filter(function(item, idk){
-                return item.startsWith(orig) 
-                       && !links_visited.includes(item) 
-                       && !item.includes("#")
-                       && !item.includes(".pdf")
-                       && !item.includes(".png")
-                       && !item.includes(".jpg")
-                       && !item.includes(".xlsx")
-                       && !item.includes(".zip");
-                       //&& item.includes("about");
-            });
+            })
+            
             //Convert array to Set to remove duplicates and convert set back to array
             const uniques = new Set(links);
             links = [...uniques];
@@ -213,6 +218,7 @@ class webscraper{
             resolve(links);
         })
     }
+
     //Pause program for amount of milliseconds.
     delay(ms){
         return new Promise(resolve=>setTimeout(resolve, ms));
