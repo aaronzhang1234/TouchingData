@@ -48,8 +48,8 @@ class WS_Controller {
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
       let website_domain = website.domain;
-      //let website_domain = "https://www.dtccom.net/";
 
+//      let website_domain = "https://www.dtccom.net/about-us/";
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
       setTimeout(function() {
@@ -57,8 +57,7 @@ class WS_Controller {
           website_domain,
           website_domain,
           [website_domain],
-          recipient.id,
-          recipient_website_id,
+          recipient,
           stop_time
         );
       }, time);
