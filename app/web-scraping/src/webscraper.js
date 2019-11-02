@@ -206,6 +206,7 @@ class webscraper{
                 console.log(`File name is ${info._filename}`);
             });
             video.pipe(fs.createWriteStream(full_download_path));
+            this.dao.updateMediaPath(full_download_path, media_id);
         }catch(err){
             console.log(err);
         }
@@ -244,5 +245,11 @@ class webscraper{
     delay(ms){
         return new Promise(resolve=>setTimeout(resolve, ms));
     }
+			
+	getParentPath(name){
+		name = name.replace(/ /g, "_");
+		name = name.replace(/\./g, "");
+		return = name.replace(/,/g, "");
+	}
 }
 module.exports = webscraper;
