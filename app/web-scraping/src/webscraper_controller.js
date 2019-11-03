@@ -47,20 +47,24 @@ class WS_Controller {
       let recipient = recipients[i];
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
-      let website_domain = website.domain;
 
-//      let website_domain = "https://www.dtccom.net/about-us/";
+      let website_domain = website.domain;
+//      website_domain = "https://www.us21.com/";
+
+      let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
+
       setTimeout(function() {
         let links_visited = thisthat.webscraper.getSite(
-          website_domain,
+          origin,
           website_domain,
           [website_domain],
           recipient,
           stop_time
         );
       }, time);
+
       time = time + howlong * minute;
     }
   }

@@ -66,7 +66,7 @@ class webscraper{
             //await just pauses the execution until a response is recieved.
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
-            if(orig == website_name){
+            if(links_visited.length == 1){
                 this.findAbout($, orig, recipient);
             }
             await this.findAudio($, website_name, recipient.id, recipient.website);
@@ -95,7 +95,7 @@ class webscraper{
         }
     }
 
-    async findAbout($,orig, recipient){
+    async findAbout($, orig, recipient){
         let thisthat = this;
         let recipient_name = recipient.name;
         recipient_name = recipient_name.replace(/ /g, "_");
@@ -108,16 +108,16 @@ class webscraper{
             let href = $(elem).attr("href");
             if(href!=null){
                 let full_url = url.resolve(orig, href);
+                let a_text = $(elem).text();
                 if(full_url.startsWith(orig)
-                    && full_url.includes("about")){
+                    && (full_url.toLowerCase().includes("about")
+                        || a_text.toLowerCase().includes("about"))){
                         links.push(full_url);
                 }
             }
         })
-        console.log(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
         for(let i = 0; i< links.length; i++){
-            console.log(links[i]);
             fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
                 if(err) console.log(err);
                 thisthat.logger.info(`About Page Link written to ${about_path}`);
@@ -125,23 +125,23 @@ class webscraper{
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
             //Take each header and paragraph in order!! and add them in order to a txt file.
-            await $("h1, h2, h3, h4, h5, h6").each((i, elem)=>{ 
-                let header_text = $(elem).text();
-                fs.writeFile(about_path, header_text + '\n', {flag: 'a+'}, function(err){
-                    if(err) console.log(err);
-                    thisthat.logger.info(`Header written to ${about_path}`);
-                })
-                console.log(`Header is ${$(elem).text()}`);
-            })
-            await $("p").each((i, elem)=>{
-                let paragraph_text = $(elem).text();
-                if(paragraph_text.length > 100){
-                    fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
-                        if(err) console.log(err);
-                        thisthat.logger.info(`Paragraph written to ${about_path}`);
-                    })
-                    console.log(paragraph_text);
+            await $("h1, h2, h3, p").each((i, elem)=>{ 
+                if($(elem).prop("tagName") == 'P'){
+                    let paragraph_text = $(elem).text();
+                    paragraph_text = paragraph_text.trim();
+                    if(paragraph_text.length > 100){
+                        fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
+                            if(err) console.log(err);
+                        })
+                    }
                 }
+//                else{
+//                    let header_text = $(elem).text();
+//                    header_text = header_text.trim();
+//                    fs.writeFile(about_path, header_text + '\n', {flag: 'a+'}, function(err){
+//                        if(err) console.log(err);
+//                    })
+//                }
             })
             await this.delay(2000);
         }
