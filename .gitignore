@@ -103,3 +103,4 @@ data/media/*
 dist/*
 package-lock.json
 data/abouts/*
+data/abouts*

@@ -80,7 +80,7 @@ class webscraper{
                     return links_visited;
                 }
                 //Wait 5 seconds before continuing
-                const waiting = await this.delay(5000);
+                const waiting = await this.delay(2000);
 
                 //Wait 5 seconds before going onto next website.
                 //Webscraper will die on first page if this is not here.
@@ -102,7 +102,7 @@ class webscraper{
         recipient_name = recipient_name.replace(/\./g, "");
         recipient_name = recipient_name.replace(/,/g, "");
         let about_parent_path = path.join("./data/abouts", recipient_name);
-        let links = [orig];
+        let links = [];
         await $("a").each((i, elem)=>{        
             let href = $(elem).attr("href");
             if(href!=null){
@@ -123,7 +123,7 @@ class webscraper{
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
         if(links.length >= 1){
             await fs.mkdir(about_parent_path, err=>{
-                thisthat.logger.error(err);
+                if(err) thisthat.logger.error(err);
             })
         }
         for(let i = 0; i< links.length; i++){   
@@ -142,7 +142,7 @@ class webscraper{
                 paragraph_text = paragraph_text.trim();
                 if(paragraph_text.length > 100){
                     fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
-                        thisthat.logger.err(err);
+                        if(err) thisthat.logger.error(err);
                     })
                 }
             })
@@ -216,6 +216,7 @@ class webscraper{
 
     findLinks($, orig, current_site, links_visited){
         let links = [];
+        let thisthat = this;
         return new Promise(function(resolve, reject){
             //Find every link on the webpage and add it to an array.
             $("a").each((i, elem)=>{        
@@ -237,7 +238,7 @@ class webscraper{
             })
             
             //Convert array to Set to remove duplicates and convert set back to array
-            links = removeDuplicatesInArrays(links);
+            links = thisthat.removeDuplicatesInArrays(links);
             resolve(links);
         })
     }
@@ -247,6 +248,7 @@ class webscraper{
         arr = [...uniques];
         return arr;
     }
+
     //Pause program for amount of milliseconds.
     delay(ms){
         return new Promise(resolve=>setTimeout(resolve, ms));

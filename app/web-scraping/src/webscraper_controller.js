@@ -9,6 +9,7 @@ const DAO = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 let EM = require("./emitter.js");
+const fs = require("fs");
 const url = require("url");
 
 class WS_Controller {
@@ -38,6 +39,9 @@ class WS_Controller {
     }
   }
   webscrapeAllSites() {
+    fs.mkdir("data/abouts", err=>{
+      console.log(`abouts error`);
+    }); 
     let recipients = this.dao.selectAllRecipients();
     let howlong = .25;
     let time = 0;
