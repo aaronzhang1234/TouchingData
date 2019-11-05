@@ -67,7 +67,7 @@ class webscraper{
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
             if(links_visited.length == 1){
-                this.findAbout($, orig, recipient);
+                this.findAbout($, orig, recipient).catch((err)=>this.logger.err(err));
             }
             await this.findAudio($, website_name, recipient.id, recipient.website);
             const links = await this.findLinks($, orig, website_name, links_visited);
@@ -130,7 +130,7 @@ class webscraper{
             let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
 
             fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
-                if(err) console.log(err);
+                if(err) thisthat.logger.error(err);
                 thisthat.logger.info(`About Page Link written to ${about_path}`);
             })
             const response = await axios.get(links[i], {timeout:10000}); 
