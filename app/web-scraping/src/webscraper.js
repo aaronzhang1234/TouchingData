@@ -17,8 +17,8 @@ class webscraper{
     constructor(bing_APIKEY){  
         let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
         this.dao = new DAO(sqlDatabaseName);
-        //this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
-        //this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
+        this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
+        this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
 
         //Creating a logger at the specified area.
         const logConfiguration = {
@@ -35,7 +35,7 @@ class webscraper{
     //Getting a company's website using Bing
     getSiteFromName(companyName){
         let thisthat = this;
-        /*
+        
         return new Promise(function(resolve, reject){
             thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
                 let numresults = Object.keys(results["webPages"]["value"]).length;
@@ -43,7 +43,7 @@ class webscraper{
             }).catch((err)=>{
                 thisthat.logger.error(err);
             }) })
-            */
+            
     }
 
     /*
