@@ -39,7 +39,7 @@ class WS_Controller {
   }
   webscrapeAllSites() {
     let recipients = this.dao.selectAllRecipients();
-    let howlong = 1;
+    let howlong = .25;
     let time = 0;
     const minute = 60000;
     //OH BOY FUN TIMES
@@ -49,7 +49,7 @@ class WS_Controller {
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
       let website_domain = website.domain;
-//      website_domain = "https://www.us21.com/";
+//      website_domain = "http://www.enterprisesol.com/";
 
       let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;

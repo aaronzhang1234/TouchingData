@@ -101,47 +101,50 @@ class webscraper{
         recipient_name = recipient_name.replace(/ /g, "_");
         recipient_name = recipient_name.replace(/\./g, "");
         recipient_name = recipient_name.replace(/,/g, "");
-        let about_path = path.join("./data/abouts", recipient_name +".txt");
-        console.log(about_path);        
-        let links = [];
+        let about_parent_path = path.join("./data/abouts", recipient_name);
+        let links = [orig];
         await $("a").each((i, elem)=>{        
             let href = $(elem).attr("href");
             if(href!=null){
                 let full_url = url.resolve(orig, href);
                 let a_text = $(elem).text();
                 if(full_url.startsWith(orig)
+                    && !full_url.includes("#")
+                    && !full_url.toLowerCase().includes("wikipedia")
                     && (full_url.toLowerCase().includes("about")
-                        || a_text.toLowerCase().includes("about"))){
+                     || full_url.toLowerCase().includes("company")
+                     || a_text.toLowerCase().includes("about")
+                     || a_text.toLowerCase().includes("company"))){
                         links.push(full_url);
                 }
             }
         })
+        links = this.removeDuplicatesInArrays(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
-        for(let i = 0; i< links.length; i++){
+        if(links.length >= 1){
+            await fs.mkdir(about_parent_path, err=>{
+                thisthat.logger.error(err);
+            })
+        }
+        for(let i = 0; i< links.length; i++){   
+            let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
+
             fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
                 if(err) console.log(err);
                 thisthat.logger.info(`About Page Link written to ${about_path}`);
             })
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
-            //Take each header and paragraph in order!! and add them in order to a txt file.
-            await $("h1, h2, h3, p").each((i, elem)=>{ 
-                if($(elem).prop("tagName") == 'P'){
-                    let paragraph_text = $(elem).text();
-                    paragraph_text = paragraph_text.trim();
-                    if(paragraph_text.length > 100){
-                        fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
-                            if(err) console.log(err);
-                        })
-                    }
+
+            //Take each paragraph and add them in order to a txt file.
+            await $("p").each((i, elem)=>{ 
+                let paragraph_text = $(elem).text();
+                paragraph_text = paragraph_text.trim();
+                if(paragraph_text.length > 100){
+                    fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
+                        thisthat.logger.err(err);
+                    })
                 }
-//                else{
-//                    let header_text = $(elem).text();
-//                    header_text = header_text.trim();
-//                    fs.writeFile(about_path, header_text + '\n', {flag: 'a+'}, function(err){
-//                        if(err) console.log(err);
-//                    })
-//                }
             })
             await this.delay(2000);
         }
@@ -234,12 +237,16 @@ class webscraper{
             })
             
             //Convert array to Set to remove duplicates and convert set back to array
-            const uniques = new Set(links);
-            links = [...uniques];
+            links = removeDuplicatesInArrays(links);
             resolve(links);
         })
     }
 
+    removeDuplicatesInArrays(arr){
+        const uniques = new Set(arr);
+        arr = [...uniques];
+        return arr;
+    }
     //Pause program for amount of milliseconds.
     delay(ms){
         return new Promise(resolve=>setTimeout(resolve, ms));
