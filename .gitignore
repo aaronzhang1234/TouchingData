@@ -103,4 +103,7 @@ data/media/*
 dist/*
 package-lock.json
 data/abouts/*
+<<<<<<< HEAD
 data/abouts*
+=======
+>>>>>>> master
