@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 79.0, 1612.0, 871.0 ],
+		"rect" : [ 34.0, 79.0, 841.0, 871.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -38,6 +38,111 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-50",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1754.666718721389771, 534.5, 83.0, 22.0 ],
+					"text" : "Tribal Specific"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 24.0,
+					"id" : "obj-52",
+					"items" : [ ",", "Tribal", "Owned", "Business", ",", "Indian", "Tribe", "Federally", "Recognized", "Owned", "Business" ],
+					"maxclass" : "umenu",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "int", "", "" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1850.666721820831299, 528.0, 984.0, 35.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-46",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1707.666718721389771, 464.5625, 126.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "Owner Veteran Status"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 24.0,
+					"id" : "obj-49",
+					"items" : [ ",", "Veteran", "Owned", "Business", ",", "Service", "Disabled", "Veteran", "Owned", "Business" ],
+					"maxclass" : "umenu",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "int", "", "" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1850.666721820831299, 458.0625, 984.0, 35.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-42",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1746.666718721389771, 397.583333730697632, 87.0, 22.0 ],
+					"text" : "Owner Gender"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 24.0,
+					"id" : "obj-43",
+					"items" : [ ",", "Woman", "Owned", "Business", ",", "Woman", "Owned", "Small", "Business", ",", "Economically", "Disadvantaged", "Woman", "Owned", "Small", "Business", ",", "Joint", "Venture", "Women", "Owned", "Small", "Business", ",", "Economically", "Disadvantaged", "Join", "Venture", "Women", "Owned", "Small", "Business" ],
+					"maxclass" : "umenu",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "int", "", "" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1850.666721820831299, 391.9375, 984.000006318092346, 35.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-41",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1758.666718721389771, 331.3125, 75.0, 22.0 ],
+					"text" : "Owner Race"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontsize" : 24.0,
+					"id" : "obj-27",
+					"items" : [ ",", "Alaskin", "Native", ",", "American", "Indian", ",", "Asian", "Pacific", "American", ",", "Black", "American", ",", "Hispanic", "American", ",", "Native", "American", ",", "Native", "Hawaiian", ",", "Other", "Minority" ],
+					"maxclass" : "umenu",
+					"numinlets" : 1,
+					"numoutlets" : 3,
+					"outlettype" : [ "int", "", "" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 1850.666721820831299, 323.666666269302368, 984.000006318092346, 35.0 ]
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-18",
 					"maxclass" : "message",
@@ -95,13 +200,11 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-70",
-					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 424.0, 495.0, 50.0, 35.0 ],
-					"text" : "1000000"
+					"patching_rect" : [ 424.0, 495.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -187,7 +290,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 624.0625, 487.249041438102722, 124.0, 22.0 ],
-					"text" : "expr $i1/200000 + $i2"
+					"text" : "expr $i1/250000 + $i2"
 				}
 
 			}
@@ -254,14 +357,16 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-59",
+					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1630.0, 278.5, 97.0, 22.0 ],
+					"patching_rect" : [ 1630.0, 278.5, 75.0, 35.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 1195.0, 230.5, 97.0, 22.0 ],
-					"text" : "Range Selection"
+					"presentation_linecount" : 2,
+					"presentation_rect" : [ 1195.0, 230.5, 97.0, 35.0 ],
+					"text" : "Step Range Selection"
 				}
 
 			}
@@ -391,7 +496,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "jit_matrix", "" ],
-					"patching_rect" : [ 993.062502503395081, 494.743882536888123, 206.937497496604919, 198.0 ]
+					"patching_rect" : [ 993.062502503395081, 494.743882536888123, 38.937497496604919, 22.256117463111877 ]
 				}
 
 			}
@@ -460,14 +565,12 @@
 				"box" : 				{
 					"fontsize" : 48.0,
 					"id" : "obj-55",
-					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 16.0, 777.5, 532.0, 114.0 ],
+					"patching_rect" : [ 16.0, 777.5, 532.0, 60.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 55.518515527248383, 405.382431864738464, 754.423539400100708, 60.0 ],
-					"text" : "BOOZ ALLEN HAMILTON INC",
 					"textjustification" : 1
 				}
 
@@ -482,7 +585,6 @@
 					"patching_rect" : [ 580.0625, 825.037665963172913, 532.0, 60.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 275.230285227298737, 230.5, 315.0, 60.0 ],
-					"text" : "99",
 					"textjustification" : 1
 				}
 
@@ -525,7 +627,6 @@
 					"patching_rect" : [ 1174.908176720142365, 801.6875, 532.0, 60.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 275.230285227298737, 115.007983803749084, 315.0, 60.0 ],
-					"text" : "$ 1,000,000",
 					"textjustification" : 1
 				}
 
@@ -695,8 +796,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 521.5625, 96.5, 196.0, 22.0 ],
-					"text" : "1000000"
+					"patching_rect" : [ 521.5625, 96.5, 196.0, 22.0 ]
 				}
 
 			}
@@ -790,8 +890,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 289.25, 314.9375, 234.0, 22.0 ],
-					"text" : "getRecipientName 1000000 2000000 0"
+					"patching_rect" : [ 289.25, 314.9375, 234.0, 22.0 ]
 				}
 
 			}

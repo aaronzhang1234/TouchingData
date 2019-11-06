@@ -11,5 +11,6 @@ EM.on("fug", function(){
     console.log("oufs");
 })
 let webscraper_controller = new WS_Controller();
+webscraper_controller.getBingResults();
 //webscraper_controller.downloadAllMedia();
-webscraper_controller.webscrapeAllSites();
+//webscraper_controller.webscrapeAllSites();

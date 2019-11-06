@@ -102,3 +102,4 @@ data/media/*
 .DS_Store
 dist/*
 package-lock.json
+data/abouts/*
