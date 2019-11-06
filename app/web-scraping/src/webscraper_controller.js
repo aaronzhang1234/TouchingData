@@ -74,11 +74,11 @@ class WS_Controller {
 			let name = webScaper.getParentPath(recipient.name)
       let media_url = media.url;
       let media_source = media.source;      
-      time = time + 2000;
-      setTimeout(function() {
-        if (media.fileType == "youtube") {
-           webscraper.downloadYoutube(name, media_source);
-        } else {
+			time = time + 2000;
+			setTimeout(function() {
+				if (media.fileType == "youtube") {
+					webscraper.downloadYoutube(name, media_source, media.id);
+				} else {
           let full_link = url.resolve(media_url, media_source);
           thisthat.webscraper.downloadFile(name, full_link, media.id);
         }

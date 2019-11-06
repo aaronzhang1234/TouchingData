@@ -13,6 +13,7 @@ const Media = require("../../models/Media.js");
 const EM = require("./emitter.js");
 
 
+
 class webscraper{
     //Creating a websearch client using an API Key
     constructor(bing_APIKEY){  
@@ -195,21 +196,37 @@ class webscraper{
         }) 
     }
 
-    downloadYoutube(parent_directory, youtube_link){
-        let DOWNLOAD_DIR =  "./data/scraped";
-        var ytid = url.parse(youtube_link).pathname.split('/').pop();
-
-        let full_download_path = path.join(DOWNLOAD_DIR, parent_directory, ytid+".mp4");
-        try{
-            let video = youtubedl(youtube_link);
-            video.on('info', function(info){
-                console.log(`File name is ${info._filename}`);
-            });
-            video.pipe(fs.createWriteStream(full_download_path));
-            this.dao.updateMediaPath(full_download_path, media_id);
-        }catch(err){
-            console.log(err);
-        }
+    downloadYoutube(parent_directory, youtube_link, media_id){
+			let DOWNLOAD_DIR =  "./data/scraped";
+			var ytid = url.parse(youtube_link).pathname.split('/').pop();
+			EM.emit("media" + media_id);
+			if (ytid === null){return}
+			if (!youtube_link.includes("http")){
+				youtube_link = "https:"+youtube_link
+			}
+			let full_download_path = path.join(DOWNLOAD_DIR, parent_directory, ytid+".mp4");
+			if (!fs.existsSync(path.join(DOWNLOAD_DIR,parent_directory))){
+					fs.mkdirSync(path.join(DOWNLOAD_DIR,parent_directory));
+			}
+			try{
+				this.dao.updateMediaPath(full_download_path, media_id);
+				new Promise((resolve)=> {
+					youtubedl(youtube_link)
+						.on('progress',(length,downloaded, totallength)=> {
+							const progress = (downloaded/totallength) * 100;
+						})
+						.pipe(fs.createWriteStream(full_download_path))
+						.on('finish',()=> {
+							resolve();
+						})
+						.on('error',()=>{
+							resolve();
+						})
+				});
+				
+			}catch(err){
+				console.log(err);
+			}
     }
 
     findLinks($, orig, current_site, links_visited){
@@ -249,7 +266,7 @@ class webscraper{
 	getParentPath(name){
 		name = name.replace(/ /g, "_");
 		name = name.replace(/\./g, "");
-		return = name.replace(/,/g, "");
+		return name.replace(/,/g, "");
 	}
 }
 module.exports = webscraper;
