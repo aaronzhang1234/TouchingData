@@ -1,7 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const url = require("url");
-const winston = require("winston");
+const {transports, createLogger, format} = require("winston");
 const path = require("path");
 const fs = require("fs");
 const download = require("download-file");
@@ -22,14 +22,17 @@ class webscraper{
         this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
 
         //Creating a logger at the specified area.
-        const logConfiguration = {
-            'transports':[
-                new winston.transports.File({
-                    filename:'./logs/webscraper.log'
-                })
+
+        this.logger = createLogger({
+            format: format.combine(
+                format.timestamp(),
+                format.json()
+            ),
+            transports: [
+                new transports.File({filename: 'logs/webscraper.log'})
             ]
-        };
-        this.logger = winston.createLogger(logConfiguration);
+        });         
+
         console.log(`Scraper Created!\nCurrently logging at /logs/webscraper.log`);
     }
 
