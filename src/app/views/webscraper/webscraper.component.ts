@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import Pusher from 'pusher-js';
+import * as socketio from 'socket.io-client';
 
 @Component({
   selector: 'app-webscraper',
@@ -15,16 +15,11 @@ export class WebscraperComponent implements OnInit {
   }
 
   startScrape(){
-    Pusher.logToConsole = true;
     let nowscraping = document.getElementById('now-scraping');
-    let pusher = new Pusher('f1731416f119bafdc832', {
-      cluster: 'us2',
-      forceTLS: true
-    });
 
-    let channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-      nowscraping.textContent = data["message"];
+    const io = socketio("http://localhost:3000");
+    io.on("website", (data)=>{
+       nowscraping.textContent = data["arg1"];     
     });
 
     let bar = document.getElementById("progressbar");

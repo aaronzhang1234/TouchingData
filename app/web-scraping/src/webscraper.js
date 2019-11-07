@@ -11,8 +11,6 @@ const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
 const EM = require("./emitter.js");
-const Pusher = require("pusher");
-
 
 class webscraper{
     //Creating a websearch client using an API Key
@@ -21,14 +19,6 @@ class webscraper{
         this.dao = new DAO(sqlDatabaseName);
         this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
         this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
-        this.pusher = new Pusher({
-            appId: '894938',
-            key: 'f1731416f119bafdc832',
-            secret: '2ded923ed65f4885008f',
-            cluster: 'us2',
-            encrypted: true
-        });
-
         //Creating a logger at the specified area.
 
         this.logger = createLogger({
@@ -85,12 +75,10 @@ class webscraper{
     */
     async getSite(orig, website_name, links_visited, recipient, stopTime){
         //If time has run out then kill the program.
-        this.pusher.trigger('my-channel','my-event',{
-            "message":website_name
-        });
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
+        EM.emit("website", website_name);
         //If it is on the first page.
         try{
             //await just pauses the execution until a response is recieved.
