@@ -98,12 +98,7 @@ data/scraped/*
 data/scraped.zip
 
 data/media/*
-*.DS_Store
-.DS_Store
 dist/*
 package-lock.json
 data/abouts/*
-<<<<<<< HEAD
-data/abouts*
-=======
->>>>>>> master
+data/abouts.zip

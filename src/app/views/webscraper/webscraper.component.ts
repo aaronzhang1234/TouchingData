@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import Pusher from 'pusher-js';
 
 @Component({
   selector: 'app-webscraper',
@@ -14,6 +15,18 @@ export class WebscraperComponent implements OnInit {
   }
 
   startScrape(){
+    Pusher.logToConsole = true;
+    let nowscraping = document.getElementById('now-scraping');
+    let pusher = new Pusher('f1731416f119bafdc832', {
+      cluster: 'us2',
+      forceTLS: true
+    });
+
+    let channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      nowscraping.textContent = data["message"];
+    });
+
     let bar = document.getElementById("progressbar");
     bar.setAttribute("style", "display:inline-block;");
     console.log("bopped");

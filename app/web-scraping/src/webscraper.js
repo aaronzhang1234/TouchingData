@@ -11,6 +11,7 @@ const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
 const EM = require("./emitter.js");
+const Pusher = require("pusher");
 
 
 class webscraper{
@@ -20,6 +21,13 @@ class webscraper{
         this.dao = new DAO(sqlDatabaseName);
         this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
         this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
+        this.pusher = new Pusher({
+            appId: '894938',
+            key: 'f1731416f119bafdc832',
+            secret: '2ded923ed65f4885008f',
+            cluster: 'us2',
+            encrypted: true
+        });
 
         //Creating a logger at the specified area.
 
@@ -41,7 +49,24 @@ class webscraper{
         let thisthat = this;
         return new Promise(function(resolve, reject){
             thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
+                let confidence_arr = [];
                 let numresults = Object.keys(results["webPages"]["value"]).length;
+                for(let i = 0; i<numresults-1; i++){
+                    let confidence_val = 0;
+                    let cur_url_str = results["webPages"]["value"][i]["url"];
+                    let cur_url = new URL(cur_url_str);
+                    let cur_length = cur_url_str.length;
+
+                    let cur_path = cur_url.pathname;
+                    let length_multiplier = (1 / (cur_length / 50));
+                    let path_lenth = cur_url_str.split("/").length;
+                    let num_length = cur_url_str.replace(/[^0-9]/g,"").length;
+                    console.log(cur_url_str);
+                    console.log(cur_path);
+                    console.log(length_multiplier);
+                    console.log(path_lenth);
+                    console.log(num_length);
+                }
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);
@@ -60,7 +85,9 @@ class webscraper{
     */
     async getSite(orig, website_name, links_visited, recipient, stopTime){
         //If time has run out then kill the program.
-        EM.emit("fug");
+        this.pusher.trigger('my-channel','my-event',{
+            "message":website_name
+        });
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
@@ -70,7 +97,7 @@ class webscraper{
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
             if(links_visited.length == 1){
-                this.findAbout($, orig, recipient).catch((err)=>this.logger.err(err));
+                this.findAbout($, orig, recipient).catch((err)=>this.logger.error(err));
             }
             await this.findAudio($, website_name, recipient.id, recipient.website);
             const links = await this.findLinks($, orig, website_name, links_visited);
@@ -139,6 +166,7 @@ class webscraper{
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
 
+            let about_media = new Media();
             //Take each paragraph and add them in order to a txt file.
             await $("p").each((i, elem)=>{ 
                 let paragraph_text = $(elem).text();

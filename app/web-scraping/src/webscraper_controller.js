@@ -40,7 +40,7 @@ class WS_Controller {
   }
   webscrapeAllSites() {
     fs.mkdir("data/abouts", err=>{
-      console.log(`abouts error`);
+      console.log(`Problem Creating the data/abouts folder. \n Honestly, 70% chance it's already created`);
     }); 
     let recipients = this.dao.selectAllRecipients();
     let howlong = .25;
