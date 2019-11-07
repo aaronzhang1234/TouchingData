@@ -73,7 +73,7 @@ class webscraper{
     .
     stopTime -> Time in Epoch when the program is supposed to end.
     */
-    async getSite(orig, website_name, links_visited, recipient, stopTime){
+    async getSite(orig, website_name, links_visited, recipient_id, stopTime){
         //If time has run out then kill the program.
         if(new Date().valueOf() > stopTime){
             return links_visited;
@@ -81,11 +81,12 @@ class webscraper{
         EM.emit("website", website_name);
         //If it is on the first page.
         try{
+            let recipient = this.dao.selectRecipientById(recipient_id);
             //await just pauses the execution until a response is recieved.
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
             if(links_visited.length == 1){
-                this.findAbout($, orig, recipient).catch((err)=>this.logger.error(err));
+                this.findAbout($, orig, recipient_id).catch((err)=>this.logger.error(err));
             }
             await this.findAudio($, website_name, recipient.id, recipient.website);
             const links = await this.findLinks($, orig, website_name, links_visited);
@@ -103,7 +104,7 @@ class webscraper{
                 //Wait 5 seconds before going onto next website.
                 //Webscraper will die on first page if this is not here.
                 setTimeout(function(){
-                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited, recipient, stopTime));
+                    links_visited = links_visited.concat(thisthat.getSite(orig, links[i], links_visited, recipient_id, stopTime));
                     return links_visited;
                 },5000);                
             }
@@ -113,8 +114,9 @@ class webscraper{
         }
     }
 
-    async findAbout($, orig, recipient){
+    async findAbout($, orig, recipient_id){
         let thisthat = this;
+        let recipient = this.dao.selectRecipientById(recipient_id);
         let recipient_name = recipient.name;
         recipient_name = recipient_name.replace(/ /g, "_");
         recipient_name = recipient_name.replace(/\./g, "");
@@ -159,6 +161,7 @@ class webscraper{
             await $("p").each((i, elem)=>{ 
                 let paragraph_text = $(elem).text();
                 paragraph_text = paragraph_text.trim();
+                
                 if(paragraph_text.length > 100){
                     fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
                         if(err) thisthat.logger.error(err);
@@ -169,7 +172,8 @@ class webscraper{
         }
     }
 
-    findAudio($, website, recipient_id, website_id){
+    findAudio($, website, recipient_id){
+        let recipient = this.dao.selectRecipientById(recipient_id);
         let thisthat = this;
         return new Promise(function(resolve, reject){
            thisthat.logger.info(`Scraping : ${website}`);
@@ -178,7 +182,7 @@ class webscraper{
                 if(src){
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
-                    let media = new Media("",recipient_id,"" , file_type, "", src, website, website_id);
+                    let media = new Media("",recipient_id,"" , file_type, "", src, website, recipient.website);
                     thisthat.dao.insertMedia(media);
                 }
             });
@@ -193,7 +197,7 @@ class webscraper{
               "a[href*='/youtube.com\\/watch/']"  ).each((i, elem)=>{
                 let src = $(elem).attr("href");
                 thisthat.logger.info(`Website href is ${website} | Youtube is: ${src}`);
-                let media = new Media("",recipient_id,"" , "youtube", "", src,website, website_id);
+                let media = new Media("",recipient_id,"" , "youtube", "", src,website, recipient.website);
                 thisthat.dao.insertMedia(media);
             });
             resolve("");

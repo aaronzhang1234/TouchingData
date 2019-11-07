@@ -49,6 +49,7 @@ class WS_Controller {
     //OH BOY FUN TIMES
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
+      let recipient_id = recipient.id;
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
@@ -64,7 +65,7 @@ class WS_Controller {
           origin,
           website_domain,
           [website_domain],
-          recipient,
+          recipient_id,
           stop_time
         );
       }, time);
