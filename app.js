@@ -5,6 +5,8 @@ const WS_Controller = require("./app/web-scraping/src/webscraper_controller");
 const DataMigrator = require("./app/dataMigration/src/DataMigrator.js");
 const DbBuilder = require("./app/dataMigration/src/DbBuilder.js");
 const bodyparser = require("body-parser");
+const socketIo = require('socket.io');
+const EM = require('./app/web-scraping/src/emitter.js');
 
 var app = express();
 
@@ -52,3 +54,16 @@ app.get("/downloadMedia", function(req, res){
 const server = http.createServer(app);
 
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
+const io = socketIo(server);
+io.on('connection', (socket)=>{
+  EM.on('website', function(webiste){
+    socket.emit('website',{
+      arg1:webiste
+    })
+  })
+  setInterval(function(){
+    socket.emit('hello',{
+      arg1:"fuck"
+    })
+  }, 2000);
+});

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import * as socketio from 'socket.io-client';
 
 @Component({
   selector: 'app-webscraper',
@@ -14,6 +15,13 @@ export class WebscraperComponent implements OnInit {
   }
 
   startScrape(){
+    let nowscraping = document.getElementById('now-scraping');
+
+    const io = socketio("http://localhost:3000");
+    io.on("website", (data)=>{
+       nowscraping.textContent = data["arg1"];     
+    });
+
     let bar = document.getElementById("progressbar");
     bar.setAttribute("style", "display:inline-block;");
     console.log("bopped");
