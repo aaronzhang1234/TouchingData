@@ -7,16 +7,29 @@
  *
 */
 
- class Media {
-	constructor(id = null, recipient = null , filePath = null, fileType = null, description = null, source = null, url=null, website=null){
+class Media {
+	constructor(
+		id = null,
+		recipient = null,
+		filePath = null,
+		fileType = null,
+		description = null,
+		url=null, 
+		website=null,
+		parentKey=null,
+		usable=null
+		kind=null
+	){
 		this.id = id; 
 		this.recipient = recipient; 
 		this.filePath = filePath; 
 		this.fileType = fileType; 
 		this.description = description; 
-		this.source = source; 
 		this.url = url; 
 		this.website = website; 
+		this.parentKey = parentKey; 
+		this.usable = usable; 
+		this.kind = kind;
 	}
 }
 

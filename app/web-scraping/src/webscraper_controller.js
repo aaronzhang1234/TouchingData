@@ -72,15 +72,13 @@ class WS_Controller {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
 			let name = webScaper.getParentPath(recipient.name)
-      let media_url = media.url;
-      let media_source = media.source;      
+      let media_source = media.url;      
 			time = time + 2000;
 			setTimeout(function() {
-				if (media.fileType == "youtube") {
+				if (media.kind == "youtube") {
 					webscraper.downloadYoutube(name, media_source, media.id);
 				} else {
-          let full_link = url.resolve(media_url, media_source);
-          thisthat.webscraper.downloadFile(name, full_link, media.id);
+          thisthat.webscraper.downloadFile(name, media_source, media.id);
         }
       }, time);
     }

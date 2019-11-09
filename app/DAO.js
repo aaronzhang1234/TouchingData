@@ -15,7 +15,7 @@
  */
 
 const sqlite3 = require('better-sqlite3');
-
+)
 
 //include all models
 var Recipient = require("./models/Recipient.js");
@@ -222,17 +222,22 @@ class Dao {
 				row.filePath, 
 				row.fileType,
 				row.description,
-				row.source,
 				row.url,
-				row.website_id 
+				row.website_id,
+				row.parentKey,
+				row.usable,
+				row.kind
 			)
 			return media;
 		}
 		return null;
 	}
 
+
+	// Select all everything from each record on the PG1_MEDIA table
+	// return the selected records as an array of Media Objects
 	selectAllMedia(){
-		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA GROUP BY SOURCE`).all();
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA`).all();
 		var medias = [];
 		rows.forEach(function(row, i){
 			let media = new Media(
@@ -241,19 +246,29 @@ class Dao {
 				row.filePath, 
 				row.fileType,
 				row.description,
-				row.source,
 				row.url,
-				row.website_id 
+				row.website_id,
+				row.parentKey,
+				row.usable,
+				row.kind
 			)
 			medias.push(media);
 		});
 		return medias;
 	}
+	
+
+	// update filePath column on a media record with the given id
+	// takes media_path as a string, and media_id as as an integer
+	// this method catches any sql exceptions
+	// returns 1 if successful, else returns 0
 	updateMediaPath(media_path, media_id){
 		try{
 			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?`).run(media_path, media_id);
+			return 1;
 			console.log("update " + media_id);
 		}catch(err){
+			return 0;
 			console.log(err);
 		}
 	}
@@ -627,11 +642,13 @@ class Dao {
 				filePath, 
 				fileType, 
 				description, 
-				source, 
 				url,
 				website_id,
-				recipient_id
-			) VALUES(?, ?, ?, ?, ?, ?, ?)`
+				recipient_id,
+				parentKey,
+				usable,
+				kind
+			) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`
 			);
 
 			const insert = this.db.transaction((media)=> {
@@ -642,9 +659,11 @@ class Dao {
 						media.fileType, 
 						media.description, 
 						media.medLength, 
-						media.source, 
 						media.website,
-						media.recpient
+						media.recpient,
+						media.parentKey,
+						media.usable,
+						media.kind
 					)
 				}catch(err){
 					 
@@ -1038,9 +1057,11 @@ class Dao {
 			"filePath TEXT NOT NULL,"+
 			"fileType TEXT NOT NULL,"+
 			"description TEXT,"+
-			"source TEXT,"+
 			"url TEXT NOT NULL UNIQUE,"+ 
 			"website_id integer NULL,"+
+			"parentKey integer NULL,"+
+			"usuable integer NULL,"+ //boolean 
+			"kind TEXT NULL",+
 			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
@@ -1048,6 +1069,16 @@ class Dao {
 		this.db.prepare(
 			"CREATE INDEX idx_media_recipient_id "+
 			"ON PG1_MEDIA(recipient_id);"
+		).run();
+
+		this.db.prepare(
+			"CREATE INDEX idx_url "+
+			"ON PG1_MEDIA(url);"
+		).run();
+
+		this.db.prepare(
+			"CREATE INDEX idx_media_website "+
+			"ON PG1_MEDIA(website_id);"
 		).run();
 	}
 
