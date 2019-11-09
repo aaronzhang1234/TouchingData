@@ -15,7 +15,6 @@
  */
 
 const sqlite3 = require('better-sqlite3');
-)
 
 //include all models
 var Recipient = require("./models/Recipient.js");

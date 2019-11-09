@@ -17,7 +17,7 @@ class Media {
 		url=null, 
 		website=null,
 		parentKey=null,
-		usable=null
+		usable=null,
 		kind=null
 	){
 		this.id = id; 
