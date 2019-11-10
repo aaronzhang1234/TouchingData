@@ -49,7 +49,7 @@ class WS_Controller {
       let website = this.dao.selectWebsiteById(recipient_website_id);
       let website_domain = website.domain;
 
-//      let website_domain = "https://www.dtccom.net/about-us/";
+//      let website_domain = "https://adsinc.com/";
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
       setTimeout(function() {
