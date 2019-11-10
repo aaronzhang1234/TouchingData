@@ -186,7 +186,6 @@ class webscraper{
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
                     let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), website_id, null, null);
-                    let media = new Media("",recipient_id,"" , file_type, "", src, website, recipient.website);
                     thisthat.dao.insertMedia(media);
                 }
             });
@@ -201,7 +200,7 @@ class webscraper{
               "a[href*='/youtube.com\\/watch/']"  ).each((i, elem)=>{
                 let src = $(elem).attr("href");
                 thisthat.logger.info(`Website href is ${website} | Youtube is: ${src}`);
-                let media = new Media("",recipient_id,"" , "youtube", "", src,website, recipient.website);
+                let media = new Media(null,recipient_id,null,"mp4",null,src,recipient.website,null,"youtube");
                 thisthat.dao.insertMedia(media);
             });
             resolve("");
