@@ -47,7 +47,10 @@ class DataMigrator {
 						}catch(err){}
 
 					}
+					EM.emit('migrate', {progress:worksheet.rowCount/index})
 				});
+			}).then(function(){
+				EM.emit('migrate', {progress:1})
 			});
 		});
 	 }
