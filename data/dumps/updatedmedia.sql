@@ -14902,7 +14902,7 @@ INSERT INTO PG1_WEBSITE VALUES(1042,'http://erc-corp.com/');
 INSERT INTO PG1_WEBSITE VALUES(1043,'http://www.chenegamios.com/kapsuun-group/');
 INSERT INTO PG1_WEBSITE VALUES(1044,'https://www.globaltravelersllc.com/');
 INSERT INTO PG1_WEBSITE VALUES(1045,'https://www.test.com');
-CREATE TABLE `PG1_MEDIA`(media_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,recipient_id INTEGER NULL,filePath TEXT NOT NULL,fileType TEXT NOT NULL,description TEXT,url TEXT NOT NULL UNIQUE,website_id integer NULL,parentKey integer NULL,usable integer NULL, "kind",FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));
+CREATE TABLE `PG1_MEDIA`(media_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,recipient_id INTEGER NULL,filePath TEXT NULL,fileType TEXT NOT NULL,description TEXT,url TEXT NOT NULL UNIQUE,website_id integer NULL,parentKey integer NULL,usable integer NULL, "kind",FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));
 INSERT INTO PG1_MEDIA VALUES(1,4,'data/scraped/DTC_COMMUNICATIONS_INC/tJDeW_JPGk0.mp4','mp4','','https://youtu.be/tJDeW_JPGk0',4,NULL,NULL,'youtube');
 INSERT INTO PG1_MEDIA VALUES(2,8,'data/scraped/XEROX_CORPORATION/primelink-launch-480x495.mp4','mp4','','https://www.xerox.com/sites/default/files/primelink-launch-480x495.mp4',8,NULL,NULL,NULL);
 INSERT INTO PG1_MEDIA VALUES(3,8,'data/scraped/XEROX_CORPORATION/primelink-launch-1200x450.mp4','mp4','','https://www.xerox.com/sites/default/files/primelink-launch-1200x450.mp4',8,NULL,NULL,NULL);

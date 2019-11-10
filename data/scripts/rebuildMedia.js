@@ -10,7 +10,7 @@ db.prepare(
 	"CREATE TABLE IF NOT EXISTS `PG1_MEDIA`("+
 	"media_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
 	"recipient_id INTEGER NULL,"+
-	"filePath TEXT NOT NULL,"+
+	"filePath TEXT NULL,"+
 	"fileType TEXT NOT NULL,"+
 	"description TEXT,"+
 	"url TEXT NOT NULL UNIQUE,"+ 
