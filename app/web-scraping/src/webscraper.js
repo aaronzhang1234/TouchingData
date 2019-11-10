@@ -78,7 +78,7 @@ class webscraper{
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
-        EM.emit("website", website_name);
+        EM.emit("webscraper", null, null, website_name, null);
         //If it is on the first page.
         try{
             let recipient = this.dao.selectRecipientById(recipient_id);
@@ -183,6 +183,7 @@ class webscraper{
                     let file_type = src.split(".").pop();
                     let media = new Media("",recipient.id,"" , file_type, "", src, website, recipient.website);
                     thisthat.dao.insertMedia(media);
+                    EM.emit("webscraper", null, null, null, url.resolve(webiste, src));
                 }
             });
             $("a[href*='/youtu.be/'],"+
@@ -192,6 +193,7 @@ class webscraper{
                 thisthat.logger.info(`Website href is ${website} | Youtube is: ${src}`);
                 let media = new Media("",recipient.id,"" , "youtube", "", src,website, recipient.website);
                 thisthat.dao.insertMedia(media);
+                EM.emit("webscraper", null, null, null, src);
             });
             resolve("");
         });

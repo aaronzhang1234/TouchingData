@@ -18,8 +18,8 @@ export class WebscraperComponent implements OnInit {
     let nowscraping = document.getElementById('now-scraping');
 
     const io = socketio("http://localhost:3000");
-    io.on("website", (data)=>{
-       nowscraping.textContent = data["arg1"];     
+    io.on("webscraper", (data)=>{
+       console.log(data);
     });
 
     let bar = document.getElementById("progressbar");

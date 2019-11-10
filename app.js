@@ -56,9 +56,12 @@ const server = http.createServer(app);
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
 const io = socketIo(server);
 io.on('connection', (socket)=>{
-  EM.on('website', function(webiste){
-    socket.emit('website',{
-      arg1:webiste
+  EM.on('webscraper', function(position, total_amount, website, media){
+    socket.emit('webscraper',{
+      cur_position:position,
+      total_positions:total_amount,
+      cur_scraping:website,
+      media:media
     })
   })
   setInterval(function(){

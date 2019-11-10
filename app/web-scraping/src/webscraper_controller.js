@@ -59,7 +59,8 @@ class WS_Controller {
       let thisthat = this;
 
       setTimeout(function() {
-        await thisthat.webscraper.getSite(
+        EM.emit("webscraper", i, recipients.length, null, null );
+        thisthat.webscraper.getSite(
           origin,
           website_domain,
           [website_domain],
