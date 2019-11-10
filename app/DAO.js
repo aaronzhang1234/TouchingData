@@ -659,15 +659,16 @@ class Dao {
 	insertMedia(media) {
 		let selectMedia = new Media();
 		selectMedia = this.selectMediaByUrl(media.url);
+		console.log(media.url);
 		if(selectMedia === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_MEDIA (
+				recipient_id,
 				filePath, 
 				fileType, 
 				description, 
 				url,
 				website_id,
-				recipient_id,
 				parentKey,
 				usable,
 				kind
@@ -678,17 +679,19 @@ class Dao {
 
 				try{
 					stmt.run(
+						media.recipient,
 						media.filePath, 
 						media.fileType, 
 						media.description, 
-						media.medLength, 
+						media.url, 
 						media.website,
-						media.recpient,
 						media.parentKey,
 						media.usable,
 						media.kind
 					)
+					console.log("inserted!");
 				}catch(err){
+					console.log(err);
 					return null;
 				}
 
