@@ -1,9 +1,14 @@
+<script src="https://js.pusher.com/5.0/pusher.min.js"></script>
+
 <div id="wrapper">
   <div class="container">
     <h4 class="text-center mb-5">Web Scraper</h4>
     <div class="row justify-content-center my-2">
       <div class="col-4">
         <button type="submit" class="btn" (click)="startScrape()">Start</button>
+      </div>
+      <div class="col-4">
+        <h1>Now Scraping <h1 id="now-scraping"></h1></h1>
       </div>
     </div>
   </div>
