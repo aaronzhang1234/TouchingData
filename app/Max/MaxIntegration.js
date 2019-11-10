@@ -1,7 +1,7 @@
 //Justin Delisi - MaxIntegration.js
 //global variables for max to know number of inlets and outlets
 inlets = 1;
-outlets = 6;
+outlets = 7;
 //for debugging purposes
 var objectPrinter = require("jm.objectPrinter");
 //require Max integration variables
@@ -9,6 +9,8 @@ var sqlite = new SQLite;
 var nameResult = new SQLResult;
 var countResult = new SQLResult;
 var mediaResult = new SQLResult;
+var recipientListResult = new SQLResult;
+var mediaListResult = new SQLResult;
 //counters
 var i = 0;
 
@@ -31,6 +33,81 @@ function opendb(dbFilePath)
 function resetCounter()
 {
     i = 0;
+}
+
+function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
+{
+    post(min, max, aggregation);
+    //send demographics to start building sql statement
+    demographicSqlstament = buildSQLStatement(race, race2, gender, veteran);
+    //execute sql statement in sqlite max msp integration
+    //get each company getting award amount between min and max 
+    if (demographicsSqlStatement == "false")
+    {
+        //get recipient name based on individual awards
+        if(aggregation == 0)
+        {
+            recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
+                                from PG1_AWARD A join PG1_RECIPIENT R \
+                                WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + 
+                                " ORDER BY R.Recipient_name";
+        } 
+        //get recipient name based on summation of awards   
+        else if(aggregation == 1)
+        {
+            recipientSqlStatement = "select r.recipient_name, r.recipient_id \
+                                from pg1_recipient r join \
+                                (select a.recipient_id, sum(a.current_total_value_of_award) as summation \
+                                from pg1_award a group by a.recipient_id) n \
+                                where r.recipient_id = n.recipient_id and n.summation between " + min + " and " + max + 
+                                " order by r.recipient_name";
+        }
+    }
+    else
+    {
+        //get recipient name based on individual awards with demographics
+        if(aggregation == 0)
+        {
+            recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
+                                from PG1_AWARD A join PG1_RECIPIENT R join ("+ demographicsSqlStatement +") O\
+                                WHERE A.recipient_id = R.recipient_id AND R.recipient_id = O.recipient_id \
+                                AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + 
+                                " ORDER BY R.Recipient_name";
+        } 
+        //get recipient name based on summation of awards with demographics   
+        else if(aggregation == 1)
+        {
+            recipientSqlStatement = "select r.recipient_name, r.recipient_id \
+                                from pg1_recipient r join \
+                                (select a.recipient_id, sum(a.current_total_value_of_award) as summation \
+                                from pg1_award a group by a.recipient_id) n join (" + demographicsSqlStatement + ") O\
+                                where r.recipient_id = n.recipient_id and n.recipient_id = O.recipient_id and n.summation between " + min + " and " + max + 
+                                " order by r.recipient_name";
+        }
+    }
+    sqlite.exec(recipientSqlStatement, recipientListResult);
+    if(recipientListResult.value(0,0) != 0)
+    {
+        getMediaList(recipientSqlStatement);
+    }
+
+}
+
+function getMediaList(recipientSqlStatement)
+{
+    var counter = 0;
+    var list = "";
+    mediaSqlStatement = "SELECT M.filePath \
+                        FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N \
+                        WHERE M.recipient_id = N.recipient_id and M.filePath != ''";
+    sqlite.exec(mediaSqlStatement, mediaListResult);
+    post(mediaListResult.value(0,0));
+    while(mediaListResult.value(0,counter) != 0)
+    {
+        list += mediaListResult.value(0, counter) + " ";
+        counter++;
+    }
+    outlet(6,list);
 }
 
 //build SQL statement for demographics selected
@@ -183,8 +260,15 @@ function getDemographics(race, race2, gender, veteran)
 }
 
 //outputs all to max msp
-function getRecipientName(min, max, aggregation, race, race2, gender, veteran)
+function getRecipientName(min, max, aggregation, race, race2, gender, veteran, list)
 {
+    post(list);
+    if(list == 1)
+    {
+        getRecipientList(min, max, aggregation, race, race2, gender, veteran);
+        return;
+    }
+    post("after");
     //send demographics to start building sql statement
     demographicSqlstament = buildSQLStatement(race, race2, gender, veteran);
     //execute sql statement in sqlite max msp integration

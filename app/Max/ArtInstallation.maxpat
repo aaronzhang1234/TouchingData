@@ -234,7 +234,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 632.0, 212.375, 243.0, 22.0 ],
+					"patching_rect" : [ 686.0625, 299.0, 243.0, 22.0 ],
 					"text" : "if $i1==20000000. then 500000000. else $i2"
 				}
 
@@ -787,7 +787,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 852.791658639907837, 5.0, 63.0, 22.0 ],
+					"patching_rect" : [ 1020.791658639907837, 59.0, 63.0, 22.0 ],
 					"text" : "metro 500"
 				}
 
@@ -953,8 +953,8 @@
 					"id" : "obj-2",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 6,
-					"outlettype" : [ "", "", "", "", "", "" ],
+					"numoutlets" : 7,
+					"outlettype" : [ "", "", "", "", "", "", "" ],
 					"patching_rect" : [ 4.0, 319.0, 112.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "MaxIntegration.js",
