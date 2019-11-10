@@ -9,6 +9,7 @@ const DAO = require("../../DAO.js");
 let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 let EM = require("./emitter.js");
+const fs = require("fs");
 const url = require("url");
 
 class WS_Controller {
@@ -38,29 +39,37 @@ class WS_Controller {
     }
   }
   webscrapeAllSites() {
+    fs.mkdir("data/abouts", err=>{
+      console.log(`Problem Creating the data/abouts folder. \n Honestly, 70% chance it's already created`);
+    }); 
     let recipients = this.dao.selectAllRecipients();
-    let howlong = 1;
+    let howlong = .25;
     let time = 0;
     const minute = 60000;
     //OH BOY FUN TIMES
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
+      let recipient_id = recipient.id;
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
-      let website_domain = website.domain;
 
-//      let website_domain = "https://adsinc.com/";
+      let website_domain = website.domain;
+//      website_domain = "http://www.enterprisesol.com/";
+
+      let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
+
       setTimeout(function() {
         let links_visited = thisthat.webscraper.getSite(
-          website_domain,
+          origin,
           website_domain,
           [website_domain],
-          recipient,
+          recipient_id,
           stop_time
         );
       }, time);
+
       time = time + howlong * minute;
     }
   }
