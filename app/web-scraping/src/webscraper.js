@@ -118,7 +118,7 @@ class webscraper{
         console.log(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
         for(let i = 0; i< links.length; i++){
-            console.log(links[i]);
+            //console.log(links[i]);
             fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
                 if(err) console.log(err);
                 thisthat.logger.info(`About Page Link written to ${about_path}`);
@@ -132,7 +132,7 @@ class webscraper{
                     if(err) console.log(err);
                     thisthat.logger.info(`Header written to ${about_path}`);
                 })
-                console.log(`Header is ${$(elem).text()}`);
+                //console.log(`Header is ${$(elem).text()}`);
             })
             await $("p").each((i, elem)=>{
                 let paragraph_text = $(elem).text();
@@ -141,7 +141,7 @@ class webscraper{
                         if(err) console.log(err);
                         thisthat.logger.info(`Paragraph written to ${about_path}`);
                     })
-                    console.log(paragraph_text);
+                    //console.log(paragraph_text);
                 }
             })
             await this.delay(2000);
@@ -155,6 +155,7 @@ class webscraper{
             $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
+                    console.log("found source");
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
                     let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), website_id, null, null);

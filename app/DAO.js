@@ -231,7 +231,31 @@ class Dao {
 		}
 		return null;
 	}
+	selectMediaByUrl(url) {
+		const stmt = this.db.prepare(`SELECT * FROM PG1_Media WHERE URL = ?;`);
+		const select = this.db.transaction((url)=>{
+			return stmt.get(url)
+		});
 
+		const row = select(url);
+		let media = new Media();
+		if (row != undefined){
+			let media = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.url,
+				row.website_id,
+				row.parentKey,
+				row.usable,
+				row.kind
+			)
+			return media;
+		}
+		return null;
+	}
 
 	// Select all everything from each record on the PG1_MEDIA table
 	// return the selected records as an array of Media Objects
@@ -634,8 +658,8 @@ class Dao {
 	// if a record with the same url already exists return id of that record
 	insertMedia(media) {
 		let selectMedia = new Media();
-		selectMedia = selectMediaByUrl(media.url)
-		if(selectMedia.id === null){
+		selectMedia = this.selectMediaByUrl(media.url);
+		if(selectMedia === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_MEDIA (
 				filePath, 
@@ -665,7 +689,6 @@ class Dao {
 						media.kind
 					)
 				}catch(err){
-					 
 					return null;
 				}
 
