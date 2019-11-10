@@ -287,9 +287,13 @@ class Dao {
 	// returns 1 if successful, else returns 0
 	updateMediaPath(media_path, media_id){
 		try{
+<<<<<<< HEAD
 			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?`).run(media_path, media_id);
-			console.log("update " + media_id);
 			return 1;
+			console.log("update " + media_id);
+=======
+			this.db.prepare(`UPDATE PG1_MEDIA SET filePath = ? WHERE media_id= ?;`).run(media_path, media_id);
+>>>>>>> master
 		}catch(err){
 			return 0;
 			console.log(err);
