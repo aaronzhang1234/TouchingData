@@ -26,7 +26,6 @@ class WS_Controller {
       let recipient = recipients[i];
       setTimeout(function() {
         thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
-          console.log(url);
           let website = new Website("", url);
           thisthat.dao.insertWebsite(website);
           website = thisthat.dao.selectWebsiteByDomain(url);
@@ -38,7 +37,7 @@ class WS_Controller {
       }, time);
     }
   }
-  webscrapeAllSites() {
+  async webscrapeAllSites() {
     fs.mkdir("data/abouts", err=>{
       console.log(`Problem Creating the data/abouts folder. \n Honestly, 70% chance it's already created`);
     }); 
@@ -46,7 +45,7 @@ class WS_Controller {
     let howlong = .25;
     let time = 0;
     const minute = 60000;
-    //OH BOY FUN TIMES
+
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
       let recipient_id = recipient.id;
@@ -54,14 +53,13 @@ class WS_Controller {
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
       let website_domain = website.domain;
-//      website_domain = "http://www.enterprisesol.com/";
 
       let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
 
       setTimeout(function() {
-        let links_visited = thisthat.webscraper.getSite(
+        await thisthat.webscraper.getSite(
           origin,
           website_domain,
           [website_domain],

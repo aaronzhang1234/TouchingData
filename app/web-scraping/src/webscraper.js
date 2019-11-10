@@ -99,7 +99,7 @@ class webscraper{
                     return links_visited;
                 }
                 //Wait 5 seconds before continuing
-                const waiting = await this.delay(2000);
+                await this.delay(2000);
 
                 //Wait 5 seconds before going onto next website.
                 //Webscraper will die on first page if this is not here.
@@ -116,12 +116,14 @@ class webscraper{
 
     async findAbout($, orig, recipient_id){
         let thisthat = this;
+
         let recipient = this.dao.selectRecipientById(recipient_id);
         let recipient_name = recipient.name;
         recipient_name = recipient_name.replace(/ /g, "_");
         recipient_name = recipient_name.replace(/\./g, "");
         recipient_name = recipient_name.replace(/,/g, "");
         let about_parent_path = path.join("./data/abouts", recipient_name);
+
         let links = [];
         await $("a").each((i, elem)=>{        
             let href = $(elem).attr("href");
@@ -141,6 +143,7 @@ class webscraper{
         })
         links = this.removeDuplicatesInArrays(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
+
         if(links.length >= 1){
             await fs.mkdir(about_parent_path, err=>{
                 if(err) thisthat.logger.error(err);
@@ -148,15 +151,11 @@ class webscraper{
         }
         for(let i = 0; i< links.length; i++){   
             let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
+            thisthat.logger.info(`About Page Link written to ${about_path}`);
 
-            fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
-                if(err) thisthat.logger.error(err);
-                thisthat.logger.info(`About Page Link written to ${about_path}`);
-            })
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
 
-            let about_media = new Media();
             //Take each paragraph and add them in order to a txt file.
             await $("p").each((i, elem)=>{ 
                 let paragraph_text = $(elem).text();
@@ -173,31 +172,25 @@ class webscraper{
     }
 
     findAudio($, website, recipient_id){
-        let recipient = this.dao.selectRecipientById(recipient_id);
         let thisthat = this;
         return new Promise(function(resolve, reject){
+           let recipient = thisthat.dao.selectRecipientById(recipient_id);
            thisthat.logger.info(`Scraping : ${website}`);
-            $("source").each((i, elem)=>{
+           $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
-                    let media = new Media("",recipient_id,"" , file_type, "", src, website, recipient.website);
+                    let media = new Media("",recipient.id,"" , file_type, "", src, website, recipient.website);
                     thisthat.dao.insertMedia(media);
                 }
-            });
-            $("video").each((i, elem)=>{
-                thisthat.logger.info(`Website Video is: ${website} | Link is: ${$(elem).attr("src")}`);
-            });
-            $("audio").each((i, elem)=>{
-                thisthat.logger.info(`Website Audio is: ${website} | Link is: ${$(elem).attr("src")}`);
             });
             $("a[href*='/youtu.be/'],"+
               "a[href*='/youtube.com\\/embed/'],"+ 
               "a[href*='/youtube.com\\/watch/']"  ).each((i, elem)=>{
                 let src = $(elem).attr("href");
                 thisthat.logger.info(`Website href is ${website} | Youtube is: ${src}`);
-                let media = new Media("",recipient_id,"" , "youtube", "", src,website, recipient.website);
+                let media = new Media("",recipient.id,"" , "youtube", "", src,website, recipient.website);
                 thisthat.dao.insertMedia(media);
             });
             resolve("");
@@ -238,10 +231,10 @@ class webscraper{
     }
 
     findLinks($, orig, current_site, links_visited){
-        let links = [];
         let thisthat = this;
         return new Promise(function(resolve, reject){
             //Find every link on the webpage and add it to an array.
+            let links = [];
             $("a").each((i, elem)=>{        
                 let href = $(elem).attr("href");
                 if(href!=null){
