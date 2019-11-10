@@ -61,6 +61,11 @@ io.on('connection', (socket)=>{
       arg1:webiste
     })
   })
+  EM.on('migrate', function(progress){
+    socket.emit('migrate',{
+      progress:progress
+    })
+  })
   setInterval(function(){
     socket.emit('hello',{
       arg1:"fuck"
