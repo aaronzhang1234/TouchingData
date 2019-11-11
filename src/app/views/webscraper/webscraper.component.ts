@@ -27,10 +27,10 @@ export class WebscraperComponent implements OnInit {
     console.log("bopped");
     this.http.get("/scrapeSites").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Scraping"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on scraping sites");
         console.log(JSON.stringify(err));
       }
     );
@@ -38,10 +38,10 @@ export class WebscraperComponent implements OnInit {
   fetchWebsites(){
      this.http.get("/getWebsites").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Getting Websites"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on getting bing results");
         console.log(JSON.stringify(err));
       }
     );   
@@ -49,10 +49,10 @@ export class WebscraperComponent implements OnInit {
   downloadMedia(){
     this.http.get("/downloadMedia").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Downloading Media"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on downloading media");
         console.log(JSON.stringify(err));
       }
     );

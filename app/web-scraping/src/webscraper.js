@@ -166,10 +166,7 @@ class webscraper{
                 paragraph_text = paragraph_text.trim();
                 if(paragraph_text.length > 100){
                     fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
-                        if(err){
-                            console.log(err);
-                            thisthat.logger.error(err);
-                        }
+                        if(err) thisthat.logger.error(err);
                     })
                 }
             })
@@ -185,7 +182,6 @@ class webscraper{
            $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
-                    console.log("found source");
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
                     let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), recipient.website, null, null);

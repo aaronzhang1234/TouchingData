@@ -688,9 +688,7 @@ class Dao {
 						media.usable,
 						media.kind
 					)
-					console.log("inserted");
 				}catch(err){
-					console.log(error);
 					return null;
 				}
 			});
