@@ -118,7 +118,6 @@ class webscraper{
     }
 
     async findAbout($, orig, recipient_id){
-        try{
         let thisthat = this;
 
         let recipient = this.dao.selectRecipientById(recipient_id);
@@ -175,9 +174,6 @@ class webscraper{
                 }
             })
             await this.delay(2000);
-        }
-        }catch(err){
-            console.log(err)
         }
     }
 
