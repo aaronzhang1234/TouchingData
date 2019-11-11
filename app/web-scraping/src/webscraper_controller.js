@@ -79,20 +79,14 @@ class WS_Controller {
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
-      let media_url = media.url;
-      let media_source = media.source;      
-      time = time + 2000;
-      setTimeout(function() {
-        if (media.fileType == "youtube") {
-          // webscraper.downloadYoutube(recipient.name, media_source);
-        } else {
-          let name = recipient.name;
-          name = name.replace(/ /g, "_");
-          name = name.replace(/\./g, "");
-          name = name.replace(/,/g, "");
-
-          let full_link = url.resolve(media_url, media_source);
-          thisthat.webscraper.downloadFile(name, full_link, media.id);
+			let name = webScaper.getParentPath(recipient.name)
+      let media_source = media.url;      
+			time = time + 2000;
+			setTimeout(function() {
+				if (media.kind == "youtube") {
+					webscraper.downloadYoutube(name, media_source, media.id);
+				} else {
+          thisthat.webscraper.downloadFile(name, media_source, media.id);
         }
       }, time);
     }
