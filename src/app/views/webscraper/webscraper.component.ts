@@ -8,22 +8,30 @@ import * as socketio from 'socket.io-client';
   styleUrls: ['./webscraper.component.scss']
 })
 export class WebscraperComponent implements OnInit {
+  progressOutput; outputBox; startButton; stopButton; scrapeProgressBar;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) {
+   }
 
   ngOnInit() {
+    this.progressOutput = document.getElementById('progressOutput');
+    this.outputBox = document.getElementById('output');
+    this.startButton = document.getElementById('startScraping');
+    this.stopButton = document.getElementById('stopScraping');
+    this.scrapeProgressBar = document.getElementById('progressbar');
   }
 
   startScrape(){
-    let nowscraping = document.getElementById('now-scraping');
+    this.outputBox.setAttribute("style", "display:block");
+    this.startButton.setAttribute("style", "display: none");
+    this.stopButton.setAttribute("style", "display: flex");
+    this.scrapeProgressBar.setAttribute("style", "display: inline-block");
+
 
     const io = socketio("http://localhost:3000");
     io.on("website", (data)=>{
-       nowscraping.textContent = data["arg1"];     
+       this.progressOutput.textContent = "Scraping site: " + data["arg1"];     
     });
-
-    let bar = document.getElementById("progressbar");
-    bar.setAttribute("style", "display:inline-block;");
     console.log("bopped");
     this.http.get("/scrapeSites").subscribe(
       data=>{
@@ -56,5 +64,12 @@ export class WebscraperComponent implements OnInit {
         console.log(JSON.stringify(err));
       }
     );
+  }
+  stopScrape() {
+    this.stopButton.setAttribute("style", "display:none");
+    this.startButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.scrapeProgressBar.setAttribute("style", "display: none");
+
   }
 }

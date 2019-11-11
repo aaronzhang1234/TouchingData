@@ -11,12 +11,15 @@ var countResult = new SQLResult;
 var mediaResult = new SQLResult;
 var recipientListResult = new SQLResult;
 var mediaListResult = new SQLResult;
+var result = new SQLResult;
 //counters
 var i = 0;
 
 //sqlstatement as a string
 var recipientSqlStatement = "";
+var recipientListSqlStatement = "";
 var mediaSqlStatement = "";
+var mediaListSqlStatement = "";
 var countSqlStatement = "";
 var demographicsSqlStatement = "";
 
@@ -37,7 +40,7 @@ function resetCounter()
 
 function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
 {
-    post(min, max, aggregation);
+    //post(min, max, aggregation + "\n");
     //send demographics to start building sql statement
     demographicSqlstament = buildSQLStatement(race, race2, gender, veteran);
     //execute sql statement in sqlite max msp integration
@@ -47,7 +50,7 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
         //get recipient name based on individual awards
         if(aggregation == 0)
         {
-            recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
+            recipientListSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
                                 from PG1_AWARD A join PG1_RECIPIENT R \
                                 WHERE A.recipient_id = R.recipient_id AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + 
                                 " ORDER BY R.Recipient_name";
@@ -55,7 +58,7 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
         //get recipient name based on summation of awards   
         else if(aggregation == 1)
         {
-            recipientSqlStatement = "select r.recipient_name, r.recipient_id \
+            recipientListSqlStatement = "select r.recipient_name, r.recipient_id \
                                 from pg1_recipient r join \
                                 (select a.recipient_id, sum(a.current_total_value_of_award) as summation \
                                 from pg1_award a group by a.recipient_id) n \
@@ -68,7 +71,7 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
         //get recipient name based on individual awards with demographics
         if(aggregation == 0)
         {
-            recipientSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
+            recipientListSqlStatement = "select DISTINCT R.RECIPIENT_NAME, R.Recipient_id \
                                 from PG1_AWARD A join PG1_RECIPIENT R join ("+ demographicsSqlStatement +") O\
                                 WHERE A.recipient_id = R.recipient_id AND R.recipient_id = O.recipient_id \
                                 AND A.current_total_value_of_award BETWEEN "+ min + " and " + max + 
@@ -77,7 +80,7 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
         //get recipient name based on summation of awards with demographics   
         else if(aggregation == 1)
         {
-            recipientSqlStatement = "select r.recipient_name, r.recipient_id \
+            recipientListSqlStatement = "select r.recipient_name, r.recipient_id \
                                 from pg1_recipient r join \
                                 (select a.recipient_id, sum(a.current_total_value_of_award) as summation \
                                 from pg1_award a group by a.recipient_id) n join (" + demographicsSqlStatement + ") O\
@@ -85,23 +88,23 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
                                 " order by r.recipient_name";
         }
     }
-    sqlite.exec(recipientSqlStatement, recipientListResult);
+    sqlite.exec(recipientListSqlStatement, recipientListResult);
     if(recipientListResult.value(0,0) != 0)
     {
-        getMediaList(recipientSqlStatement);
+        getMediaList(recipientListSqlStatement);
     }
 
 }
 
-function getMediaList(recipientSqlStatement)
+function getMediaList(recipientListSqlStatement)
 {
     var counter = 0;
     var list = "";
-    mediaSqlStatement = "SELECT M.filePath \
-                        FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N \
+    mediaListSqlStatement = "SELECT M.filePath \
+                        FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
                         WHERE M.recipient_id = N.recipient_id and M.filePath != ''";
-    sqlite.exec(mediaSqlStatement, mediaListResult);
-    post(mediaListResult.value(0,0));
+    sqlite.exec(mediaListSqlStatement, mediaListResult);
+    //post("media" + mediaListResult.value(0,0) + "\n");
     while(mediaListResult.value(0,counter) != 0)
     {
         list += mediaListResult.value(0, counter) + " ";
@@ -262,13 +265,12 @@ function getDemographics(race, race2, gender, veteran)
 //outputs all to max msp
 function getRecipientName(min, max, aggregation, race, race2, gender, veteran, list)
 {
-    post(list);
+    //post(list);
     if(list == 1)
     {
         getRecipientList(min, max, aggregation, race, race2, gender, veteran);
         return;
     }
-    post("after");
     //send demographics to start building sql statement
     demographicSqlstament = buildSQLStatement(race, race2, gender, veteran);
     //execute sql statement in sqlite max msp integration
@@ -338,10 +340,9 @@ function getRecipientName(min, max, aggregation, race, race2, gender, veteran, l
 //output media file from recipient that has award between min and max
 function getMedia(recipientSqlStatement)
 {
-    mediaSqlStatement = "SELECT M.filePath \
-                        FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N \
-                        WHERE M.recipient_id = N.recipient_id and M.filePath != '' limit 1";
+    mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' limit 1";
     sqlite.exec(mediaSqlStatement, mediaResult);
+    post(mediaResult.fieldname(0) + "\n");
     //media file is found, send path to max
 	if(mediaResult.value(0,0) != 0)
 	{
