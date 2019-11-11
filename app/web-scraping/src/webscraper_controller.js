@@ -54,6 +54,7 @@ class WS_Controller {
 
       let website_domain = website.domain;
 
+//      website_domain =  "https://www.dtccom.net/";
       let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;

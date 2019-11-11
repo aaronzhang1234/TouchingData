@@ -662,12 +662,12 @@ class Dao {
 		if(selectMedia === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_MEDIA (
+				recipient_id,
 				filePath, 
 				fileType, 
 				description, 
 				url,
 				website_id,
-				recipient_id,
 				parentKey,
 				usable,
 				kind
@@ -676,26 +676,27 @@ class Dao {
 
 			const insert = this.db.transaction((media)=> {
 
-				try{
+				try{					
 					stmt.run(
+						media.recipient,
 						media.filePath, 
 						media.fileType, 
 						media.description, 
-						media.medLength, 
+						media.url,
 						media.website,
-						media.recpient,
 						media.parentKey,
 						media.usable,
 						media.kind
 					)
+					console.log("inserted");
 				}catch(err){
+					console.log(error);
 					return null;
 				}
-
 			});
 
 			insert(media);
-			let selectMedia = selectMediaByUrl(media.url)
+			selectMedia = this.selectMediaByUrl(media.url)
 		}
 		return selectMedia.id;
 	}
@@ -741,7 +742,7 @@ class Dao {
 			});
 
 			insert(award);
-			let selectAward = this.selectAwardId(award.piid, award.fiscalYear)
+			let selectAward = selectAwardId(award.piid, award.fiscalYear)
 		}
 		return selectAward;
 	}
