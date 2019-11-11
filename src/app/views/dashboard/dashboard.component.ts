@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { timeout } from 'rxjs/operators';
 import * as socketio from 'socket.io-client';
 
+
 @Component({
 	selector: "app-dashboard",
 	templateUrl: "./dashboard.component.html",
@@ -14,13 +15,13 @@ export class DashboardComponent implements OnInit {
 	fileName: string = "ChooseFile";
 	dbCreateStatus: string = "";
 	migrateStatus: string = "";
+	
+	ngOnInit() {
 
-	ngOnInit() {}
+	}
 
 	buildDb() {
 		const headers = new HttpHeaders().set("Content-Type", "application/json");
-
-
 
 		this.http.post("/buildDb", { status: "Go" }, { headers: headers })
 			.subscribe(data => {
@@ -29,25 +30,10 @@ export class DashboardComponent implements OnInit {
 			});
 	}
 
-
 	import() {
-
-		let progress = <HTMLProgressElement>document.getElementById('progress');
-		const io = socketio("http://localhost:3000");
-
-		io.on("migrate", (data)=>{
-			progress.value = (100*data["progress"]);
-			if (data["progress"] == 1){
-				this.migrateStatus = "done!"
-			}
-		});
-		//let bar = document.getElementById("progressbar");
-		//bar.setAttribute("style", "display:inline-block;");
-		this.migrateStatus =  "data is being imported"
-
-		const headers = new HttpHeaders().set("Content-Type", "application/json");
-
 		console.log("you touched me");
+		const headers = new HttpHeaders().set("Content-Type", "application/json");
+		const io = socketio("http://localhost:3000");
 		this.http
 			.post("/import", { fileName: this.fileName }, { headers: headers })
 			.pipe(timeout(600))
@@ -55,5 +41,18 @@ export class DashboardComponent implements OnInit {
 				console.log(data);
 				this.migrateStatus = (data as any).status;
 			});
+		let progress = <HTMLProgressElement>document.getElementById('progress');
+		progress.value = 0;
+
+		io.on("migrate", (data)=>{
+			console.log((data as any).status)
+			progress.value = (100*(data as any).progress);
+			this.migrateStatus = (data as any).status
+		});
+
+		//let bar = document.getElementById("progressbar");
+		//bar.setAttribute("style", "display:inline-block;");
+
 	}
+			
 }
