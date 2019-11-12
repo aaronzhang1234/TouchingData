@@ -29,17 +29,19 @@ export class WebscraperComponent implements OnInit {
     this.stopButton.setAttribute("style", "display: flex");
     this.progressBar.setAttribute("style", "display: inline-block");
 
+
     this.io.on("website", (data)=>{
        this.progressOutput.textContent = "Scraping site: " + data["arg1"].websiteName;
        this.progressAmount.style.width = data["arg1"].webscrapeProgress + "%";     
+
     });
     console.log("bopped");
     this.http.get("/scrapeSites").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Scraping"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on scraping sites");
         console.log(JSON.stringify(err));
       }
     );
@@ -53,10 +55,10 @@ export class WebscraperComponent implements OnInit {
     });
      this.http.get("/getWebsites").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Getting Websites"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on getting bing results");
         console.log(JSON.stringify(err));
       }
     );   
@@ -70,10 +72,10 @@ export class WebscraperComponent implements OnInit {
     })
     this.http.get("/downloadMedia").subscribe(
       data=>{
-        console.log("yay"); 
+        console.log("Currently Downloading Media"); 
       },
       err => {
-        console.log("wee woo wee woo");
+        console.log("Error detected on downloading media");
         console.log(JSON.stringify(err));
       }
     );

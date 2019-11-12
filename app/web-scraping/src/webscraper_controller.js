@@ -44,7 +44,7 @@ class WS_Controller {
       }, time);
     }
   }
-  webscrapeAllSites() {
+  async webscrapeAllSites() {
     fs.mkdir("data/abouts", err=>{
       console.log(`Problem Creating the data/abouts folder. \n Honestly, 70% chance it's already created`);
     }); 
@@ -52,7 +52,7 @@ class WS_Controller {
     let howlong = .25;
     let time = 0;
     const minute = 60000;
-    //OH BOY FUN TIMES
+
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
       let recipient_id = recipient.id;
@@ -60,8 +60,8 @@ class WS_Controller {
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
       let website_domain = website.domain;
-//      website_domain = "http://www.enterprisesol.com/";
 
+//      website_domain =  "https://www.dtccom.net/";
       let origin = new URL(website_domain).origin;
       let stop_time = new Date().valueOf() + time + howlong * minute;
       let thisthat = this;
