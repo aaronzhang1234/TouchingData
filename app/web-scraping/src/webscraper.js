@@ -81,7 +81,6 @@ class webscraper{
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
-        EM.emit("webscraper", null, null, website_name, null);
         //If it is on the first page.
         try{
             let recipient = this.dao.selectRecipientById(recipient_id);
@@ -186,7 +185,6 @@ class webscraper{
                     let file_type = src.split(".").pop();
                     let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), recipient.website, null, null);
                     thisthat.dao.insertMedia(media);
-                    EM.emit("webscraper", null, null, null, url.resolve(webiste, src));
                 }
             });
             $("a[href*='/youtu.be/'],"+
@@ -196,7 +194,6 @@ class webscraper{
                 thisthat.logger.info(`Website href is ${website} | Youtube is: ${src}`);
                 let media = new Media(null,recipient_id,null,"mp4",null,src,recipient.website,null,"youtube");
                 thisthat.dao.insertMedia(media);
-                EM.emit("webscraper", null, null, null, src);
             });
             resolve("");
         });
@@ -222,7 +219,6 @@ class webscraper{
     downloadYoutube(parent_directory, youtube_link, media_id){
 			let DOWNLOAD_DIR =  "./data/scraped";
 			var ytid = url.parse(youtube_link).pathname.split('/').pop();
-			EM.emit("media" + media_id);
 			if (ytid === null){return}
 			if (!youtube_link.includes("http")){
 				youtube_link = "https:"+youtube_link

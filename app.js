@@ -57,12 +57,4 @@ server.listen(3000, ()=>console.log("Server is now running at http://localhost:3
 const io = socketIo(server);
 
 io.on('connection', (socket)=>{
-  EM.on('webscraper', function(position, total_position, website, media){
-    socket.emit('webscraper',{
-      position:position,
-      total_position:total_position,
-      website:website,
-      media:media
-    })
-  })
 });
