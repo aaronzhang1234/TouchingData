@@ -49,7 +49,7 @@ export class WebscraperComponent implements OnInit {
     this.progressBar.style.display = "inline-block";
     this.io.on("websiteUrl", (data)=>{
        this.progressOutput.textContent = "Website found. Company Name: " + data["arg1"].companyName + " URL: " + data["arg1"].urlResult; 
-       this.progressBar.style.width =  data["arg1"].urlProgress + "%";   
+       this.progressAmount.style.width =  data["arg1"].urlProgress + "%";   
     });
      this.http.get("/getWebsites").subscribe(
       data=>{
