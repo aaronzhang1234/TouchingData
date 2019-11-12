@@ -56,6 +56,17 @@ const server = http.createServer(app);
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
 const io = socketIo(server);
 io.on('connection', (socket)=>{
+  EM.removeAllListeners();
+  EM.on('websiteUrl', function(websiteUrl){
+    socket.emit('websiteUrl',{
+      arg1:websiteUrl
+    })
+  })
+  EM.on('downloadMediaStatus', function(media){
+    socket.emit('downloadMediaStatus', {
+      arg1:media
+    })
+  })
   EM.on('website', function(webiste){
     socket.emit('website',{
       arg1:webiste

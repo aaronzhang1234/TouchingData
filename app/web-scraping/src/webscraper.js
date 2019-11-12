@@ -59,6 +59,7 @@ class webscraper{
                     console.log(path_lenth);
                     console.log(num_length);
                 }
+
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);
@@ -80,7 +81,6 @@ class webscraper{
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
-        EM.emit("website", website_name);
         //If it is on the first page.
         try{
             let recipient = this.dao.selectRecipientById(recipient_id);
