@@ -25,7 +25,14 @@ class WS_Controller {
       time = time + 3000;
       let recipient = recipients[i];
       setTimeout(function() {
+        let progress = i/recipients.length * 100;
         thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
+          console.log(url);
+          EM.emit('websiteUrl', {
+            urlResult: url,
+            companyName: recipient.name,
+            urlProgress: progress
+          });
           let website = new Website("", url);
           thisthat.dao.insertWebsite(website);
           website = thisthat.dao.selectWebsiteByDomain(url);
@@ -60,7 +67,12 @@ class WS_Controller {
       let thisthat = this;
 
       setTimeout(function() {
-        thisthat.webscraper.getSite(
+        let progress = i/recipients.length * 100;
+        EM.emit("website", 
+        {websiteName: website_domain,
+          webscrapeProgress: progress
+        });
+        let links_visited = thisthat.webscraper.getSite(
           origin,
           website_domain,
           [website_domain],
@@ -79,12 +91,18 @@ class WS_Controller {
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
-			let name = webScaper.getParentPath(recipient.name)
+			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
 			time = time + 2000;
 			setTimeout(function() {
+        let progress = i/medias.length * 100;
+        EM.emit('downloadMediaStatus', {
+          mediaFileName: media.filePath,
+          mediaDownloadProgress: progress
+        })
+        console.log(progress);
 				if (media.kind == "youtube") {
-					webscraper.downloadYoutube(name, media_source, media.id);
+					thisthat.webscraper.downloadYoutube(name, media_source, media.id);
 				} else {
           thisthat.webscraper.downloadFile(name, media_source, media.id);
         }
