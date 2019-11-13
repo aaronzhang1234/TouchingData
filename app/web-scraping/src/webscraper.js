@@ -154,7 +154,7 @@ class webscraper{
             let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
             thisthat.logger.info(`About Page Link written to ${about_path}`);
 
-            let media = new Media(null,recipient_id,about_path,"txt",null,links[i],recipient.website,null,"text");
+            let media = new Media(null,recipient_id,about_path,"txt",null,links[i],recipient.website,null,null,"text");
             thisthat.dao.insertMedia(media);
 
             const response = await axios.get(links[i], {timeout:10000}); 
