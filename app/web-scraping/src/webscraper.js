@@ -59,6 +59,7 @@ class webscraper{
                     console.log(path_lenth);
                     console.log(num_length);
                 }
+
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);

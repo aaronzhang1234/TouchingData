@@ -8,22 +8,33 @@ import * as socketio from 'socket.io-client';
   styleUrls: ['./webscraper.component.scss']
 })
 export class WebscraperComponent implements OnInit {
+  progressOutput; outputBox; startButton; stopButton; progressBar; io; progressAmount;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) {
+   }
 
   ngOnInit() {
+    this.progressOutput = document.getElementById('progressOutput');
+    this.outputBox = document.getElementById('output');
+    this.startButton = document.getElementById('startScraping');
+    this.stopButton = document.getElementById('stopScraping');
+    this.progressBar = document.getElementById('progressbar');
+    this.progressAmount = document.getElementById('progress');
+    this.io = socketio("http://localhost:3000");
   }
 
   startScrape(){
-    let nowscraping = document.getElementById('now-scraping');
+    this.outputBox.setAttribute("style", "display:block");
+    this.startButton.setAttribute("style", "display: none");
+    this.stopButton.setAttribute("style", "display: flex");
+    this.progressBar.setAttribute("style", "display: inline-block");
 
-    const io = socketio("http://localhost:3000");
-    io.on("webscraper", (data)=>{
-       console.log(data);
+
+    this.io.on("website", (data)=>{
+       this.progressOutput.textContent = "Scraping site: " + data["arg1"].websiteName;
+       this.progressAmount.style.width = data["arg1"].webscrapeProgress + "%";     
+
     });
-
-    let bar = document.getElementById("progressbar");
-    bar.setAttribute("style", "display:inline-block;");
     console.log("bopped");
     this.http.get("/scrapeSites").subscribe(
       data=>{
@@ -36,6 +47,12 @@ export class WebscraperComponent implements OnInit {
     );
   }
   fetchWebsites(){
+    this.outputBox.setAttribute("style", "display:block");
+    this.progressBar.style.display = "inline-block";
+    this.io.on("websiteUrl", (data)=>{
+       this.progressOutput.textContent = "Website found. Company Name: " + data["arg1"].companyName + " URL: " + data["arg1"].urlResult; 
+       this.progressAmount.style.width =  data["arg1"].urlProgress + "%";   
+    });
      this.http.get("/getWebsites").subscribe(
       data=>{
         console.log("Currently Getting Websites"); 
@@ -47,6 +64,12 @@ export class WebscraperComponent implements OnInit {
     );   
   }
   downloadMedia(){
+    this.outputBox.setAttribute("style", "display:block");
+    this.progressBar.setAttribute("style", "display: inline-block");
+    this.io.on("downloadMediaStatus", (data)=>{
+      this.progressOutput.textContent = data["arg1"].mediaFileName;
+      this.progressAmount.style.width = data["arg1"].mediaDownloadProgress + "%";
+    })
     this.http.get("/downloadMedia").subscribe(
       data=>{
         console.log("Currently Downloading Media"); 
@@ -56,5 +79,12 @@ export class WebscraperComponent implements OnInit {
         console.log(JSON.stringify(err));
       }
     );
+  }
+  stopScrape() {
+    this.stopButton.setAttribute("style", "display:none");
+    this.startButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.progressBar.setAttribute("style", "display: none");
+
   }
 }
