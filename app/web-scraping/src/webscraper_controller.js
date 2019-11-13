@@ -22,26 +22,27 @@ class WS_Controller {
     let time = 1000;
     let thisthat = this;
     for (let i = 0; i < recipients.length; i++) {
-      time = time + 3000;
       let recipient = recipients[i];
-      setTimeout(function() {
+      if(recipient.website == null || recipient.website == ""){
+        time = time + 3000;
         let progress = i/recipients.length * 100;
-        thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
-          console.log(url);
-          EM.emit('websiteUrl', {
-            urlResult: url,
-            companyName: recipient.name,
-            urlProgress: progress
+        setTimeout(function() {
+          thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
+            EM.emit('websiteUrl', {
+              urlResult: url,
+              companyName: recipient.name,
+              urlProgress: progress
+            });
+            let website = new Website("", url);
+            thisthat.dao.insertWebsite(website);
+            website = thisthat.dao.selectWebsiteByDomain(url);
+            let num_string = String(website.id);
+            let num_array = num_string.split(".");
+            let website_id = num_array[0];
+            thisthat.dao.updateRecipientWebsite(recipient.id, website_id);
           });
-          let website = new Website("", url);
-          thisthat.dao.insertWebsite(website);
-          website = thisthat.dao.selectWebsiteByDomain(url);
-          let num_string = String(website.id);
-          let num_array = num_string.split(".");
-          let website_id = num_array[0];
-          thisthat.dao.updateRecipientWebsite(recipient.id, website_id);
-        });
-      }, time);
+        }, time);
+      }
     }
   }
   async webscrapeAllSites() {
