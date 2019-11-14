@@ -1,21 +1,36 @@
 <script src="https://js.pusher.com/5.0/pusher.min.js"></script>
 <h4 class="text-center mb-5">Web Scraper</h4>
-<div id = "app">
+<div id="app">
   <div class="buttons">
-    <div class="wrapper" id = "startScraping">
+    <div class="wrapper" id="startScraping">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" (click)="startScrape()">Start Scraping</button>
+            <button
+              type="submit"
+              class="btn"
+              title="This will start scraping websites"
+              (click)="startScrape()"
+            >
+              Start Scraping
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="wrapper" id = "stopScraping">
+    <div class="wrapper" id="stopScraping">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id = "stopScrape" (click)="stopScrape()">Stop Scraping</button>
+            <button
+              type="submit"
+              class="btn"
+              id="stopScrape"
+              title="This wil stop scraping websites"
+              (click)="stopScrape()"
+            >
+              Stop Scraping
+            </button>
           </div>
         </div>
       </div>
@@ -25,7 +40,15 @@
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id = "fetch" (click)="fetchWebsites()">Fetch Websites</button>
+            <button
+              type="submit"
+              class="btn"
+              id="fetch"
+              title="This will display the websites that were previously scraped"
+              (click)="fetchWebsites()"
+            >
+              Fetch Websites
+            </button>
           </div>
         </div>
       </div>
@@ -35,7 +58,15 @@
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id ="download" (click)="downloadMedia()">Download Media</button>
+            <button
+              type="submit"
+              class="btn"
+              id="download"
+              title="This will download the media that was scraped"
+              (click)="downloadMedia()"
+            >
+              Download Media
+            </button>
           </div>
         </div>
       </div>
@@ -46,9 +77,6 @@
   </div>
   <div id="output">
     <h4>Output</h4>
-    <p id = "progressOutput">
-    </p> 
+    <p id="progressOutput"></p>
   </div>
 </div>
-
-

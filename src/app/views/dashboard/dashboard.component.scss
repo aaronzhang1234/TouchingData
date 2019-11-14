@@ -1,48 +1,49 @@
 .dashboard-content {
-    display: flex;
-    flex: 1;
+  display: flex;
+  flex: 1;
 }
+
 .btn {
-    background-color: #4b5320;
-    border-color: #4b5320;
-    align-content: center;
-    width: 200px;
+  background-color: #4b5320;
+  border-color: #4b5320;
+  align-content: center;
+  width: 200px;
 }
 
 .createDatabase {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 hr {
-    margin-left: 10%;
-    margin-right: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 .bar {
-    display: none;
-    margin: 0 auto;
-    background-color: lightgray;
-    height: 24px;
-    width: 40%;
+  display: none;
+  margin: 0 auto;
+  background-color: lightgray;
+  height: 24px;
+  width: 40%;
 }
 
 .progressed {
-    background-color: green;
-    height: 24px;
-    width: 50%;
+  background-color: green;
+  height: 24px;
+  width: 50%;
 }
 
 .statusLine {
-	padding-top: 3px;
+  padding-top: 3px;
 }
 
 .responseText {
-	height: 30px;
+  height: 30px;
 }
 
 #wrapper {
-    width:100%;
-    margin:0;
-    text-align: center;
+  width: 100%;
+  margin: 0;
+  text-align: center;
 }

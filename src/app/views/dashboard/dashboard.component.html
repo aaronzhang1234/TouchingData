@@ -3,25 +3,35 @@
     <h4 class="text-center mb-5">Create Database</h4>
     <div class="row justify-content-center">
       <div class="createDatabase">
-        <button type="submit" class="btn btn-primary" (click)="buildDb()">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          title="This creates an empty database"
+          (click)="buildDb()"
+        >
           Create Database
         </button>
       </div>
     </div>
-		<div id="dbCreateStatus" class="responseText">{{dbCreateStatus}}</div>
+    <div id="dbCreateStatus" class="responseText">{{ dbCreateStatus }}</div>
   </div>
   <hr />
   <div class="container">
     <h4 class="text-center mb-5">Import Data</h4>
     <div class="row justify-content-center">
       <div class="col-6">
-				<div class="createDatabase">
-        <button type="submit" class="btn btn-primary" (click)="import()">
-          Import
-        </button>
-				</div>
+        <div class="createDatabase">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            title="This imports data"
+            (click)="import()"
+          >
+            Import
+          </button>
+        </div>
       </div>
     </div>
-		<div id="migrateStatus" class="responseText">{{migrateStatus}}</div>
+    <div id="migrateStatus" class="responseText">{{ migrateStatus }}</div>
   </div>
 </div>
