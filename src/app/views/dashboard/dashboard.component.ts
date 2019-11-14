@@ -18,7 +18,9 @@ export class DashboardComponent implements OnInit {
 
   buildDb() {
     const headers = new HttpHeaders().set("Content-Type", "application/json");
-
+    confirm(
+      "This will delete your old database and create a new one.. Are you sure you want to create a new database?"
+    );
     this.http
       .post("/buildDb", { status: "Go" }, { headers: headers })
       .subscribe(data => {
