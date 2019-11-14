@@ -91,6 +91,23 @@ class WS_Controller {
       }, time);
     }
   }
+  //recieves in all text files from db
+  //calls function to convert each file individually
+  convertAllTextToAudio() {
+    let texts = this.dao.selectAllTextFiles();
+    let time = 1000;
+    let thisthat = this;
+    for(let i = 0; i<texts.length; i++) {
+      let text = texts[i];
+      let recipient = this.dao.selectRecipientById(text.recipient);
+      let name = thisthat.webscraper.getParentPath(recipient.name);
+      let recipientId = recipient.id;
+      time = time + 2000;
+      setTimeout(function() {
+        thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
+      }, time);
+    }
+  }
 }
 
 module.exports = WS_Controller;
