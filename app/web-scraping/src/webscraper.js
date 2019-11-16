@@ -300,7 +300,10 @@ class webscraper{
         let fileName = path.basename(textFilePath, '.txt') + '.wav';
         let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
         let full_download_path = path.join(parent_path, fileName);
-        if(path.existsSync())
+        if (!fs.existsSync(path.join(DOWNLOAD_DIR,parent_directory))){
+            fs.mkdirSync(path.join(DOWNLOAD_DIR,parent_directory));
+        }
+        if(fs.existsSync(textFilePath))
         {
             console.log(textFilePath);
             fs.readFile(textFilePath, "utf-8", function(err, data){
