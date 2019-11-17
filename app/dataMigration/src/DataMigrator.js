@@ -20,10 +20,6 @@ class DataMigrator {
 					if (index != 1){
 						if (index%50 == 0){
 							console.log(`Currently on row ${index}`);
-							EM.emit('migrate', {
-								progress : index/worksheet.rowCount,
-								status : "migrating"
-							})
 						}
 						let parser = new RowParser(row);	
 						//This order of inserts is very important, do not move. 

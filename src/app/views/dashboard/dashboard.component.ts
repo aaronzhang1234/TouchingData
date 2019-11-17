@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { timeout } from 'rxjs/operators';
 import * as socketio from 'socket.io-client';
+import { FileUploader } from 'ng2-file-upload';
 
 
 @Component({
@@ -10,16 +11,19 @@ import * as socketio from 'socket.io-client';
 	styleUrls: ["./dashboard.component.scss"]
 })
 export class DashboardComponent implements OnInit {
+	tile = 'angular-file-upload'
 	constructor(private http: HttpClient) {}
 
 	fileName: string = "ChooseFile";
 	dbCreateStatus: string = "";
 	migrateStatus: string = "";
+	migrating: boolean = false;
+	public uploader:FileUploader = new FileUploader({url:'http://localhost:3000/upload'});
 	
 	ngOnInit() {
-
 	}
 
+	
 	buildDb() {
 		const headers = new HttpHeaders().set("Content-Type", "application/json");
 
@@ -28,31 +32,33 @@ export class DashboardComponent implements OnInit {
 				console.log(data);
 				this.dbCreateStatus = (data as any).status;
 			});
+
 	}
 
 	import() {
 		console.log("you touched me");
-		const headers = new HttpHeaders().set("Content-Type", "application/json");
+
+		let loadingImage = <HTMLImageElement>document.getElementById('loading');
+		loadingImage.src = "assets/loading.gif"
+
 		const io = socketio("http://localhost:3000");
+
+		io.on("migrate", (data)=>{
+			console.log((data as any).status)
+			this.migrateStatus = (data as any).status
+    		loadingImage.src = ""
+			this.migrating = false
+		});
+
+		const headers = new HttpHeaders().set("Content-Type", "application/json");
 		this.http
-			.post("/import", { fileName: this.fileName }, { headers: headers })
+			.post("/import", { filePath: this.fileName }, { headers: headers })
 			.pipe(timeout(600))
 			.subscribe(data => {
 				console.log(data);
 				this.migrateStatus = (data as any).status;
+				this.migrating = (this.migrateStatus==="Migrating");
 			});
-		let progress = <HTMLProgressElement>document.getElementById('progress');
-		progress.value = 0;
-
-		io.on("migrate", (data)=>{
-			console.log((data as any).status)
-			progress.value = (100*(data as any).progress);
-			this.migrateStatus = (data as any).status
-		});
-
-		//let bar = document.getElementById("progressbar");
-		//bar.setAttribute("style", "display:inline-block;");
-
-	}
 			
+	}
 }
