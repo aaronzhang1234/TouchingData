@@ -17,13 +17,11 @@ const say = require('say');
 
 class webscraper{
     //Creating a websearch client using an API Key
-    constructor(bing_APIKEY){  
+    constructor(){  
         let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
         this.dao = new DAO(sqlDatabaseName);
-        this.credentials = new CognitiveServicesCredentials(bing_APIKEY);
-        this.webSearchAPIClient = new WebSearchAPIClient(this.credentials);
-        //Creating a logger at the specified area.
 
+        //Creating a logger at the specified area.
         this.logger = createLogger({
             format: format.combine(
                 format.timestamp(),
@@ -38,29 +36,16 @@ class webscraper{
     }
 
     //Getting a company's website using Bing
-    getSiteFromName(companyName){
-        let thisthat = this;
+    getSiteFromName(companyName, bing_api_key){
         return new Promise(function(resolve, reject){
-            thisthat.webSearchAPIClient.web.search(companyName).then((results)=>{
-                let confidence_arr = [];
-                let numresults = Object.keys(results["webPages"]["value"]).length;
-                for(let i = 0; i<numresults-1; i++){
-                    let confidence_val = 0;
-                    let cur_url_str = results["webPages"]["value"][i]["url"];
-                    let cur_url = new URL(cur_url_str);
-                    let cur_length = cur_url_str.length;
-
-                    let cur_path = cur_url.pathname;
-                    let length_multiplier = (1 / (cur_length / 50));
-                    let path_lenth = cur_url_str.split("/").length;
-                    let num_length = cur_url_str.replace(/[^0-9]/g,"").length;
-                    console.log(cur_url_str);
-                    console.log(cur_path);
-                    console.log(length_multiplier);
-                    console.log(path_lenth);
-                    console.log(num_length);
-                }
-
+            //The BingAPI requires a key that can be found at 
+            //https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/
+            let credentials = new CognitiveServicesCredentials(bing_api_key);
+            let webSearchAPIClient = new WebSearchAPIClient(credentials);
+            //Calling the BingAPI to search for the company's name. The layout of the JSON can be found on the Design Document.
+            webSearchAPIClient.web.search(companyName).then((results)=>{
+                //Simply returns the first URL result.
+                //Later iterations might change this.
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);
@@ -70,11 +55,10 @@ class webscraper{
 
     /*
     Getting webscraped data from a site
-    orig -> original website, straight from SQL
+    orig -> Just the website domain and no sublinks.
     website_name -> current site you are on
     links_visited -> a running total of links on the site
-    .
-    .
+    recipient_id -> current recipient id.
     stopTime -> Time in Epoch when the program is supposed to end.
     */
     async getSite(orig, website_name, links_visited, recipient_id, stopTime){
@@ -83,17 +67,21 @@ class webscraper{
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
-        //If it is on the first page.
         try{
             let recipient = this.dao.selectRecipientById(recipient_id);
-            //await just pauses the execution until a response is recieved.
+            //Axios is returning back the pure html given from a website. 
+            //If a response isn't given within 10 seconds then stop axios and throw an error.
             const response = await axios.get(website_name, {timeout:10000}); 
-            const $ = cheerio.load(response.data);
+            //Loading into cheerios allows for easier searching using jQuery syntax.
+            const $ = cheerio.load(response.data);           
+            //If the function is on it's first iteration.
             if(links_visited.length == 1){
                 this.findAbout($, orig, recipient_id).catch(function(err){thisthat.logger.error(err)});
             }
-            await this.findAudio($, website_name, recipient.id, recipient.website);
+            //await just pauses the execution until a response is recieved.
+            await this.findAudio($, website_name, recipient_id);
             const links = await this.findLinks($, orig, website_name, links_visited);
+            //Add current links to the overall list of them.
             links_visited = links_visited.concat(links);
             
             //Because "this" doesn't work in promises or timeouts, we create a local variable which has a "this" instance.
@@ -118,6 +106,12 @@ class webscraper{
         }
     }
 
+    /*
+    Returns back all links to about pages.
+    $ -> Cheerios loaded html
+    orig -> Website with just domain, no sublinks
+    recipient_id -> Current recipient's id
+    */
     async findAbout($, orig, recipient_id){
         let thisthat = this;
 
@@ -130,8 +124,13 @@ class webscraper{
         await $("a").each((i, elem)=>{        
             let href = $(elem).attr("href");
             if(href!=null){
+                //full_url where the link leads to while a_text is the text inside an href.
+                //<a href="company.html">Our Company</a>
+                //full_url = "company.html"
+                //a_text = "Our Company"
                 let full_url = url.resolve(orig, href);
-                let a_text = $(elem).text();
+                let a_text = $(elem).text();            
+                //Seeing if the tags include certain keywords
                 if(full_url.startsWith(orig)
                     && !full_url.includes("#")
                     && !full_url.toLowerCase().includes("wikipedia")
@@ -146,17 +145,16 @@ class webscraper{
         links = this.removeDuplicatesInArrays(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
 
+        //If there are about files found, then create the parent directory
         if(links.length >= 1){
             await fs.mkdir(about_parent_path, err=>{
                 if(err) thisthat.logger.error(err);
             })
         }
         for(let i = 0; i< links.length; i++){   
+            //Each file will just have a number name. 1.txt.
             let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
             thisthat.logger.info(`About Page Link written to ${about_path}`);
-
-            let media = new Media(null,recipient_id,about_path,"txt",null,links[i],recipient.website,null,null,"text");
-            thisthat.dao.insertMedia(media);
 
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
@@ -164,22 +162,34 @@ class webscraper{
             //Take each paragraph and add them in order to a txt file.
             await $("p").each((i, elem)=>{ 
                 let paragraph_text = $(elem).text();
-                paragraph_text = paragraph_text.trim();
+                paragraph_text = paragraph_text.trim(); //Remove excess whitespace from beginning and end.
+                //If the text inside a paragraph is longer than 100 characters, then add it to the txt file.
                 if(paragraph_text.length > 100){
                     fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
                         if(err) thisthat.logger.error(err);
                     })
                 }
             })
+
+            let media = new Media(null,recipient_id,about_path,"txt",null,links[i],recipient.website,null,null,"text");
+            thisthat.dao.insertMedia(media);
+
             await this.delay(2000);
         }
     }
 
+    /*
+    Finds Video, Audio, and Youtube videos on a site and adds them to a database
+    $ -> Cheerios loaded HTML data
+    website -> website URL you are currently scraping
+    recipient_id -> Current recipient id
+    */
     findAudio($, website, recipient_id){
         let thisthat = this;
         return new Promise(function(resolve, reject){
            let recipient = thisthat.dao.selectRecipientById(recipient_id);
            thisthat.logger.info(`Scraping : ${website}`);
+           //Find all source tags and add them to the database
            $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
@@ -189,6 +199,7 @@ class webscraper{
                     thisthat.dao.insertMedia(media);
                 }
             });
+            //Find all youtube videos and add them to the database
             $("a[href*='/youtu.be/'],"+
               "a[href*='/youtube.com\\/embed/'],"+ 
               "a[href*='/youtube.com\\/watch/']"  ).each((i, elem)=>{
@@ -201,6 +212,12 @@ class webscraper{
         });
     }
 
+    /*
+    Download a media file.
+    parent_directory -> path to the directory where the media will be saved. IE: data/scraped/RECIPIENT_NAME 
+    full_url -> Path to the media file on the company's website
+    media_id -> SQL ID of the current Media file
+    */
     downloadFile(parent_directory , full_url, media_id){
         let DOWNLOAD_DIR =  "./data/scraped";
         var src_name = url.parse(full_url).pathname.split('/').pop();
@@ -218,6 +235,12 @@ class webscraper{
         }) 
     }
 
+    /*
+    Download a youtube file 
+    parent_directory -> path to the directory where the media will be saved. IE: data/scraped/RECIPIENT_NAME 
+    youtube_link -> URL of the youtube video
+    media_id -> SQL ID of the current Media file
+    */
     downloadYoutube(parent_directory, youtube_link, media_id){
 			let DOWNLOAD_DIR =  "./data/scraped";
 			var ytid = url.parse(youtube_link).pathname.split('/').pop();
@@ -250,6 +273,13 @@ class webscraper{
 			}
     }
 
+    /*
+    Returns all links found on the website.
+    $-> Cheerio loaded HTML data
+    orig -> Website domain without sublinks
+    current_site -> site you are currently scraping
+    links_visited -> All previous links that were found on other website to prevent repeats
+    */
     findLinks($, orig, current_site, links_visited){
         let thisthat = this;
         return new Promise(function(resolve, reject){
@@ -258,7 +288,7 @@ class webscraper{
             $("a").each((i, elem)=>{        
                 let href = $(elem).attr("href");
                 if(href!=null){
-                    //If the link is a partial link then try to append to it to the current site.
+                    //If the link is a partial link then append to it to the current site.
                     let full_url = url.resolve(current_site, href);
                     if(full_url.startsWith(orig)
                        && !links_visited.includes(full_url)
@@ -289,7 +319,11 @@ class webscraper{
     delay(ms){
         return new Promise(resolve=>setTimeout(resolve, ms));
     }
-			
+            
+    /*
+    Because cannot read certain folders, remove all spaces, commas, and periods from a recipient's name
+    name -> The recipient's name.
+    */
 	getParentPath(name){
 		name = name.replace(/ /g, "_");
 		name = name.replace(/\./g, "");

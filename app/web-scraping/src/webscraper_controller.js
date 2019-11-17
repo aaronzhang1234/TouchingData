@@ -14,20 +14,27 @@ const url = require("url");
 
 class WS_Controller {
   constructor() {
-    this.webscraper = new webscraperjs("458f7fc0ea5c44d38e45178c62515c7b");
+    this.bing_api_key = "458f7fc0ea5c44d38e45178c62515c7b";
+    this.webscraper = new webscraperjs();
     this.dao = new DAO(sqlDatabaseName);
   }
   getBingResults() {
     let recipients = this.dao.selectAllRecipients();
     let time = 1000;
+    //Since you cannot use "this" in a promise, put "this" in a local variable.
     let thisthat = this;
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
+      //If the recipient row in the DB does not have a corresponding website variable.
       if(recipient.website == null || recipient.website == ""){
+        //Adding 3 seconds to the amount of time needing to wait.
         time = time + 3000;
         let progress = i/recipients.length * 100;
+        //Setting a timeout allows the function to run syncronously inside a node function. 
+        //The main goal is to allow the first info to go in 3 seconds, then 3 seconds after that run the second info
         setTimeout(function() {
-          thisthat.webscraper.getSiteFromName(recipient.name).then(function(url) {
+          thisthat.webscraper.getSiteFromName(recipient.name, thisthat.bing_api_key).then(function(url) {
+            console.log(url);
             EM.emit('websiteUrl', {
               urlResult: url,
               companyName: recipient.name,
@@ -35,7 +42,9 @@ class WS_Controller {
             });
             let website = new Website("", url);
             thisthat.dao.insertWebsite(website);
+            //This gets the ID of the website we just inserted into the database to insert into the recipient table
             website = thisthat.dao.selectWebsiteByDomain(url);
+            //The ID gets returned in a num format and we have to turn it into a string. Trust me, this is the easiest way to do it
             let num_string = String(website.id);
             let num_array = num_string.split(".");
             let website_id = num_array[0];
@@ -50,9 +59,9 @@ class WS_Controller {
       console.log(`Problem Creating the data/abouts folder. \n Honestly, 70% chance it's already created`);
     }); 
     let recipients = this.dao.selectAllRecipients();
-    let howlong = .25;
+    let howlong = .25; //In percentages of a minute. .25 = 15 seconds
     let time = 0;
-    const minute = 60000;
+    const minute = 60000; //Time is in milliseconds
 
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
@@ -63,8 +72,12 @@ class WS_Controller {
       let website_domain = website.domain;
 
 //      website_domain =  "https://www.dtccom.net/";
+      //Origin is the website without anything after the domain name.
       let origin = new URL(website_domain).origin;
-      let stop_time = new Date().valueOf() + time + howlong * minute;
+      //howlong * minutes should be the amount of time waiting between each website
+      time = time + howlong * minute;
+      //stop_time is the cumulative amount of time before the website function stops.
+      let stop_time = new Date().valueOf() + time;
       let thisthat = this;
 
       setTimeout(function() {
@@ -81,8 +94,6 @@ class WS_Controller {
           stop_time
         );
       }, time);
-
-      time = time + howlong * minute;
     }
   }
   downloadAllMedia() {
@@ -92,8 +103,10 @@ class WS_Controller {
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
+      //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
+      //Wait around 2 seconds between each downloading media
 			time = time + 2000;
 			setTimeout(function() {
         let progress = i/medias.length * 100;
