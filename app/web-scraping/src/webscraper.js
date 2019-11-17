@@ -11,6 +11,7 @@ const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
 const EM = require("./emitter.js");
+const say = require('say');
 
 
 
@@ -293,6 +294,33 @@ class webscraper{
 		name = name.replace(/ /g, "_");
 		name = name.replace(/\./g, "");
 		return name.replace(/,/g, "");
-	}
+    }
+    convertTextToAudio(parent_directory, textFilePath, websiteId, textId, recipientId){
+        let thisthat = this;
+        let DOWNLOAD_DIR =  "./data/scraped";
+        let fileName = path.basename(textFilePath, '.txt') + '.wav';
+        let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
+        let full_download_path = path.join(parent_path, fileName);
+        if (!fs.existsSync(path.join(DOWNLOAD_DIR,parent_directory))){
+            fs.mkdirSync(path.join(DOWNLOAD_DIR,parent_directory));
+        }
+        if(fs.existsSync(textFilePath))
+        {
+            console.log(textFilePath);
+            fs.readFile(textFilePath, "utf-8", function(err, data){
+                if(err) throw err;
+                say.export(data, 'Alex', 1, full_download_path, (err) => {
+                    if (err) {
+                      return console.error(err)
+                    }
+                   
+                    console.log('Text has been saved to ' + full_download_path);
+                  })
+            })
+            let media = new Media(null,recipientId,null,'wav',null, textFilePath, websiteId, textId, null, 'audio');
+            thisthat.dao.insertMedia(media);
+        }
+        
+    }
 }
 module.exports = webscraper;

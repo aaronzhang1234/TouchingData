@@ -8,7 +8,8 @@
     "migrate": "node app/dataMigration/src/main.js",
     "webscrape": "node app/web-scraping/src/main.js",
     "initValTables": "node app/dataMigration/src/initValidationTables.js",
-    "initDb": "node app/dataMigration/src/initdb.js"
+    "initDb": "node app/dataMigration/src/initdb.js",
+    "convertAudio": "node app/web-scraping/src/textaudio.js"
   },
   "repository": {
     "type": "git",
@@ -46,7 +47,9 @@
     "pusher": "^3.0.0",
     "pusher-js": "^5.0.2",
     "rxjs": "~6.4.0",
+    "say": "^0.16.0",
     "socket.io": "^2.3.0",
+    "text-to-speech-js": "^1.1.9",
     "tslib": "^1.10.0",
     "winston": "^3.2.1",
     "ytdl-core": "^1.0.0",

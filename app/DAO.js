@@ -580,6 +580,28 @@ class Dao {
 		}
 		return null;
 	}
+	// Select all everything from each record on the PG1_MEDIA table where the file type is text
+	// return the selected records as an array of Text Objects
+	selectAllTextFiles() {
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA WHERE fileType = 'txt'`).all();
+		var texts = [];
+		rows.forEach(function(row, i){
+			let text = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.url,
+				row.website_id,
+				row.parentKey,
+				row.usable,
+				row.kind
+			)
+			texts.push(text);
+		});
+		return texts;
+	}
 
 		/**************************************************
 		 ********** insert and delete statements ********* 

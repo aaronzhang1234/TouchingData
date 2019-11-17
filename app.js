@@ -51,6 +51,11 @@ app.get("/downloadMedia", function(req, res){
     webscraper.downloadAllMedia();
 });
 
+app.get("/convertTextToAudio", function(req, res){
+    let webscraper = new WS_Controller();
+    webscraper.convertAllTextToAudio();
+})
+
 const server = http.createServer(app);
 
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
