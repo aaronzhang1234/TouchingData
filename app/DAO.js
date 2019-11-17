@@ -1104,7 +1104,7 @@ class Dao {
 			"website_id integer NULL,"+
 			"parentKey integer NULL,"+
 			"usuable integer NULL,"+ //boolean 
-			"kind TEXT NULL",+
+			"kind TEXT NULL,"+
 			"FOREIGN KEY(recipient_id) REFERENCES PG1_RECIPIENT(recipient_id),"+
 			"FOREIGN KEY(website_id) REFERENCES PG1_WEBSITE(website_id));"
 		).run();
