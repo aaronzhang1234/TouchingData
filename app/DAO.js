@@ -580,6 +580,28 @@ class Dao {
 		}
 		return null;
 	}
+	// Select all everything from each record on the PG1_MEDIA table where the file type is text
+	// return the selected records as an array of Text Objects
+	selectAllTextFiles() {
+		let rows = this.db.prepare(`SELECT * FROM PG1_MEDIA WHERE fileType = 'txt'`).all();
+		var texts = [];
+		rows.forEach(function(row, i){
+			let text = new Media(
+				row.media_id, 
+				row.recipient_id, 
+				row.filePath, 
+				row.fileType,
+				row.description,
+				row.url,
+				row.website_id,
+				row.parentKey,
+				row.usable,
+				row.kind
+			)
+			texts.push(text);
+		});
+		return texts;
+	}
 
 		/**************************************************
 		 ********** insert and delete statements ********* 
@@ -662,12 +684,12 @@ class Dao {
 		if(selectMedia === null){
 			const stmt = this.db.prepare(
 				`INSERT INTO PG1_MEDIA (
+				recipient_id,
 				filePath, 
 				fileType, 
 				description, 
 				url,
 				website_id,
-				recipient_id,
 				parentKey,
 				usable,
 				kind
@@ -676,14 +698,14 @@ class Dao {
 
 			const insert = this.db.transaction((media)=> {
 
-				try{
+				try{					
 					stmt.run(
+						media.recipient,
 						media.filePath, 
 						media.fileType, 
 						media.description, 
-						media.medLength, 
+						media.url,
 						media.website,
-						media.recpient,
 						media.parentKey,
 						media.usable,
 						media.kind
@@ -691,11 +713,10 @@ class Dao {
 				}catch(err){
 					return null;
 				}
-
 			});
 
 			insert(media);
-			let selectMedia = selectMediaByUrl(media.url)
+			selectMedia = this.selectMediaByUrl(media.url)
 		}
 		return selectMedia.id;
 	}
@@ -741,7 +762,7 @@ class Dao {
 			});
 
 			insert(award);
-			let selectAward = this.selectAwardId(award.piid, award.fiscalYear)
+			let selectAward = selectAwardId(award.piid, award.fiscalYear)
 		}
 		return selectAward;
 	}

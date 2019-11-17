@@ -72,16 +72,33 @@ app.get("/downloadMedia", function(req, res){
     webscraper.downloadAllMedia();
 });
 
+app.get("/convertTextToAudio", function(req, res){
+    let webscraper = new WS_Controller();
+    webscraper.convertAllTextToAudio();
+})
+
 const server = http.createServer(app);
 
 const io = socketIo(server);
+
 io.on('connection', (socket)=>{
+
 	EM.removeAllListeners();
 	EM.on('website', function(webiste){
 		socket.emit('website',{
 			arg1:webiste
 		})
 	})
+  EM.on('websiteUrl', function(websiteUrl){
+    socket.emit('websiteUrl',{
+      arg1:websiteUrl
+    })
+  })
+  EM.on('downloadMediaStatus', function(media){
+    socket.emit('downloadMediaStatus', {
+      arg1:media
+    })
+  })
 	EM.on('migrate', function(data){
 		migrating--;
 		if (migrating < 1){
@@ -90,7 +107,7 @@ io.on('connection', (socket)=>{
 	})
 	setInterval(function(){
 		socket.emit('hello',{
-			arg1:"fuck"
+			arg1:"fug"
 		})
 	}, 2000);
 });
@@ -120,6 +137,7 @@ app.post('/upload', function(req, res) {
 		}
 		res.json({error_code:0,err_desc:null});
 	});
+
 });
 
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));

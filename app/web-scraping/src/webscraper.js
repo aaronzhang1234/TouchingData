@@ -11,6 +11,7 @@ const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
 const EM = require("./emitter.js");
+const say = require('say');
 
 
 
@@ -59,6 +60,7 @@ class webscraper{
                     console.log(path_lenth);
                     console.log(num_length);
                 }
+
                 resolve(results["webPages"]["value"][0]["url"]);
             }).catch((err)=>{
                 thisthat.logger.error(err);
@@ -76,11 +78,11 @@ class webscraper{
     stopTime -> Time in Epoch when the program is supposed to end.
     */
     async getSite(orig, website_name, links_visited, recipient_id, stopTime){
+        let thisthat = this;
         //If time has run out then kill the program.
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
-        EM.emit("website", website_name);
         //If it is on the first page.
         try{
             let recipient = this.dao.selectRecipientById(recipient_id);
@@ -88,7 +90,7 @@ class webscraper{
             const response = await axios.get(website_name, {timeout:10000}); 
             const $ = cheerio.load(response.data);
             if(links_visited.length == 1){
-                this.findAbout($, orig, recipient_id).catch((err)=>this.logger.error(err));
+                this.findAbout($, orig, recipient_id).catch(function(err){thisthat.logger.error(err)});
             }
             await this.findAudio($, website_name, recipient.id, recipient.website);
             const links = await this.findLinks($, orig, website_name, links_visited);
@@ -101,7 +103,7 @@ class webscraper{
                     return links_visited;
                 }
                 //Wait 5 seconds before continuing
-                const waiting = await this.delay(2000);
+                await this.delay(2000);
 
                 //Wait 5 seconds before going onto next website.
                 //Webscraper will die on first page if this is not here.
@@ -118,12 +120,12 @@ class webscraper{
 
     async findAbout($, orig, recipient_id){
         let thisthat = this;
+
         let recipient = this.dao.selectRecipientById(recipient_id);
         let recipient_name = recipient.name;
-        recipient_name = recipient_name.replace(/ /g, "_");
-        recipient_name = recipient_name.replace(/\./g, "");
-        recipient_name = recipient_name.replace(/,/g, "");
+        recipient_name = this.getParentPath(recipient.name);
         let about_parent_path = path.join("./data/abouts", recipient_name);
+
         let links = [];
         await $("a").each((i, elem)=>{        
             let href = $(elem).attr("href");
@@ -143,6 +145,7 @@ class webscraper{
         })
         links = this.removeDuplicatesInArrays(links);
         this.logger.info(`Found ${links.length} About Page(s) for ${recipient.name}`);
+
         if(links.length >= 1){
             await fs.mkdir(about_parent_path, err=>{
                 if(err) thisthat.logger.error(err);
@@ -150,20 +153,18 @@ class webscraper{
         }
         for(let i = 0; i< links.length; i++){   
             let about_path = path.join(about_parent_path, (i+1).toString() + ".txt");
+            thisthat.logger.info(`About Page Link written to ${about_path}`);
 
-            fs.writeFile(about_path, links[i] + '\n', {flag: 'a+'}, function(err){
-                if(err) thisthat.logger.error(err);
-                thisthat.logger.info(`About Page Link written to ${about_path}`);
-            })
+            let media = new Media(null,recipient_id,about_path,"txt",null,links[i],recipient.website,null,null,"text");
+            thisthat.dao.insertMedia(media);
+
             const response = await axios.get(links[i], {timeout:10000}); 
             const $ = cheerio.load(response.data);
 
-            let about_media = new Media();
             //Take each paragraph and add them in order to a txt file.
             await $("p").each((i, elem)=>{ 
                 let paragraph_text = $(elem).text();
                 paragraph_text = paragraph_text.trim();
-                
                 if(paragraph_text.length > 100){
                     fs.writeFile(about_path, paragraph_text + '\n', {flag: 'a+'}, function(err){
                         if(err) thisthat.logger.error(err);
@@ -175,25 +176,18 @@ class webscraper{
     }
 
     findAudio($, website, recipient_id){
-        let recipient = this.dao.selectRecipientById(recipient_id);
         let thisthat = this;
         return new Promise(function(resolve, reject){
+           let recipient = thisthat.dao.selectRecipientById(recipient_id);
            thisthat.logger.info(`Scraping : ${website}`);
-            $("source").each((i, elem)=>{
+           $("source").each((i, elem)=>{
                 let src = $(elem).attr("src");
                 if(src){
-                    console.log("found source");
                     thisthat.logger.info(`Website Source is: ${website} | Link is: ${src}`);
                     let file_type = src.split(".").pop();
-                    let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), website_id, null, null);
+                    let media = new Media(null,recipient_id,null,file_type,null, url.resolve(website, src), recipient.website, null, null);
                     thisthat.dao.insertMedia(media);
                 }
-            });
-            $("video").each((i, elem)=>{
-                thisthat.logger.info(`Website Video is: ${website} | Link is: ${$(elem).attr("src")}`);
-            });
-            $("audio").each((i, elem)=>{
-                thisthat.logger.info(`Website Audio is: ${website} | Link is: ${$(elem).attr("src")}`);
             });
             $("a[href*='/youtu.be/'],"+
               "a[href*='/youtube.com\\/embed/'],"+ 
@@ -227,7 +221,6 @@ class webscraper{
     downloadYoutube(parent_directory, youtube_link, media_id){
 			let DOWNLOAD_DIR =  "./data/scraped";
 			var ytid = url.parse(youtube_link).pathname.split('/').pop();
-			EM.emit("media" + media_id);
 			if (ytid === null){return}
 			if (!youtube_link.includes("http")){
 				youtube_link = "https:"+youtube_link
@@ -258,10 +251,10 @@ class webscraper{
     }
 
     findLinks($, orig, current_site, links_visited){
-        let links = [];
         let thisthat = this;
         return new Promise(function(resolve, reject){
             //Find every link on the webpage and add it to an array.
+            let links = [];
             $("a").each((i, elem)=>{        
                 let href = $(elem).attr("href");
                 if(href!=null){
@@ -301,6 +294,33 @@ class webscraper{
 		name = name.replace(/ /g, "_");
 		name = name.replace(/\./g, "");
 		return name.replace(/,/g, "");
-	}
+    }
+    convertTextToAudio(parent_directory, textFilePath, websiteId, textId, recipientId){
+        let thisthat = this;
+        let DOWNLOAD_DIR =  "./data/scraped";
+        let fileName = path.basename(textFilePath, '.txt') + '.wav';
+        let parent_path = path.join(DOWNLOAD_DIR, parent_directory);
+        let full_download_path = path.join(parent_path, fileName);
+        if (!fs.existsSync(path.join(DOWNLOAD_DIR,parent_directory))){
+            fs.mkdirSync(path.join(DOWNLOAD_DIR,parent_directory));
+        }
+        if(fs.existsSync(textFilePath))
+        {
+            console.log(textFilePath);
+            fs.readFile(textFilePath, "utf-8", function(err, data){
+                if(err) throw err;
+                say.export(data, 'Alex', 1, full_download_path, (err) => {
+                    if (err) {
+                      return console.error(err)
+                    }
+                   
+                    console.log('Text has been saved to ' + full_download_path);
+                  })
+            })
+            let media = new Media(null,recipientId,null,'wav',null, textFilePath, websiteId, textId, null, 'audio');
+            thisthat.dao.insertMedia(media);
+        }
+        
+    }
 }
 module.exports = webscraper;
