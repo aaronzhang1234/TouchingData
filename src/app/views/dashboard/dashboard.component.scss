@@ -2,7 +2,7 @@
     display: flex;
     flex: 1;
 }
-.btn {
+.butt-on-lol {
     background-color: #4b5320;
     border-color: #4b5320;
     align-content: center;
@@ -45,4 +45,26 @@ hr {
     width:100%;
     margin:0;
     text-align: center;
+}
+
+.row {
+	padding: 5px;
+}
+.input {
+	justify-content:left;
+	height:50px;
+	width:200px;
+}
+.table {
+	margin-left:200px;
+	justify-content:center;
+}
+td {
+	min-width:50px;
+}
+th {
+	min-width:50px;
+}
+table {
+	min-width:1000px;
 }

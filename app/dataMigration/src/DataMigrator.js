@@ -4,7 +4,7 @@
  * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
  *
  */
-
+var EM = require('../../web-scraping/src/emitter.js')
 var RowParser = require("./RowParser.js");
 var Excel   = require("exceljs");
 
@@ -18,7 +18,9 @@ class DataMigrator {
 				worksheet.eachRow(function(row, index){
 					//the first row of this worksheet is a header, do not consume these fields
 					if (index != 1){
-						if (index % 500 === 0) console.log(`Currently on row ${index}`);
+						if (index%50 == 0){
+							console.log(`Currently on row ${index}`);
+						}
 						let parser = new RowParser(row);	
 						//This order of inserts is very important, do not move. 
 						try {
@@ -48,6 +50,12 @@ class DataMigrator {
 
 					}
 				});
+				console.log("done")
+				EM.emit('migrate', {
+					progress:1,
+					status:"done"
+				})
+			}).then(function(){
 			});
 		});
 	 }
