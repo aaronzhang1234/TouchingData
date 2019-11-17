@@ -55,6 +55,10 @@ app.get("/convertTextToAudio", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.convertAllTextToAudio();
 })
+app.get("/cancelJob", function(reg, res){
+  process.kill(process.pid);
+  console.log("Job Cancelled");
+})
 
 
 const server = http.createServer(app);
@@ -83,10 +87,6 @@ io.on('connection', (socket)=>{
     socket.emit('textToAudioStatus', {
       arg1:text
     })
-  })
-  EM.on('cancelJob', function(cancel){
-	  process.exit(1);
-	  console.log("job cancelled");
   })
   setInterval(function(){
     socket.emit('hello',{
