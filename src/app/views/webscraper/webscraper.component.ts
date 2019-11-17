@@ -33,25 +33,29 @@ export class WebscraperComponent implements OnInit {
     this.startButton.setAttribute("style", "display: none");
     this.stopButton.setAttribute("style", "display: flex");
     this.progressBar.setAttribute("style", "display: inline-block");
-    confirm(
+
+    var x = confirm(
       "This will begin the Webscraper.. This is a 5 hour process. Are you sure you want to begin scraping?"
     );
 
-    this.io.on("website", data => {
-      this.progressOutput.textContent =
-        "Scraping site: " + data["arg1"].websiteName;
-      this.progressAmount.style.width = data["arg1"].webscrapeProgress + "%";
-    });
-    console.log("bopped");
-    this.http.get("/scrapeSites").subscribe(
-      data => {
-        console.log("Currently Scraping");
-      },
-      err => {
-        console.log("Error detected on scraping sites");
-        console.log(JSON.stringify(err));
-      }
-    );
+    if (x == true) {
+      this.io.on("website", data => {
+        this.progressOutput.textContent =
+          "Scraping site: " + data["arg1"].websiteName;
+        this.progressAmount.style.width = data["arg1"].webscrapeProgress + "%";
+      });
+      console.log("bopped");
+      this.http.get("/scrapeSites").subscribe(
+        data => {
+          console.log("Currently Scraping");
+        },
+        err => {
+          console.log("Error detected on scraping sites");
+          console.log(JSON.stringify(err));
+        }
+      );
+    } else {
+    }
   }
   fetchWebsites() {
     this.outputBox.setAttribute("style", "display:block");
