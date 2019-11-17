@@ -102,6 +102,6 @@ export class WebscraperComponent implements OnInit {
     this.startButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-
+    this.io.on("cancelJob");
   }
 }

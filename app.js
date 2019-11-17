@@ -56,9 +56,6 @@ app.get("/convertTextToAudio", function(req, res){
     webscraper.convertAllTextToAudio();
 })
 
-app.get("/cancelJob", function(req, res){
-  process.exit(2);
-})
 
 const server = http.createServer(app);
 
@@ -86,6 +83,10 @@ io.on('connection', (socket)=>{
     socket.emit('textToAudioStatus', {
       arg1:text
     })
+  })
+  EM.on('cancelJob', function(cancel){
+	  process.exit(1);
+	  console.log("job cancelled");
   })
   setInterval(function(){
     socket.emit('hello',{
