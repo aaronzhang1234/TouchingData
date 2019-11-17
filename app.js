@@ -43,11 +43,10 @@ app.post("/import", function(req, res) {
 	let dataMigrator = new DataMigrator();
 	if (files.length > 0){
 		migrating = files.length;
-		while (migrating > 0){
+		for (let i = migrating; i > 0; i--){
 			console.log(files[0].path)
 			dataMigrator.migrateData(files[0].path)	
 			files.shift();
-			migrating--;
 		}
 	}else {
 		console.log("ye olde originale")
@@ -84,7 +83,8 @@ io.on('connection', (socket)=>{
 		})
 	})
 	EM.on('migrate', function(data){
-		if (!migrating){
+		migrating--;
+		if (migrating < 1){
 			socket.emit('migrate',data);
 		}
 	})
