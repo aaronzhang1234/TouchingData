@@ -123,6 +123,11 @@ class WS_Controller {
       let recipientId = recipient.id;
       time = time + 2000;
       setTimeout(function() {
+        let progress = i/texts.length * 100;
+        EM.emit('textToAudioStatus', {
+          textFileName: text.filePath,
+          textConversionProgress: progress
+        })
         thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
       }, time);
     }

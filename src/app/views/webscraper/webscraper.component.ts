@@ -80,6 +80,23 @@ export class WebscraperComponent implements OnInit {
       }
     );
   }
+  convertTextToAudio() {
+    this.outputBox.setAttribute("style", "display:block");
+    this.progressBar.setAttribute("style", "display: inline-block");
+    this.io.on("textToAudioStatus", (data)=> {
+      this.progressOutput.textContent = data["arg1"].textFileName;
+      this.progressAmount.style.width = data["arg1"].textConversionProgress + "%";
+    })
+    this.http.get("/convertTextToAudio").subscribe(
+      data=>{
+        console.log("Currently Converting Text to Audio");
+      },
+      err => {
+        console.log("Error detected on converting text");
+        console.log(JSON.stringify(err));
+      }
+    )
+  }
   stopScrape() {
     this.stopButton.setAttribute("style", "display:none");
     this.startButton.setAttribute("style", "display: flex");

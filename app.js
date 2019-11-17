@@ -56,6 +56,10 @@ app.get("/convertTextToAudio", function(req, res){
     webscraper.convertAllTextToAudio();
 })
 
+app.get("/cancelJob", function(req, res){
+  process.exit(2);
+})
+
 const server = http.createServer(app);
 
 server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
@@ -76,6 +80,11 @@ io.on('connection', (socket)=>{
   EM.on('website', function(webiste){
     socket.emit('website',{
       arg1:webiste
+    })
+  })
+  EM.on('textToAudioStatus', function(text){
+    socket.emit('textToAudioStatus', {
+      arg1:text
     })
   })
   setInterval(function(){
