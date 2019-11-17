@@ -15,6 +15,7 @@
 const WS_Controller = require("./webscraper_controller.js");
 let EM = require("./emitter.js");
 const fs = require("fs");
+const say = require('say');
 
 let webscraper_controller = new WS_Controller();
 

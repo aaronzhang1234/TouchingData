@@ -76,6 +76,11 @@ app.get("/convertTextToAudio", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.convertAllTextToAudio();
 })
+app.get("/cancelJob", function(reg, res){
+  process.kill(process.pid);
+  console.log("Job Cancelled");
+})
+
 
 const server = http.createServer(app);
 
@@ -97,6 +102,11 @@ io.on('connection', (socket)=>{
   EM.on('downloadMediaStatus', function(media){
     socket.emit('downloadMediaStatus', {
       arg1:media
+    })
+  })
+  EM.on('textToAudioStatus', function(text){
+    socket.emit('textToAudioStatus', {
+      arg1:text
     })
   })
 	EM.on('migrate', function(data){

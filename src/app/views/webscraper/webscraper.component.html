@@ -21,7 +21,7 @@
       </div>
     </div>
     <br />
-    <div class="wrapper">
+    <div class="wrapper" id = "startFetching">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
@@ -31,11 +31,48 @@
       </div>
     </div>
     <br />
-    <div class="wrapper">
+    <div class="wrapper" id = "stopFetching">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button type="submit" class="btn" id = "stopFetch" (click)="stopFetching()">Stop Fetching Websites</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="wrapper" id = "startDownloading">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
             <button type="submit" class="btn" id ="download" (click)="downloadMedia()">Download Media</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper" id = "stopDownloading">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button type="submit" class="btn" id ="stopDownload" (click)="stopDownloading()">Stop Downloading Media</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper"id = "startConverting">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button type="submit" class="btn" id ="convert" (click)="convertTextToAudio()">Convert Text to Audio</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper"id = "stopConverting">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button type="submit" class="btn" id ="stopConvert" (click)="stopConverting()">Stop Converting</button>
           </div>
         </div>
       </div>
