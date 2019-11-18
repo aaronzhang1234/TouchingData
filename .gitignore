@@ -102,3 +102,4 @@ dist/*
 package-lock.json
 data/abouts/*
 data/abouts.zip
+data/sheets/*
