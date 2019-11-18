@@ -147,7 +147,6 @@ app.post('/upload', function(req, res) {
 		}
 		res.json({error_code:0,err_desc:null});
 	});
-
 });
 
-server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
+server.listen(3000, ()=>console.log("Server will run at http://localhost:3000"));

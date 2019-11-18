@@ -15,7 +15,7 @@ const url = require("url");
 class WS_Controller {
   constructor() {
     //This API key is used for gathering websites and the free tier is limited for 3000 searches.
-    //More information about this can be found at docs/Bing API Documentation for Touching Data.docx
+    //More information about this can be found at docs/Bing API Documentation for Touching Data.docx.
     this.bing_api_key = "502360db0e564d8eb338b5e985ade3b4";
     this.webscraper = new webscraperjs();
     this.dao = new DAO(sqlDatabaseName);
@@ -25,7 +25,7 @@ class WS_Controller {
     let time = 1000;
     //Since you cannot use "this" in a promise, put "this" in a local variable.
     let thisthat = this;
-    for (let i = 0; i < recipients.length; i++) {
+    for (let i = 0; i < recipients.length; i++){ 
       let recipient = recipients[i];
       //If the recipient row in the DB does not have a corresponding website variable.
       if(recipient.website == null || recipient.website == ""){
@@ -107,8 +107,7 @@ class WS_Controller {
     let thisthat = this;
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
-      let recipient = this.dao.selectRecipientById(media.recipient);
-      time = time + howlong * minute; //howlong * minutes should be the amount of time waiting between each website     
+      let recipient = this.dao.selectRecipientById(media.recipient);    
       //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
@@ -120,7 +119,6 @@ class WS_Controller {
           mediaFileName: media.filePath,
           mediaDownloadProgress: progress
         })
-        console.log(progress);
 				if (media.kind == "youtube") {
 					thisthat.webscraper.downloadYoutube(name, media_source, media.id);
 				} else {
