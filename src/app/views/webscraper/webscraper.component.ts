@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient,HttpHeaders} from '@angular/common/http';
 import * as socketio from 'socket.io-client';
 
 @Component({
@@ -11,6 +11,7 @@ export class WebscraperComponent implements OnInit {
   progressOutput; outputBox; startScrapeButton; stopScrapeButton;
   progressBar; io; progressAmount; stopFetchButton; startFetchButton;
   startDownloadButton; stopDownloadButton; startConvertButton; stopConvertButton;
+	headers;
 
   constructor(private http:HttpClient) {
    }
@@ -29,6 +30,7 @@ export class WebscraperComponent implements OnInit {
     this.progressBar = document.getElementById('progressbar');
     this.progressAmount = document.getElementById('progress');
     this.io = socketio("http://localhost:3000");
+		this.headers = new HttpHeaders().set("Content-Type", "application/json");
   }
 
   startScrape(){
@@ -111,32 +113,34 @@ export class WebscraperComponent implements OnInit {
       }
     )
   }
+
+
   stopScrape() {
     this.stopScrapeButton.setAttribute("style", "display:none");
     this.startScrapeButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.get("/cancelJob").subscribe();
+    this.http.post("/cancelJob", {process:"scrape"}, {headers:this.headers}).subscribe();
   }
   stopFetching() {
     this.stopFetchButton.setAttribute("style", "display:none");
     this.startFetchButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.get("/cancelJob").subscribe();
+    this.http.post("/cancelJob",{process:"fetch"}, {headers:this.headers}).subscribe();
   }
   stopDownloading() {
     this.stopDownloadButton.setAttribute("style", "display:none");
     this.startDownloadButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.get("/cancelJob").subscribe();
+    this.http.post("/cancelJob",{process:"dl"}, {headers:this.headers}).subscribe();
   }
   stopConverting() {
     this.stopConvertButton.setAttribute("style", "display:none");
     this.startConvertButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.get("/cancelJob").subscribe();
+    this.http.post("/cancelJob",{process:"convert"}, {headers:this.headers}).subscribe();
   }
 }
