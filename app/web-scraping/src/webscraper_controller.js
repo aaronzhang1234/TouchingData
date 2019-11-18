@@ -14,7 +14,9 @@ const url = require("url");
 
 class WS_Controller {
   constructor() {
-    this.bing_api_key = "458f7fc0ea5c44d38e45178c62515c7b";
+    //This API key is used for gathering websites and the free tier is limited for 3000 searches.
+    //More information about this can be found at docs/Bing API Documentation for Touching Data.docx
+    this.bing_api_key = "502360db0e564d8eb338b5e985ade3b4";
     this.webscraper = new webscraperjs();
     this.dao = new DAO(sqlDatabaseName);
   }
