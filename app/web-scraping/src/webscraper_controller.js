@@ -101,12 +101,11 @@ class WS_Controller {
   }
   downloadAllMedia() {
     let medias = this.dao.selectAllMedia();
-    let time = 1000;
+    let time = 0
     let thisthat = this;
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
-      let recipient = this.dao.selectRecipientById(media.recipient);
-      time = time + howlong * minute; //howlong * minutes should be the amount of time waiting between each website     
+      let recipient = this.dao.selectRecipientById(media.recipient); 
       //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
@@ -118,7 +117,6 @@ class WS_Controller {
           mediaFileName: media.filePath,
           mediaDownloadProgress: progress
         })
-        console.log(progress);
 				if (media.kind == "youtube") {
 					thisthat.webscraper.downloadYoutube(name, media_source, media.id);
 				} else {
