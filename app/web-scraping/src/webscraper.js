@@ -37,6 +37,7 @@ class webscraper{
 
     //Getting a company's website using Bing
     getSiteFromName(companyName, bing_api_key){
+		let thisThat = this;
         return new Promise(function(resolve, reject){
             //The BingAPI requires a key that can be found at 
             //https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/
@@ -354,7 +355,7 @@ class webscraper{
                     })
                 })
             }else{
-                resolve("fucked");
+                resolve("resolved");
             }
         })
     }
