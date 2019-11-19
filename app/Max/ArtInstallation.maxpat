@@ -39,13 +39,14 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-73",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1314.0, 594.0, 150.0, 20.0 ],
+					"patching_rect" : [ 1314.0, 594.0, 194.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 1301.0, 577.266334056854248, 150.0, 20.0 ],
+					"presentation_rect" : [ 1301.0, 577.266334056854248, 194.0, 24.0 ],
 					"text" : "Manual Fire"
 				}
 
@@ -132,14 +133,15 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-53",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1758.666718721389771, 258.958333730697632, 75.0, 22.0 ],
+					"patching_rect" : [ 1758.666718721389771, 258.958333730697632, 97.0, 26.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 937.512045741081238, 213.366317391395569, 75.0, 22.0 ],
+					"presentation_rect" : [ 921.924554109573364, 211.366317391395569, 97.0, 26.0 ],
 					"text" : "Owner Race"
 				}
 
@@ -162,14 +164,15 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-46",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1707.666718721389771, 464.5625, 126.0, 22.0 ],
+					"patching_rect" : [ 1707.666718721389771, 464.5625, 165.0, 26.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 889.343908071517944, 387.370483219623566, 126.0, 22.0 ],
+					"presentation_rect" : [ 853.924554109573364, 385.370483219623566, 165.0, 26.0 ],
 					"text" : "Owner Veteran Status"
 				}
 
@@ -192,14 +195,15 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-42",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1746.666718721389771, 397.583333730697632, 87.0, 22.0 ],
+					"patching_rect" : [ 1746.666718721389771, 397.583333730697632, 113.0, 26.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 925.512045741081238, 328.345483422279358, 87.0, 22.0 ],
+					"presentation_rect" : [ 905.924554109573364, 326.345483422279358, 113.0, 26.0 ],
 					"text" : "Owner Gender"
 				}
 
@@ -222,14 +226,15 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-41",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1758.666718721389771, 331.3125, 75.0, 22.0 ],
+					"patching_rect" : [ 1758.666718721389771, 331.3125, 97.0, 26.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 937.512045741081238, 271.320483505725861, 75.0, 22.0 ],
+					"presentation_rect" : [ 921.924554109573364, 269.320483505725861, 97.0, 26.0 ],
 					"text" : "Owner Race"
 				}
 
@@ -252,14 +257,15 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-18",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1764.0, 178.5, 73.0, 22.0 ],
+					"patching_rect" : [ 1764.0, 178.5, 95.0, 26.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 937.512045741081238, 152.007983803749084, 75.0, 22.0 ],
+					"presentation_rect" : [ 921.424554109573364, 152.007983803749084, 98.0, 26.0 ],
 					"text" : "Aggregation"
 				}
 
@@ -472,7 +478,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1630.0, 278.5, 75.0, 35.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 509.0, 774.0625, 130.0, 22.0 ],
+					"presentation_rect" : [ 416.0, 770.0625, 130.0, 22.0 ],
 					"text" : "Step Range Selection"
 				}
 
@@ -502,7 +508,7 @@
 					"parameter_enable" : 0,
 					"patching_rect" : [ 1392.7048180103302, 272.0, 232.0, 35.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 454.512048840522766, 727.266334056854248, 232.0, 35.0 ]
+					"presentation_rect" : [ 361.512048840522766, 723.266334056854248, 232.0, 35.0 ]
 				}
 
 			}
@@ -558,13 +564,14 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-30",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 306.75, 9.0, 150.0, 20.0 ],
+					"patching_rect" : [ 306.75, 9.0, 196.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 1299.807230830192566, 513.266334056854248, 95.0, 20.0 ],
+					"presentation_rect" : [ 1299.807230830192566, 513.266334056854248, 124.0, 24.0 ],
 					"text" : "Open Database"
 				}
 
@@ -591,7 +598,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 1326.7048180103302, 681.0, 150.0, 20.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 849.924554109573364, 742.266334056854248, 27.41935396194458, 20.0 ],
+					"presentation_rect" : [ 743.924554109573364, 738.266334056854248, 27.41935396194458, 20.0 ],
 					"text" : "$0"
 				}
 
@@ -719,7 +726,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1219.5, 725.884811997413635, 150.0, 22.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 728.725722908973694, 774.0625, 134.0, 22.0 ],
+					"presentation_rect" : [ 622.725722908973694, 770.0625, 134.0, 22.0 ],
 					"text" : "Award Amount Selector"
 				}
 
@@ -747,7 +754,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 1326.7048180103302, 162.0, 172.0, 22.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 853.924554109573364, 7.266334056854248, 96.19354784488678, 22.0 ],
+					"presentation_rect" : [ 743.924554109573364, 3.266334056854248, 96.19354784488678, 22.0 ],
 					"text" : "$20,000,000"
 				}
 
@@ -871,13 +878,14 @@
 			}
 , 			{
 				"box" : 				{
+					"fontsize" : 16.0,
 					"id" : "obj-14",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 88.0, 124.375, 46.0, 20.0 ],
+					"patching_rect" : [ 88.0, 124.375, 58.0, 24.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 1301.0, 638.5, 46.0, 20.0 ],
+					"presentation_rect" : [ 1301.0, 638.5, 58.0, 24.0 ],
 					"text" : "Reset"
 				}
 
@@ -1044,7 +1052,7 @@
 					"parameter_enable" : 0,
 					"patching_rect" : [ 1271.0, 157.514186143875122, 47.0, 526.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 746.924517154693604, 7.266334056854248, 97.602411508560181, 755.0 ],
+					"presentation_rect" : [ 640.924517154693604, 3.266334056854248, 97.602411508560181, 755.0 ],
 					"relative" : 1,
 					"size" : 20000000.0
 				}

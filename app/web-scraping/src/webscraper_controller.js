@@ -84,20 +84,20 @@ class WS_Controller {
     for (let i = 0; i < recipients.length; i++) {
 			if (state === "stop") return;
       let recipient = recipients[i];
-      let recipient_id = recipient.id;
+      let recipient_id = recipient.id;      
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
       let website_domain = website.domain;
 
-//      website_domain =  "https://www.dtccom.net/";
       //Origin is the website without anything after the domain name.
       let origin = new URL(website_domain).origin;
-      //howlong * minutes should be the amount of time waiting between each website
-      time = time + howlong * minute;
+
       //stop_time is the cumulative amount of time before the website function stops.
-      let stop_time = new Date().valueOf() + time;
+      let stop_time = new Date().valueOf() + time + howlong * minute;
+
       let thisthat = this;
+
 
       const timeoutObj = setTimeout(function() {
 				console.log(website);
@@ -114,7 +114,12 @@ class WS_Controller {
           stop_time
         );
       }, time);
-			timeouts.push(timeoutObj);
+
+			timeouts.push(timeoutObj)
+
+      //howlong * minutes should be the amount of time waiting between each website
+      time = time + howlong * minute;
+
     }
   }
   downloadAllMedia() {
@@ -132,6 +137,7 @@ class WS_Controller {
 			if (state === "stop") return;
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
+      time = time + howlong * minute; //howlong * minutes should be the amount of time waiting between each website     
       //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
@@ -156,18 +162,11 @@ class WS_Controller {
   }
   //recieves in all text files from db
   //calls function to convert each file individually
-  convertAllTextToAudio() {
+  async convertAllTextToAudio() {
     let texts = this.dao.selectAllTextFiles();
     let time = 1000;
     let thisthat = this;
 		let state = "go";
-
-		EM.on("kill",function(data) {
-			timeouts.forEach(timeout=>{
-				clearTimeout(timeout);
-				state = "stop";
-			});
-		});
 
     for(let i = 0; i<texts.length; i++) {
 			if(state==="stop") return;
@@ -175,18 +174,15 @@ class WS_Controller {
       let recipient = this.dao.selectRecipientById(text.recipient);
       let name = thisthat.webscraper.getParentPath(recipient.name);
       let recipientId = recipient.id;
-      time = time + 2000;
-      const timeoutObj = setTimeout(function() {
-				console.log(recipient);
-        let progress = i/texts.length * 100;
-        EM.emit('textToAudioStatus', {
-          textFileName: text.filePath,
-          textConversionProgress: progress
-        })
-        thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
-      }, time);
-			timeouts.push(timeoutObj);
+
+      let progress = i/texts.length * 100;
+      EM.emit('textToAudioStatus', {
+        textFileName: text.filePath,
+        textConversionProgress: progress
+      })
+      await thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
     }
+    console.log("finished!");
   }
 }
 
