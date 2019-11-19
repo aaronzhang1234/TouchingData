@@ -65,22 +65,21 @@ class WS_Controller {
 
     for (let i = 0; i < recipients.length; i++) {
       let recipient = recipients[i];
-      let recipient_id = recipient.id;
+      let recipient_id = recipient.id;      
       let recipient_website_id = recipient.website;
       let website = this.dao.selectWebsiteById(recipient_website_id);
 
       let website_domain = website.domain;
 
-//      website_domain =  "https://www.dtccom.net/";
       //Origin is the website without anything after the domain name.
       let origin = new URL(website_domain).origin;
-      //howlong * minutes should be the amount of time waiting between each website
-      time = time + howlong * minute;
+
       //stop_time is the cumulative amount of time before the website function stops.
-      let stop_time = new Date().valueOf() + time;
+      let stop_time = new Date().valueOf() + time + howlong * minute;
+
       let thisthat = this;
 
-      setTimeout(function() {
+      setTimeout(function() {        
         let progress = i/recipients.length * 100;
         EM.emit("website", 
         {websiteName: website_domain,
@@ -94,6 +93,10 @@ class WS_Controller {
           stop_time
         );
       }, time);
+
+      //howlong * minutes should be the amount of time waiting between each website
+      time = time + howlong * minute;
+
     }
   }
   downloadAllMedia() {
@@ -103,6 +106,7 @@ class WS_Controller {
     for (let i = 0; i < medias.length; i++) {
       let media = medias[i];
       let recipient = this.dao.selectRecipientById(media.recipient);
+      time = time + howlong * minute; //howlong * minutes should be the amount of time waiting between each website     
       //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
       let media_source = media.url;      
