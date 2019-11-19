@@ -1,4 +1,4 @@
-/* ****************** DOWNLOAD_MEDIA.JS ******************
+/* ****************** RUN_DOWNLOADMEDIA.JS ******************
  * 2019 November 18 : Aaron Zhang : Created
  ********************************************
  * Purpose : File that runs the download media functions from the webscraper class. 
