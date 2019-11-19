@@ -351,9 +351,7 @@ class webscraper{
                         let media = new Media(null,recipientId,full_download_path,'wav',null, textFilePath, websiteId, textId, null, 'audio');
                         thisthat.dao.insertMedia(media);                   
                         console.log('Text has been saved to ' + full_download_path);
-        //                setTimeout(function(){
-                            resolve("Finished!");
-         //               },5000);      
+                        resolve("Finished!");
                     })
                 })
             }else{
