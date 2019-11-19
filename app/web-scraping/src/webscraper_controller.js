@@ -129,7 +129,7 @@ class WS_Controller {
   }
   //recieves in all text files from db
   //calls function to convert each file individually
-  convertAllTextToAudio() {
+  async convertAllTextToAudio() {
     let texts = this.dao.selectAllTextFiles();
     let time = 1000;
     let thisthat = this;
@@ -138,16 +138,15 @@ class WS_Controller {
       let recipient = this.dao.selectRecipientById(text.recipient);
       let name = thisthat.webscraper.getParentPath(recipient.name);
       let recipientId = recipient.id;
-      time = time + 2000;
-      setTimeout(function() {
-        let progress = i/texts.length * 100;
-        EM.emit('textToAudioStatus', {
-          textFileName: text.filePath,
-          textConversionProgress: progress
-        })
-        thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
-      }, time);
+
+      let progress = i/texts.length * 100;
+      EM.emit('textToAudioStatus', {
+        textFileName: text.filePath,
+        textConversionProgress: progress
+      })
+      await thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
     }
+    console.log("finished!");
   }
 }
 
