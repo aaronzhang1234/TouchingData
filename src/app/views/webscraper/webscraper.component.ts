@@ -109,7 +109,7 @@ export class WebscraperComponent implements OnInit {
       this.startDownloadButton.setAttribute("style", "display: none");
       this.stopDownloadButton.setAttribute("style", "display: flex");
       this.io.on("downloadMediaStatus", data => {
-        this.progressOutput.textContent = data["arg1"].mediaFileName;
+        this.progressOutput.textContent = "Downloading: " + data["arg1"].mediaFileName;
         this.progressAmount.style.width =
           data["arg1"].mediaDownloadProgress + "%";
       });
@@ -135,7 +135,7 @@ export class WebscraperComponent implements OnInit {
       this.startConvertButton.setAttribute("style", "display: none");
       this.stopConvertButton.setAttribute("style", "display: flex");
       this.io.on("textToAudioStatus", data => {
-        this.progressOutput.textContent = data["arg1"].textFileName;
+        this.progressOutput.textContent = "Converting: " + data["arg1"].textFileName;
         this.progressAmount.style.width =
           data["arg1"].textConversionProgress + "%";
       });
