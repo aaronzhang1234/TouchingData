@@ -1,6 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import * as socketio from "socket.io-client";
+
+import { Component, OnInit } from '@angular/core';
+import {HttpClient,HttpHeaders} from '@angular/common/http';
+import * as socketio from 'socket.io-client';
+
 
 @Component({
   selector: "app-webscraper",
@@ -8,6 +10,7 @@ import * as socketio from "socket.io-client";
   styleUrls: ["./webscraper.component.scss"]
 })
 export class WebscraperComponent implements OnInit {
+
   progressOutput;
   outputBox;
   startScrapeButton;
@@ -21,6 +24,7 @@ export class WebscraperComponent implements OnInit {
   stopDownloadButton;
   startConvertButton;
   stopConvertButton;
+  headers;
 
   constructor(private http: HttpClient) {}
 
@@ -38,6 +42,7 @@ export class WebscraperComponent implements OnInit {
     this.progressBar = document.getElementById("progressbar");
     this.progressAmount = document.getElementById("progress");
     this.io = socketio("http://localhost:3000");
+		this.headers = new HttpHeaders().set("Content-Type", "application/json");
   }
 
   startScrape() {
@@ -149,56 +154,46 @@ export class WebscraperComponent implements OnInit {
     } else {
     }
   }
+
+
   stopScrape() {
     var x = confirm(
-      "This will stop the Webscraper.. This will terminate the process. Are you sure you want to stop scraping?"
+      "Are you sure you want to stop scraping?"
     );
-    if (x == true) {
-      this.stopScrapeButton.setAttribute("style", "display:none");
-      this.startScrapeButton.setAttribute("style", "display: flex");
-      this.outputBox.setAttribute("style", "display: none");
-      this.progressBar.setAttribute("style", "display: none");
-      this.http.get("/cancelJob").subscribe();
-    } else {
-    }
+    this.stopScrapeButton.setAttribute("style", "display:none");
+    this.startScrapeButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.progressBar.setAttribute("style", "display: none");
+    this.http.post("/cancelJob", {process:"scrape"}, {headers:this.headers}).subscribe();
   }
   stopFetching() {
     var x = confirm(
-      "This will stop fetching websites.. This will terminate the process. Are you sure you want to stop fetching websties?"
+      "Are you sure you want to stop fetching websties?"
     );
-    if (x == true) {
-      this.stopFetchButton.setAttribute("style", "display:none");
-      this.startFetchButton.setAttribute("style", "display: flex");
-      this.outputBox.setAttribute("style", "display: none");
-      this.progressBar.setAttribute("style", "display: none");
-      this.http.get("/cancelJob").subscribe();
-    } else {
-    }
+    this.stopFetchButton.setAttribute("style", "display:none");
+    this.startFetchButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.progressBar.setAttribute("style", "display: none");
+    this.http.post("/cancelJob",{process:"fetch"}, {headers:this.headers}).subscribe();
   }
   stopDownloading() {
     var x = confirm(
-      "This will stop downloading the media.. This will terminate the process. Are you sure you want to stop downloading?"
+      "Are you sure you want to stop downloading?"
     );
-    if (x == true) {
-      this.stopDownloadButton.setAttribute("style", "display:none");
-      this.startDownloadButton.setAttribute("style", "display: flex");
-      this.outputBox.setAttribute("style", "display: none");
-      this.progressBar.setAttribute("style", "display: none");
-      this.http.get("/cancelJob").subscribe();
-    } else {
-    }
+    this.stopDownloadButton.setAttribute("style", "display:none");
+    this.startDownloadButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.progressBar.setAttribute("style", "display: none");
+    this.http.post("/cancelJob",{process:"dl"}, {headers:this.headers}).subscribe();
   }
   stopConverting() {
     var x = confirm(
-      "This will stop the text to audio conversion.. This will terminate the process. Are you sure you want to stop converting?"
+      "Are you sure you want to stop converting?"
     );
-    if (x == true) {
-      this.stopConvertButton.setAttribute("style", "display:none");
-      this.startConvertButton.setAttribute("style", "display: flex");
-      this.outputBox.setAttribute("style", "display: none");
-      this.progressBar.setAttribute("style", "display: none");
-      this.http.get("/cancelJob").subscribe();
-    } else {
-    }
+    this.stopConvertButton.setAttribute("style", "display:none");
+    this.startConvertButton.setAttribute("style", "display: flex");
+    this.outputBox.setAttribute("style", "display: none");
+    this.progressBar.setAttribute("style", "display: none");
+    this.http.post("/cancelJob",{process:"convert"}, {headers:this.headers}).subscribe();
   }
 }
