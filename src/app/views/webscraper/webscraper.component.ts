@@ -1,8 +1,6 @@
-
-import { Component, OnInit } from '@angular/core';
-import {HttpClient,HttpHeaders} from '@angular/common/http';
-import * as socketio from 'socket.io-client';
-
+import { Component, OnInit } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import * as socketio from "socket.io-client";
 
 @Component({
   selector: "app-webscraper",
@@ -10,7 +8,6 @@ import * as socketio from 'socket.io-client';
   styleUrls: ["./webscraper.component.scss"]
 })
 export class WebscraperComponent implements OnInit {
-
   progressOutput;
   outputBox;
   startScrapeButton;
@@ -42,12 +39,12 @@ export class WebscraperComponent implements OnInit {
     this.progressBar = document.getElementById("progressbar");
     this.progressAmount = document.getElementById("progress");
     this.io = socketio("http://localhost:3000");
-		this.headers = new HttpHeaders().set("Content-Type", "application/json");
+    this.headers = new HttpHeaders().set("Content-Type", "application/json");
   }
 
   startScrape() {
     var x = confirm(
-      "This will begin the Webscraper.. This is a 5 hour process. Are you sure you want to begin scraping?"
+      "This will begin the Webscraper.. This could take up 5+ hours. Are you sure you want to begin scraping?"
     );
     if (x == true) {
       this.outputBox.setAttribute("style", "display:block");
@@ -75,7 +72,7 @@ export class WebscraperComponent implements OnInit {
   }
   fetchWebsites() {
     var x = confirm(
-      "This will begin to fetch websites.. This is a 15 minute process. Are you sure you want to begin Fetching?"
+      "This will begin to fetch websites.. This is a 30 minute process. Are you sure you want to begin Fetching?"
     );
     if (x == true) {
       this.outputBox.setAttribute("style", "display:block");
@@ -104,7 +101,7 @@ export class WebscraperComponent implements OnInit {
   }
   downloadMedia() {
     var x = confirm(
-      "This will begin to download media.. This is a 10 minute process. Are you sure you want to begin downloading media?"
+      "This will begin to download media.. This is a 1 hour process. Are you sure you want to begin downloading media?"
     );
     if (x == true) {
       this.outputBox.setAttribute("style", "display:block");
@@ -130,7 +127,7 @@ export class WebscraperComponent implements OnInit {
   }
   convertTextToAudio() {
     var x = confirm(
-      "This will begin to convert text files to audio.. This is a 10 minute process. Are you sure you want to begin text to audio?"
+      "This will begin to convert text files to audio.. This could take 3+ hours. Are you sure you want to begin text to audio?"
     );
     if (x == true) {
       this.outputBox.setAttribute("style", "display:block");
@@ -155,45 +152,52 @@ export class WebscraperComponent implements OnInit {
     }
   }
 
-
   stopScrape() {
     var x = confirm(
-      "Are you sure you want to stop scraping?"
+      "Performing this action will require restarting the process.. Are you sure you want to stop scraping? "
     );
     this.stopScrapeButton.setAttribute("style", "display:none");
     this.startScrapeButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.post("/cancelJob", {process:"scrape"}, {headers:this.headers}).subscribe();
+    this.http
+      .post("/cancelJob", { process: "scrape" }, { headers: this.headers })
+      .subscribe();
   }
   stopFetching() {
     var x = confirm(
-      "Are you sure you want to stop fetching websties?"
+      "Performing this action will require restarting the process.. Are you sure you want to stop fetching websties?"
     );
     this.stopFetchButton.setAttribute("style", "display:none");
     this.startFetchButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.post("/cancelJob",{process:"fetch"}, {headers:this.headers}).subscribe();
+    this.http
+      .post("/cancelJob", { process: "fetch" }, { headers: this.headers })
+      .subscribe();
   }
   stopDownloading() {
     var x = confirm(
-      "Are you sure you want to stop downloading?"
+      "Performing this action will require restarting the process.. Are you sure you want to stop downloading?"
     );
     this.stopDownloadButton.setAttribute("style", "display:none");
     this.startDownloadButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.post("/cancelJob",{process:"dl"}, {headers:this.headers}).subscribe();
+    this.http
+      .post("/cancelJob", { process: "dl" }, { headers: this.headers })
+      .subscribe();
   }
   stopConverting() {
     var x = confirm(
-      "Are you sure you want to stop converting?"
+      "Performing this action will require restarting the process.. Are you sure you want to stop converting?"
     );
     this.stopConvertButton.setAttribute("style", "display:none");
     this.startConvertButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
     this.progressBar.setAttribute("style", "display: none");
-    this.http.post("/cancelJob",{process:"convert"}, {headers:this.headers}).subscribe();
+    this.http
+      .post("/cancelJob", { process: "convert" }, { headers: this.headers })
+      .subscribe();
   }
 }
