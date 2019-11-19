@@ -1,78 +1,141 @@
 <script src="https://js.pusher.com/5.0/pusher.min.js"></script>
 <h4 class="text-center mb-5">Web Scraper</h4>
-<div id = "app">
+<div id="app">
   <div class="buttons">
-    <div class="wrapper" id = "startScraping">
+    <div class="wrapper" id="startScraping">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" (click)="startScrape()">Start Scraping</button>
+            <button
+              type="submit"
+              class="btn"
+              title="This will start the webscraper"
+              (click)="startScrape()"
+            >
+              Start Scraping
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="wrapper" id = "stopScraping">
+    <div class="wrapper" id="stopScraping">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id = "stopScrape" (click)="stopScrape()">Stop Scraping</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br />
-    <div class="wrapper" id = "startFetching">
-      <div class="container">
-        <div class="row justify-content-center my-2">
-          <div class="col-4">
-            <button type="submit" class="btn" id = "fetch" (click)="fetchWebsites()">Fetch Websites</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br />
-    <div class="wrapper" id = "stopFetching">
-      <div class="container">
-        <div class="row justify-content-center my-2">
-          <div class="col-4">
-            <button type="submit" class="btn" id = "stopFetch" (click)="stopFetching()">Stop Fetching Websites</button>
+            <button
+              type="submit"
+              class="btn"
+              id="stopScrape"
+              title="This will stop the webscraper"
+              (click)="stopScrape()"
+            >
+              Stop Scraping
+            </button>
           </div>
         </div>
       </div>
     </div>
     <br />
-    <div class="wrapper" id = "startDownloading">
+    <div class="wrapper" id="startFetching">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id ="download" (click)="downloadMedia()">Download Media</button>
+            <button
+              type="submit"
+              class="btn"
+              id="fetch"
+              title="This will fetch the websites"
+              (click)="fetchWebsites()"
+            >
+              Fetch Websites
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="wrapper" id = "stopDownloading">
+    <br />
+    <div class="wrapper" id="stopFetching">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id ="stopDownload" (click)="stopDownloading()">Stop Downloading Media</button>
+            <button
+              type="submit"
+              class="btn"
+              id="stopFetch"
+              title="this will stop fetching the websites"
+              (click)="stopFetching()"
+            >
+              Stop Fetching Websites
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="wrapper"id = "startConverting">
+    <br />
+    <div class="wrapper" id="startDownloading">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id ="convert" (click)="convertTextToAudio()">Convert Text to Audio</button>
+            <button
+              type="submit"
+              class="btn"
+              id="download"
+              title="This will begin to download media"
+              (click)="downloadMedia()"
+            >
+              Download Media
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="wrapper"id = "stopConverting">
+    <div class="wrapper" id="stopDownloading">
       <div class="container">
         <div class="row justify-content-center my-2">
           <div class="col-4">
-            <button type="submit" class="btn" id ="stopConvert" (click)="stopConverting()">Stop Converting</button>
+            <button
+              type="submit"
+              class="btn"
+              id="stopDownload"
+              title="This will stop downloading media"
+              (click)="stopDownloading()"
+            >
+              Stop Downloading Media
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper" id="startConverting">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button
+              type="submit"
+              class="btn"
+              id="convert"
+              title="This will convert the scraped text to audio"
+              (click)="convertTextToAudio()"
+            >
+              Convert Text to Audio
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrapper" id="stopConverting">
+      <div class="container">
+        <div class="row justify-content-center my-2">
+          <div class="col-4">
+            <button
+              type="submit"
+              class="btn"
+              id="stopConvert"
+              title="This will stop converting text to audio"
+              (click)="stopConverting()"
+            >
+              Stop Converting
+            </button>
           </div>
         </div>
       </div>
@@ -83,9 +146,6 @@
   </div>
   <div id="output">
     <h4>Output</h4>
-    <p id = "progressOutput">
-    </p> 
+    <p id="progressOutput"></p>
   </div>
 </div>
-
-
