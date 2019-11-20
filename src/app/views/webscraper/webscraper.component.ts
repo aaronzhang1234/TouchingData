@@ -47,6 +47,7 @@ export class WebscraperComponent implements OnInit {
       "This will begin the Webscraper.. This could take up 5+ hours. Are you sure you want to begin scraping?"
     );
     if (x == true) {
+      this.progressOutput.textContent = "";
       this.outputBox.setAttribute("style", "display:block");
       this.startScrapeButton.setAttribute("style", "display: none");
       this.stopScrapeButton.setAttribute("style", "display: flex");
@@ -75,6 +76,7 @@ export class WebscraperComponent implements OnInit {
       "This will begin to fetch websites.. This is a 30 minute process. Are you sure you want to begin Fetching?"
     );
     if (x == true) {
+      this.progressOutput.textContent = "";
       this.outputBox.setAttribute("style", "display:block");
       this.progressBar.style.display = "inline-block";
       this.startFetchButton.setAttribute("style", "display: none");
@@ -104,6 +106,7 @@ export class WebscraperComponent implements OnInit {
       "This will begin to download media.. This is a 1 hour process. Are you sure you want to begin downloading media?"
     );
     if (x == true) {
+      this.progressOutput.textContent = "";
       this.outputBox.setAttribute("style", "display:block");
       this.progressBar.setAttribute("style", "display: inline-block");
       this.startDownloadButton.setAttribute("style", "display: none");
@@ -125,18 +128,20 @@ export class WebscraperComponent implements OnInit {
     } else {
     }
   }
+
   convertTextToAudio() {
     var x = confirm(
       "This will begin to convert text files to audio.. This could take 3+ hours. Are you sure you want to begin text to audio?"
     );
     if (x == true) {
+      this.progressOutput.textContent = "";
       this.outputBox.setAttribute("style", "display:block");
       this.progressBar.setAttribute("style", "display: inline-block");
       this.startConvertButton.setAttribute("style", "display: none");
       this.stopConvertButton.setAttribute("style", "display: flex");
       this.io.on("textToAudioStatus", data => {
         this.progressOutput.textContent = "Converting: " + data["arg1"].textFileName;
-        this.progressAmount.style.width =
+        this.progressAmount.style.width = 
           data["arg1"].textConversionProgress + "%";
       });
       this.http.get("/convertTextToAudio").subscribe(
@@ -159,6 +164,7 @@ export class WebscraperComponent implements OnInit {
     this.stopScrapeButton.setAttribute("style", "display:none");
     this.startScrapeButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
+    this.progressOutput.textContent = "";
     this.progressBar.setAttribute("style", "display: none");
     this.http
       .post("/cancelJob", { process: "scrape" }, { headers: this.headers })
@@ -171,6 +177,7 @@ export class WebscraperComponent implements OnInit {
     this.stopFetchButton.setAttribute("style", "display:none");
     this.startFetchButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
+    this.progressOutput.textContent = "";
     this.progressBar.setAttribute("style", "display: none");
     this.http
       .post("/cancelJob", { process: "fetch" }, { headers: this.headers })
@@ -183,6 +190,7 @@ export class WebscraperComponent implements OnInit {
     this.stopDownloadButton.setAttribute("style", "display:none");
     this.startDownloadButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
+    this.progressOutput.textContent = "";
     this.progressBar.setAttribute("style", "display: none");
     this.http
       .post("/cancelJob", { process: "dl" }, { headers: this.headers })
@@ -195,6 +203,7 @@ export class WebscraperComponent implements OnInit {
     this.stopConvertButton.setAttribute("style", "display:none");
     this.startConvertButton.setAttribute("style", "display: flex");
     this.outputBox.setAttribute("style", "display: none");
+    this.progressOutput.textContent = "";
     this.progressBar.setAttribute("style", "display: none");
     this.http
       .post("/cancelJob", { process: "convert" }, { headers: this.headers })
