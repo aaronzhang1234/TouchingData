@@ -1,12 +1,13 @@
 const express = require("express");
 const http = require("http");
 const path = require("path");
-const WS_Controller = require("./app/web-scraping/src/webscraper_controller");
+const WS_Controller = require("./app/web-scraping/src/webscraper_controller.js");
+const DL_Controller = require("./app/web-scraping/src/downloader_controller.js")
 const DataMigrator = require("./app/dataMigration/src/DataMigrator.js");
 const DbBuilder = require("./app/dataMigration/src/DbBuilder.js");
 const bodyparser = require("body-parser");
 const socketIo = require('socket.io');
-const EM = require('./app/web-scraping/src/emitter.js');
+const EM = require('./app/emitter.js');
 var multer = require('multer');
 
 var app = express();
@@ -70,14 +71,14 @@ app.get("/getWebsites", function(req, res){
 });
 
 app.get("/downloadMedia", function(req, res){
-    let webscraper = new WS_Controller();
-    webscraper.downloadAllMedia();
+    let downloader = new DL_Controller();
+    downloader.downloadAllMedia();
 		res.send();
 });
 
 app.get("/convertTextToAudio", function(req, res){
-    let webscraper = new WS_Controller();
-    webscraper.convertAllTextToAudio();
+    let downloader = new DL_Controller();
+    downloader.convertAllTextToAudio();
 		res.send();
 })
 app.post("/cancelJob", function(req, res){
@@ -153,7 +154,6 @@ app.post('/upload', function(req, res) {
 		}
 		res.json({error_code:0,err_desc:null});
 	});
-
 });
 
-server.listen(3000, ()=>console.log("Server is now running at http://localhost:3000"));
+server.listen(3000, ()=>console.log("Server will run at http://localhost:3000"));
