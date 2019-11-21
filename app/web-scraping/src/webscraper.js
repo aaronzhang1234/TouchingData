@@ -59,12 +59,12 @@ class webscraper{
     stopTime -> Time in Epoch when the program is supposed to end.
     */
     async getSite(orig, website_name, links_visited, recipient_id, stopTime){
-        let thisthat = this;
         //If time has run out then kill the program.
         if(new Date().valueOf() > stopTime){
             return links_visited;
         }
         try{
+            let thisthat = this;
             let recipient = this.dao.selectRecipientById(recipient_id);
             //Axios is returning back the pure html given from a website. 
             //If a response isn't given within 10 seconds then stop axios and throw an error.
@@ -82,7 +82,6 @@ class webscraper{
             links_visited = links_visited.concat(links);
             
             //Because "this" doesn't work in promises or timeouts, we create a local variable which has a "this" instance.
-            let thisthat = this;
             for(let i = 0; i < links.length-1; i++){
                 if(new Date().valueOf() > stopTime){
                     return links_visited;
