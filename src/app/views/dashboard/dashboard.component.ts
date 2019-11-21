@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
 
   buildDb() {
     var x = confirm(
-      "This will delete your old database and create a new one.. Are you sure you want to create a new database?"
+      "This will back up your current database and create a new one.. Are you sure you want to create a new database?"
     );
     if (x == true) {
       const headers = new HttpHeaders().set("Content-Type", "application/json");

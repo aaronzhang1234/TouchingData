@@ -4,7 +4,7 @@
  * Purpose : Reads an excel spreadsheet and migrates the data to SQL using the sqlConnectInsert class.
  *
  */
-var EM = require('../../web-scraping/src/emitter.js')
+var EM = require('../../emitter.js')
 var RowParser = require("./RowParser.js");
 var Excel   = require("exceljs");
 
