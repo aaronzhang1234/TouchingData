@@ -10,7 +10,7 @@ const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
 const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
-const EM = require("./emitter.js");
+const EM = require("../../emitter.js");
 const say = require('say');
 
 
@@ -37,10 +37,10 @@ class webscraper{
 
     //Getting a company's website using Bing
     getSiteFromName(companyName, bing_api_key){
-		let thisThat = this;
+        let thisthat = this;
         return new Promise(function(resolve, reject){
             //The BingAPI requires a key that can be found at 
-            // docs/Bing API Documentation for Touching Data.docx
+            //https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/
             let credentials = new CognitiveServicesCredentials(bing_api_key);
             let webSearchAPIClient = new WebSearchAPIClient(credentials);
             //Calling the BingAPI to search for the company's name. The layout of the JSON can be found on the Design Document.
@@ -355,7 +355,7 @@ class webscraper{
                     })
                 })
             }else{
-                resolve("resolved");
+                resolve("fucked");
             }
         })
     }

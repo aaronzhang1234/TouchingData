@@ -6,7 +6,7 @@ const DataMigrator = require("./app/dataMigration/src/DataMigrator.js");
 const DbBuilder = require("./app/dataMigration/src/DbBuilder.js");
 const bodyparser = require("body-parser");
 const socketIo = require('socket.io');
-const EM = require('./app/web-scraping/src/emitter.js');
+const EM = require('./app/emitter.js');
 var multer = require('multer');
 
 var app = express();
