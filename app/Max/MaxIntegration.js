@@ -102,7 +102,7 @@ function getMediaList(recipientListSqlStatement)
     var list = "";
     mediaListSqlStatement = "SELECT M.filePath \
                         FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
-                        WHERE M.recipient_id = N.recipient_id and M.filePath != ''";
+                        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt'";
     sqlite.exec(mediaListSqlStatement, mediaListResult);
     //post("media" + mediaListResult.value(0,0) + "\n");
     while(mediaListResult.value(0,counter) != 0)
@@ -340,7 +340,7 @@ function getRecipientName(min, max, aggregation, race, race2, gender, veteran, l
 //output media file from recipient that has award between min and max
 function getMedia(recipientSqlStatement)
 {
-    mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' limit 1";
+    mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' limit 1";
     sqlite.exec(mediaSqlStatement, mediaResult);
     post(mediaResult.fieldname(0) + "\n");
     //media file is found, send path to max

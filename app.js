@@ -60,25 +60,31 @@ app.post("/import", function(req, res) {
 app.get("/scrapeSites", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.webscrapeAllSites();
+		res.send();
 });
 
 app.get("/getWebsites", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.getBingResults();
+		res.send();
 });
 
 app.get("/downloadMedia", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.downloadAllMedia();
+		res.send();
 });
 
 app.get("/convertTextToAudio", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.convertAllTextToAudio();
+		res.send();
 })
-app.get("/cancelJob", function(reg, res){
-  process.kill(process.pid);
-  console.log("Job Cancelled");
+app.post("/cancelJob", function(req, res){
+	EM.emit("kill", req.body)
+	//process.kill(process.pid);
+  console.log(req.body);
+	res.send({status:"killed"})
 })
 
 

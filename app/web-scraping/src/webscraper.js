@@ -37,6 +37,7 @@ class webscraper{
 
     //Getting a company's website using Bing
     getSiteFromName(companyName, bing_api_key){
+		let thisThat = this;
         return new Promise(function(resolve, reject){
             //The BingAPI requires a key that can be found at 
             // docs/Bing API Documentation for Touching Data.docx
@@ -329,7 +330,7 @@ class webscraper{
 		name = name.replace(/\./g, "");
 		return name.replace(/,/g, "");
     }
-    convertTextToAudio(parent_directory, textFilePath, websiteId, textId, recipientId){
+    async convertTextToAudio(parent_directory, textFilePath, websiteId, textId, recipientId){
         let thisthat = this;
         let DOWNLOAD_DIR =  "./data/scraped";
         let fileName = path.basename(textFilePath, '.txt') + '.wav';
@@ -338,23 +339,25 @@ class webscraper{
         if (!fs.existsSync(path.join(DOWNLOAD_DIR,parent_directory))){
             fs.mkdirSync(path.join(DOWNLOAD_DIR,parent_directory));
         }
-        if(fs.existsSync(textFilePath))
-        {
-            console.log(textFilePath);
-            fs.readFile(textFilePath, "utf-8", function(err, data){
-                if(err) throw err;
-                say.export(data, 'Alex', 1, full_download_path, (err) => {
-                    if (err) {
-                      return console.error(err)
-                    }
-                   
-                    console.log('Text has been saved to ' + full_download_path);
-                  })
-            })
-            let media = new Media(null,recipientId,full_download_path,'wav',null, textFilePath, websiteId, textId, null, 'audio');
-            thisthat.dao.insertMedia(media);
-        }
-        
+        return new Promise(function(resolve, reject){
+            if(fs.existsSync(textFilePath)){
+                console.log(textFilePath);
+                fs.readFile(textFilePath, "utf-8", function(err, data){
+                    if(err) throw err;
+                    say.export(data, 'Alex', 1, full_download_path, (err) => {
+                        if (err) {
+                            console.error(err)
+                        }
+                        let media = new Media(null,recipientId,full_download_path,'wav',null, textFilePath, websiteId, textId, null, 'audio');
+                        thisthat.dao.insertMedia(media);                   
+                        console.log('Text has been saved to ' + full_download_path);
+                        resolve("Finished!");
+                    })
+                })
+            }else{
+                resolve("resolved");
+            }
+        })
     }
 }
 module.exports = webscraper;

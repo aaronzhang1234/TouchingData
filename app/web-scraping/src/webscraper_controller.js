@@ -11,6 +11,7 @@ let Website = require("../../models/Website.js");
 let EM = require("./emitter.js");
 const fs = require("fs");
 const url = require("url");
+let timeouts = [];
 
 class WS_Controller {
   constructor() {
@@ -23,9 +24,17 @@ class WS_Controller {
   getBingResults() {
     let recipients = this.dao.selectAllRecipients();
     let time = 1000;
+		let state = "go"
     //Since you cannot use "this" in a promise, put "this" in a local variable.
     let thisthat = this;
-    for (let i = 0; i < recipients.length; i++){ 
+		EM.on("kill",function(data) {
+			timeouts.forEach(timeout=>{
+				clearTimeout(timeout);
+			});
+			state = "stop";
+		});
+		for (let i = 0; i < recipients.length; i++) {
+			if (state === "stop") return;
       let recipient = recipients[i];
       //If the recipient row in the DB does not have a corresponding website variable.
       if(recipient.website == null || recipient.website == ""){
@@ -33,11 +42,12 @@ class WS_Controller {
         time = time + 3000;
         let progress = i/recipients.length * 100;
         //Setting a timeout allows the function to run syncronously inside a node function. 
-        //The main goal is to allow the first info to go in 3 seconds, then 3 seconds after that run the second info
-        setTimeout(function() {
-          thisthat.webscraper.getSiteFromName(recipient.name, thisthat.bing_api_key).then(function(url) {
-            console.log(url);
-            EM.emit('websiteUrl', {
+				//The main goal is to allow the first info to go in 3 seconds, then 3 seconds after that run the second inf
+
+        const timeoutObj = setTimeout(function() {
+					thisthat.webscraper.getSiteFromName(recipient.name, thisthat.bing_api_key).then(function(url) {
+						console.log(url);
+						EM.emit('websiteUrl', {
               urlResult: url,
               companyName: recipient.name,
               urlProgress: progress
@@ -53,6 +63,7 @@ class WS_Controller {
             thisthat.dao.updateRecipientWebsite(recipient.id, website_id);
           });
         }, time);
+				timeouts.push(timeoutObj)
       }
     }
   }
@@ -64,13 +75,23 @@ class WS_Controller {
     let howlong = .25; //In percentages of a minute. .25 = 15 seconds
     let time = 0;
     const minute = 60000; //Time is in milliseconds
+		let state = "go";
 
+		EM.on("kill",function(data) {
+			timeouts.forEach(timeout=>{
+				clearTimeout(timeout);
+			});
+			state = "stop";
+		});
     for (let i = 0; i < recipients.length; i++) {
+			if (state === "stop") return;
       let recipient = recipients[i];
       let recipient_id = recipient.id;      
       let recipient_website_id = recipient.website;
-      let website = this.dao.selectWebsiteById(recipient_website_id);
 
+      let website = this.dao.selectWebsiteById(recipient_website_id);
+      
+	  if (!website) continue;
       let website_domain = website.domain;
 
       //Origin is the website without anything after the domain name.
@@ -81,7 +102,9 @@ class WS_Controller {
 
       let thisthat = this;
 
-      setTimeout(function() {        
+
+      const timeoutObj = setTimeout(function() {
+				console.log(website);
         let progress = i/recipients.length * 100;
         EM.emit("website", 
         {websiteName: website_domain,
@@ -96,24 +119,36 @@ class WS_Controller {
         );
       }, time);
 
+			timeouts.push(timeoutObj)
+
       //howlong * minutes should be the amount of time waiting between each website
       time = time + howlong * minute;
 
     }
   }
+
   downloadAllMedia() {
     let medias = this.dao.selectAllMedia();
-    let time = 1000;
+    let time = 0
     let thisthat = this;
-    for (let i = 0; i < medias.length; i++) {
+		let state = "go";
+		EM.on("kill",function(data) {
+			timeouts.forEach(timeout=>{
+				clearTimeout(timeout);
+			});
+			state = "stop";
+		});
+		for (let i = 0; i < medias.length; i++) {
+			if (state === "stop") return;
       let media = medias[i];
-      let recipient = this.dao.selectRecipientById(media.recipient);    
+      let recipient = this.dao.selectRecipientById(media.recipient); 
       //In order to be read in Max, the name of the recipient must have no spaces, periods, or commas.
 			let name = this.webscraper.getParentPath(recipient.name)
-      let media_source = media.url;      
-      //Wait around 2 seconds between each downloading media
+			let media_source = media.url;      
+			//Wait around 2 seconds between each downloading media
 			time = time + 2000;
-			setTimeout(function() {
+			const timeoutObj =	setTimeout(function() {
+				console.log(media)
         let progress = i/medias.length * 100;
         EM.emit('downloadMediaStatus', {
           mediaFileName: media.filePath,
@@ -122,33 +157,40 @@ class WS_Controller {
 				if (media.kind == "youtube") {
 					thisthat.webscraper.downloadYoutube(name, media_source, media.id);
 				} else {
-          thisthat.webscraper.downloadFile(name, media_source, media.id);
-        }
-      }, time);
-    }
-  }
-  //recieves in all text files from db
-  //calls function to convert each file individually
-  convertAllTextToAudio() {
-    let texts = this.dao.selectAllTextFiles();
-    let time = 1000;
-    let thisthat = this;
-    for(let i = 0; i<texts.length; i++) {
-      let text = texts[i];
-      let recipient = this.dao.selectRecipientById(text.recipient);
-      let name = thisthat.webscraper.getParentPath(recipient.name);
-      let recipientId = recipient.id;
-      time = time + 2000;
-      setTimeout(function() {
-        let progress = i/texts.length * 100;
-        EM.emit('textToAudioStatus', {
-          textFileName: text.filePath,
-          textConversionProgress: progress
-        })
-        thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
-      }, time);
-    }
-  }
+					thisthat.webscraper.downloadFile(name, media_source, media.id);
+				}
+			}, time);
+			timeouts.push(timeoutObj);
+		}
+	}
+	//recieves in all text files from db
+	//calls function to convert each file individually
+	async convertAllTextToAudio() {
+		let texts = this.dao.selectAllTextFiles();
+		let time = 1000;
+		let thisthat = this;
+		let state = "go";
+
+		EM.on("kill",function(data) {
+			state = "stop";
+		});
+
+		for(let i = 0; i<texts.length; i++) {
+			if(state === "stop") return;
+			let text = texts[i];
+			let recipient = this.dao.selectRecipientById(text.recipient);
+			let name = thisthat.webscraper.getParentPath(recipient.name);
+			let recipientId = recipient.id;
+
+			let progress = i/texts.length * 100;
+			EM.emit('textToAudioStatus', {
+				textFileName: text.filePath,
+				textConversionProgress: progress
+			})
+			await thisthat.webscraper.convertTextToAudio(name, text.filePath, text.website_id, text.id, recipientId);
+		}
+		console.log("finished!");
+	}
 }
 
 module.exports = WS_Controller;
