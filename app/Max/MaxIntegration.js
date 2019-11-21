@@ -38,7 +38,7 @@ function resetCounter()
     i = 0;
 }
 
-function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
+function getRecipientList(min, max, aggregation, race, race2, gender, veteran, mediaType)
 {
     //post(min, max, aggregation + "\n");
     //send demographics to start building sql statement
@@ -91,18 +91,27 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran)
     sqlite.exec(recipientListSqlStatement, recipientListResult);
     if(recipientListResult.value(0,0) != 0)
     {
-        getMediaList(recipientListSqlStatement);
+        getMediaList(recipientListSqlStatement, mediaType);
     }
 
 }
 
-function getMediaList(recipientListSqlStatement)
+function getMediaList(recipientListSqlStatement, mediaType)
 {
     var counter = 0;
     var list = "";
-    mediaListSqlStatement = "SELECT M.filePath \
-                        FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
-                        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt'";
+    if(mediaType != 0)
+    {
+        mediaListSqlStatement = "SELECT M.filePath \
+        FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
+        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt'";
+    }
+    else
+    {
+        mediaListSqlStatement = "SELECT M.filePath \
+        FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
+        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != "+ mediaType;
+    }
     sqlite.exec(mediaListSqlStatement, mediaListResult);
     //post("media" + mediaListResult.value(0,0) + "\n");
     while(mediaListResult.value(0,counter) != 0)
@@ -263,12 +272,12 @@ function getDemographics(race, race2, gender, veteran)
 }
 
 //outputs all to max msp
-function getRecipientName(min, max, aggregation, race, race2, gender, veteran, list)
+function getRecipientName(min, max, aggregation, race, race2, gender, veteran, list, mediaType)
 {
     //post(list);
     if(list == 1)
     {
-        getRecipientList(min, max, aggregation, race, race2, gender, veteran);
+        getRecipientList(min, max, aggregation, race, race2, gender, veteran, mediaType);
         return;
     }
     //send demographics to start building sql statement
@@ -338,9 +347,16 @@ function getRecipientName(min, max, aggregation, race, race2, gender, veteran, l
 }
 
 //output media file from recipient that has award between min and max
-function getMedia(recipientSqlStatement)
+function getMedia(recipientSqlStatement, mediaType)
 {
-    mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' limit 1";
+    if(mediaType != 0)
+    {
+        mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' limit 1";
+    }
+    else
+    {
+        mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != " + mediaType + "  limit 1";
+    }
     sqlite.exec(mediaSqlStatement, mediaResult);
     post(mediaResult.fieldname(0) + "\n");
     //media file is found, send path to max
