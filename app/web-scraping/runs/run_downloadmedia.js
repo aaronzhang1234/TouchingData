@@ -3,8 +3,8 @@
  ********************************************
  * Purpose : File that runs the download media functions from the webscraper class. 
  */
-const WS_Controller = require("../src/webscraper_controller.js");
+const DL_Controller = require("../src/downloader_controller.js");
 
-let webscraper_controller = new WS_Controller();
+let downloader_controller = new DL_Controller();
 
-webscraper_controller.downloadAllMedia();
+downloader_controller.downloadAllMedia();
