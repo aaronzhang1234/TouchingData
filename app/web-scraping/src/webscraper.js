@@ -40,7 +40,7 @@ class webscraper{
         let thisthat = this;
         return new Promise(function(resolve, reject){
             //The BingAPI requires a key that can be found at 
-            //https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/
+            // docs/Bing API Documentation for Touching Data.docx
             let credentials = new CognitiveServicesCredentials(bing_api_key);
             let webSearchAPIClient = new WebSearchAPIClient(credentials);
             //Calling the BingAPI to search for the company's name. The layout of the JSON can be found on the Design Document.
@@ -355,7 +355,7 @@ class webscraper{
                     })
                 })
             }else{
-                resolve("fucked");
+                resolve("Resolved");
             }
         })
     }
