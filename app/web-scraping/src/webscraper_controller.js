@@ -11,7 +11,6 @@ let sqlDatabaseName = "data/POLITICS_OF_THE_GRID.db";
 let Website = require("../../models/Website.js");
 let EM = require("../../emitter.js");
 const fs = require("fs");
-const url = require("url");
 let timeouts = [];
 
 class WS_Controller {
