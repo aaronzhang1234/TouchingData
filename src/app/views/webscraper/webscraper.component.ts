@@ -44,7 +44,7 @@ export class WebscraperComponent implements OnInit {
 
   startScrape() {
     var x = confirm(
-      "This will begin the Webscraper.. This could take up 5+ hours. Are you sure you want to begin scraping?"
+      "This will begin the Webscraper.. This could take up to 5+ hours. Are you sure you want to begin scraping?"
     );
     if (x == true) {
       this.progressOutput.textContent = "";
@@ -112,7 +112,8 @@ export class WebscraperComponent implements OnInit {
       this.startDownloadButton.setAttribute("style", "display: none");
       this.stopDownloadButton.setAttribute("style", "display: flex");
       this.io.on("downloadMediaStatus", data => {
-        this.progressOutput.textContent = "Downloading: " + data["arg1"].mediaFileName;
+        this.progressOutput.textContent =
+          "Downloading: " + data["arg1"].mediaFileName;
         this.progressAmount.style.width =
           data["arg1"].mediaDownloadProgress + "%";
       });
@@ -131,7 +132,7 @@ export class WebscraperComponent implements OnInit {
 
   convertTextToAudio() {
     var x = confirm(
-      "This will begin to convert text files to audio.. This could take 3+ hours. Are you sure you want to begin text to audio?"
+      "This will begin to convert text files to audio.. This could take up to 3+ hours. Are you sure you want to begin text to audio?"
     );
     if (x == true) {
       this.progressOutput.textContent = "";
@@ -140,8 +141,9 @@ export class WebscraperComponent implements OnInit {
       this.startConvertButton.setAttribute("style", "display: none");
       this.stopConvertButton.setAttribute("style", "display: flex");
       this.io.on("textToAudioStatus", data => {
-        this.progressOutput.textContent = "Converting: " + data["arg1"].textFileName;
-        this.progressAmount.style.width = 
+        this.progressOutput.textContent =
+          "Converting: " + data["arg1"].textFileName;
+        this.progressAmount.style.width =
           data["arg1"].textConversionProgress + "%";
       });
       this.http.get("/convertTextToAudio").subscribe(
