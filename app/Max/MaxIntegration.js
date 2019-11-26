@@ -38,9 +38,9 @@ function resetCounter()
     i = 0;
 }
 
+//get list of recipients matching user choosen criteria
 function getRecipientList(min, max, aggregation, race, race2, gender, veteran, mediaType)
 {
-    //post(min, max, aggregation + "\n");
     //send demographics to start building sql statement
     demographicSqlstament = buildSQLStatement(race, race2, gender, veteran);
     //execute sql statement in sqlite max msp integration
@@ -88,9 +88,11 @@ function getRecipientList(min, max, aggregation, race, race2, gender, veteran, m
                                 " order by r.recipient_name";
         }
     }
+    //execute the sql statement
     sqlite.exec(recipientListSqlStatement, recipientListResult);
     if(recipientListResult.value(0,0) != 0)
     {
+        //get list of media based on the recipients found
         getMediaList(recipientListSqlStatement, mediaType);
     }
 
@@ -100,20 +102,29 @@ function getMediaList(recipientListSqlStatement, mediaType)
 {
     var counter = 0;
     var list = "";
-    if(mediaType != 0)
+    //mediaType = 0 is for all media
+    if(mediaType == 0)
     {
         mediaListSqlStatement = "SELECT M.filePath \
         FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
         WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt'";
     }
-    else
+    //mediaType = 1 is for just videos
+    else if (mediaType == 1)
     {
         mediaListSqlStatement = "SELECT M.filePath \
         FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
-        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != "+ mediaType;
+        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != 'wav'";
+    }
+    //mediaType = 2 is for just text to audio
+    else if (mediaType == 2)
+    {
+        mediaListSqlStatement = "SELECT M.filePath \
+        FROM PG1_Media M JOIN (" + recipientListSqlStatement + ") N \
+        WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType = 'wav'";
     }
     sqlite.exec(mediaListSqlStatement, mediaListResult);
-    //post("media" + mediaListResult.value(0,0) + "\n");
+    //output to the list
     while(mediaListResult.value(0,counter) != 0)
     {
         list += mediaListResult.value(0, counter) + " ";
@@ -274,7 +285,7 @@ function getDemographics(race, race2, gender, veteran)
 //outputs all to max msp
 function getRecipientName(min, max, aggregation, race, race2, gender, veteran, list, mediaType)
 {
-    //post(list);
+    //if list = 1 get list and bypass rest of art installation
     if(list == 1)
     {
         getRecipientList(min, max, aggregation, race, race2, gender, veteran, mediaType);
@@ -335,7 +346,7 @@ function getRecipientName(min, max, aggregation, race, race2, gender, veteran, l
     {
         outlet(0, nameResult.value(0,0));
         outlet(5, i);
-        getMedia(recipientSqlStatement);
+        getMedia(recipientSqlStatement, mediaType);
         i++;
     }
     else
@@ -349,13 +360,20 @@ function getRecipientName(min, max, aggregation, race, race2, gender, veteran, l
 //output media file from recipient that has award between min and max
 function getMedia(recipientSqlStatement, mediaType)
 {
-    if(mediaType != 0)
+    //get all media
+    if(mediaType == 0)
     {
         mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' limit 1";
     }
-    else
+    //get just videos
+    else if (mediaType == 1)
     {
-        mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != " + mediaType + "  limit 1";
+        mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType != 'txt' and M.fileType != 'wav' limit 1";
+    }
+    //get just text to audio
+    else if (mediaType == 2)
+    {
+        mediaSqlStatement = "SELECT M.filePath FROM PG1_Media M JOIN (" + recipientSqlStatement + ") N WHERE M.recipient_id = N.recipient_id and M.filePath != '' and M.fileType = 'wav' limit 1";
     }
     sqlite.exec(mediaSqlStatement, mediaResult);
     post(mediaResult.fieldname(0) + "\n");
