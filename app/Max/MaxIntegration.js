@@ -4,6 +4,8 @@ inlets = 1;
 outlets = 7;
 //for debugging purposes
 var objectPrinter = require("jm.objectPrinter");
+//pathfinder file finds absolute paths for max to work with
+let pathFinder = require("./pathFinder.js");
 //require Max integration variables
 var sqlite = new SQLite;
 var nameResult = new SQLResult;
@@ -24,11 +26,12 @@ var countSqlStatement = "";
 var demographicsSqlStatement = "";
 
 //absolute path to the project
-var path = "/Users/jessicarajko/Workspace/TouchingData/";
+var path = pathFinder.getApplicationPath();
 
 //open the database at the db Filepath provided
-function opendb(dbFilePath)
+function opendb()
 {
+    var dbFilePath = pathFinder.getDBPath();
     sqlite.open(dbFilePath, 1);
 }
 
