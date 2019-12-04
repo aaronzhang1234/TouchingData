@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ng build --prod & node app.js",
     "migrate": "node app/dataMigration/src/main.js",
-    "webscrape": "node app/web-scraping/runs/run_webscraper.js", 
+    "webscrape": "node app/web-scraping/runs/run_webscraper.js",
     "bing": "node app/web-scraping/runs/run_bing.js",
     "downloadmedia": "node app/web-scraping/runs/run_downloadmedia.js",
     "textaudio": "node app/web-scraping/runs/run_textaudio.js",
@@ -50,6 +50,7 @@
     "ms-rest-azure": "^3.0.0",
     "multer": "^1.4.2",
     "ng2-file-upload": "^1.4.0",
+    "open": "^7.0.0",
     "pusher": "^3.0.0",
     "pusher-js": "^5.0.2",
     "rxjs": "~6.4.0",

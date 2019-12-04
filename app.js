@@ -9,6 +9,7 @@ const bodyparser = require("body-parser");
 const socketIo = require('socket.io');
 const EM = require('./app/emitter.js');
 var multer = require('multer');
+var open = require('open');
 
 var app = express();
 var files = []
@@ -156,4 +157,7 @@ app.post('/upload', function(req, res) {
 	});
 });
 
-server.listen(3000, ()=>console.log("Server will run at http://localhost:3000"));
+server.listen(3000, function(){
+	console.log("Server will run at http://localhost:3000");
+	open('http://localhost:3000')
+});

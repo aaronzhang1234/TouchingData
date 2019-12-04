@@ -24,11 +24,16 @@ var countSqlStatement = "";
 var demographicsSqlStatement = "";
 
 //absolute path to the project
-var path = "/Users/jessicarajko/Workspace/TouchingData/";
+var path = "";
 
 //open the database at the db Filepath provided
-function opendb(dbFilePath)
+function opendb(filePath)
 {
+    //set the path for media to be found in getMedia functions
+    path = filePath.replace("Macintosh HD:", "");
+    path = path.replace("/app/Max", "");
+    //set the db file path
+    var dbFilePath = path + "data/POLITICS_OF_THE_GRID.db";
     sqlite.open(dbFilePath, 1);
 }
 
