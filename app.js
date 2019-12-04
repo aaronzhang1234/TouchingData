@@ -62,7 +62,7 @@ app.post("/import", function(req, res) {
 app.get("/scrapeSites", function(req, res){
     let webscraper = new WS_Controller();
     webscraper.webscrapeAllSites();
-		res.send();
+		res.send("scraping");
 });
 
 app.get("/getWebsites", function(req, res){

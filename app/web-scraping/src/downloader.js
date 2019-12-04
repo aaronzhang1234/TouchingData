@@ -3,7 +3,6 @@ const url = require("url");
 const {transports, createLogger, format} = require("winston");
 const path = require("path");
 const fs = require("fs");
-//const download = require("download-file");
 const youtubedl = require("ytdl-core");
 const DAO = require("../../DAO.js")
 const Media = require("../../models/Media.js");
