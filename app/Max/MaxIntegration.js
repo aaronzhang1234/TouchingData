@@ -4,8 +4,6 @@ inlets = 1;
 outlets = 7;
 //for debugging purposes
 var objectPrinter = require("jm.objectPrinter");
-//pathfinder file finds absolute paths for max to work with
-let pathFinder = require("./pathFinder.js");
 //require Max integration variables
 var sqlite = new SQLite;
 var nameResult = new SQLResult;
@@ -26,12 +24,16 @@ var countSqlStatement = "";
 var demographicsSqlStatement = "";
 
 //absolute path to the project
-var path = pathFinder.getApplicationPath();
+var path = "";
 
 //open the database at the db Filepath provided
-function opendb()
+function opendb(filePath)
 {
-    var dbFilePath = pathFinder.getDBPath();
+    //set the path for media to be found in getMedia functions
+    path = filePath.replace("Macintosh HD:", "");
+    path = path.replace("/app/Max", "");
+    //set the db file path
+    var dbFilePath = path + "data/POLITICS_OF_THE_GRID.db";
     sqlite.open(dbFilePath, 1);
 }
 
