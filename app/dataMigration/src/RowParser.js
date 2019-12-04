@@ -124,7 +124,7 @@ class RowParser{
 
 	//inserts the parent agency of the awarding agency
 	insertParentAwardAgency(){
-		let parent_award_agency_name = this.row.getCell(2).value;
+		let parent_award_agency_name = this.row.getCell(3).value;
 
 		let parent_award_agency = new ParentAwardAgency(null, parent_award_agency_name);
 		try{
@@ -135,8 +135,8 @@ class RowParser{
 
 	//inserts the awarding agency
 	insertAwardingAgency(){
-		let awarding_agency_name = this.row.getCell(3).value;
-		let parent_award_agency_name = this.row.getCell(2).value;
+		let awarding_agency_name = this.row.getCell(2).value;
+		let parent_award_agency_name = this.row.getCell(3).value;
 		let paa = dao.selectParentAwardingAgency(parent_award_agency_name);
 		let paa_id = null;
 		if(paa !=null){

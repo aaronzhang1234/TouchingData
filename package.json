@@ -12,7 +12,8 @@
     "textaudio": "node app/web-scraping/runs/run_textaudio.js",
     "initValTables": "node app/dataMigration/src/initValidationTables.js",
     "initDb": "node app/dataMigration/src/initdb.js",
-    "convertAudio": "node app/web-scraping/src/textaudio.js"
+    "convertAudio": "node app/web-scraping/src/textaudio.js",
+    "rebuildAgencies": "node data/scripts/rebuildAgencies.js"
   },
   "repository": {
     "type": "git",

@@ -1180,7 +1180,7 @@ class Dao {
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_AWARDING_AGENCY`("+
 			"awarding_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
-			"awarding_agency_name TEXT,"+
+			"awarding_agency_name TEXT NOT NULL,"+
 			"parent_award_agency_id INTEGER NULL,"+
 			"UNIQUE(awarding_agency_name, parent_award_agency_id),"+
 			"FOREIGN KEY(parent_award_agency_id) REFERENCES PG1_PARENT_AWARD_AGENCY(parent_award_agency_id));"
@@ -1192,7 +1192,7 @@ class Dao {
 		this.db.prepare(
 			"CREATE TABLE IF NOT EXISTS `PG1_PARENT_AWARD_AGENCY`("+
 			"parent_award_agency_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"+
-			"parent_awarding_agency_name integer UNIQUE);"
+			"parent_awarding_agency_name TEXT NOT NULL UNIQUE);"
 		).run();
 	}
 
