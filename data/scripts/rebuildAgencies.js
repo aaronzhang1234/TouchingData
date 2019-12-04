@@ -69,6 +69,9 @@ workbook.xlsx.readFile(workbookName).then(function(){
 					console.log(err)
 				}
 				let agency = dao.selectAwardingAgency(row.getCell(2).value)
+				if (agency === null){
+					agency = dao.selectAwardingAgency("DEPARTMENT OF HOMELAND SECURITY (DHS)")
+				}
 				if (agency != null){
 					db.prepare('UPDATE PG1_AWARD SET awarding_agency_id = ? where award_id_piid = ?').run(agency.id,row.getCell(1).value)
 				}

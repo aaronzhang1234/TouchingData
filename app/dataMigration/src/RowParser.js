@@ -142,6 +142,10 @@ class RowParser{
 		if(paa !=null){
 			paa_id = paa.id;
 		}
+		if (awarding_agency_name === null)
+		{
+			awarding_agency_name = "DEPARTMENT OF HOMELAND SECURITY (DHS)"
+		}
 		let awarding_agency = new AwardingAgency(null, awarding_agency_name, paa_id);
 		try {
 			dao.insertAwardingAgency(awarding_agency);
