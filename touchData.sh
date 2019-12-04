@@ -1,9 +1,9 @@
 
 #!/bin/bash
-
-cd /Users/jessicarajko/Workspace/TouchingData
-
+cd "$(dirname "$0")"
 ng build
-
 node app.js
+exit 0
+
+
 

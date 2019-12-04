@@ -123,6 +123,10 @@ io.on('connection', (socket)=>{
 			socket.emit('migrate',data);
 		}
 	})
+	socket.on('disconnect', function (){
+		console.log("Exiting...");
+		process.exit(0);
+	})
 	setInterval(function(){
 		socket.emit('hello',{
 			arg1:"fug"
