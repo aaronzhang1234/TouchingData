@@ -186,7 +186,7 @@ class RowParser{
 		let current_total = this.row.getCell(4).value;
 		let potential_total = this.row.getCell(5).value; 
 
-		let awarding_agency_name = this.row.getCell(3).value;
+		let awarding_agency_name = this.row.getCell(2).value;
 		let awarding_agency = dao.selectAwardingAgency(awarding_agency_name);
 		let awarding_agency_id = null;
 		if(awarding_agency!= null){
