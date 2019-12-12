@@ -27,8 +27,11 @@ Once this is done you are ready to use the art installation.
 ## Detailed descriptions
 
 ### Database Creation:
-Clicking the create database button will initialize the entire sql database as a ```.db``` file at ```data/POLITICS_OF_THE_GRID.db```. If there is already a file named ```data/POLITICS_OF_THE_GRID.db```, it will first backup that database file in data/sheets, and it will be replaced. To use the backed up database as the primary database once again, the user must access file path TouchingData/Data/backups/ then copy the appropriate version of the database. Then use the copied file to replace POLITICS_OF_THE_GRID.db and rename it as such. This will replace the newest database with whichever version was copied. This process should only take a moment, the new database will have no usable data, but can be connected to by the dashboard tools (such as the data migrator and the web scraper).
+Clicking the create database button will initialize the entire sql database as a ```.db``` file at ```data/POLITICS_OF_THE_GRID.db```. If there is already a file named ```data/POLITICS_OF_THE_GRID.db```, it will first backup that database file in data/sheets, and it will be replaced. This process should only take a moment, the new database will have no usable data, but can be connected to by the dashboard tools (such as the data migrator and the web scraper).
 
+#### Database backups
+Database backups are stored in data/backup. The backups have filename format: backup-<iso-date-string>.db
+to use a backup simply replace ```data/POLITICS_OF_THE_GRID.db``` with that database by copying the file into the data directory and renaming the file as POLITICS_OF_THE_GRID.db (you may want to backup your current database before doing this by moving into the backup folder)
 
 
 ### Data Migration:
