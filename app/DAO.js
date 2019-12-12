@@ -1266,7 +1266,9 @@ class Dao {
 
 	//create a back of the database with the name backup-<<timestamp>>.db
 	backupDb(){
-		let backupName = `data/backup/backup-${Date.now()}.db`
+		var date = new Date(Date.now())
+
+		let backupName = `data/backup/backup-${date.toISOString()}.db`
 		this.db.backup(backupName).then(() => {
 			console.log('backup complete!');
 			return backupName
